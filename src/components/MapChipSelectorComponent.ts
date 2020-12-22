@@ -1,7 +1,6 @@
 import { LitElement, html, css, customElement, property } from 'lit-element'
 import { GridImageGenerator } from '../GridImageGenerator'
 import { CursorPositionCalculator } from './helpers/CursorPositionCalculator'
-import { MapChip } from './../MapChip'
 import { Projects, Project } from './../Projects'
 
 @customElement('map-chip-selector-component')
@@ -9,7 +8,6 @@ export class MapChipSelectorComponent extends LitElement {
   private _gridImageSrc = ''
   private gridImageGenerator = new GridImageGenerator()
   private cursorPositionCalculator = new CursorPositionCalculator()
-  private boundingRect: DOMRect | null = null
   private _project: Project | null = null
 
   private _projectId = -1
@@ -22,17 +20,29 @@ export class MapChipSelectorComponent extends LitElement {
     this._projectId = value
     this._project = Projects.fromProjectId(value)
 
-    if (!this._project) return;
+    this.setupMapChipSelector()
 
-    this._project.mapChipSelector.setChipSize(this.gridWidth, this.gridHeight)
     this.requestUpdate('projectId', oldValue);
+  }
+
+  private _chipId = -1
+  @property({type: Number})
+  get chipId(): number {
+    return this._chipId
+  }
+  set chipId(value: number) {
+    const oldValue = this._chipId
+    this._chipId = value
+
+    this.setupMapChipSelector()
+
+    this.requestUpdate('chipId', oldValue)
   }
 
   @property({type: Number}) cursorChipX = 0
   @property({type: Number}) cursorChipY = 0
   @property({type: Number}) selectedChipY = 0
   @property({type: Number}) selectedChipX = 0
-  @property({type: String}) src = ''
 
   get mapChipSelector() {
     return this._project?.mapChipSelector
@@ -58,6 +68,11 @@ export class MapChipSelectorComponent extends LitElement {
       x: this.selectedChipX * this.gridWidth,
       y: this.selectedChipY * this.gridHeight
     }
+  }
+
+  private setupMapChipSelector() {
+    if (!this._project || this._chipId < 0) return
+    this._project.mapChipSelector.setActiveChipId(this._chipId)
   }
 
   mouseMove(e: MouseEvent) {
@@ -111,7 +126,7 @@ export class MapChipSelectorComponent extends LitElement {
       </style>
 
       <div id="boundary">
-        <img id="chip-image" src="${this.src}">
+        <img id="chip-image" src="${this._project?.mapChipSelector.activeChips?.src}">
         <div
           class="grid-image grid"
           @mousemove="${(e: MouseEvent) => this.mouseMove(e)}"

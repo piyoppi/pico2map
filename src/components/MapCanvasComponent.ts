@@ -11,6 +11,7 @@ export class MapCanvasComponent extends LitElement {
   private cursorPositionCalculator = new CursorPositionCalculator()
   private _mapCanvas: MapCanvas | null = null
   private _project: Project | null = null
+  private _canvas: HTMLCanvasElement | null = null
 
   @property({type: Number}) cursorChipX = 0
   @property({type: Number}) cursorChipY = 0
@@ -28,8 +29,7 @@ export class MapCanvasComponent extends LitElement {
 
     if (!this._project) return;
 
-    this._project.mapChipSelector.setChipSize(this.gridWidth, this.gridHeight)
-    this._mapCanvas = new MapCanvas(this._project.tiledMap)
+    this.setupMapCanvas()
 
     this.requestUpdate('projectId', oldValue);
   }
@@ -65,9 +65,18 @@ export class MapCanvasComponent extends LitElement {
     }
   }
 
+  private setupMapCanvas() {
+    if (!this._project || !this._canvas) return;
+
+    this._mapCanvas = new MapCanvas(this._project.tiledMap, this._canvas)
+  }
+
   updated() {
     const element = this.shadowRoot?.getElementById('boundary')
     if (element) this.cursorPositionCalculator.setElement(element)
+
+    this._canvas = this.shadowRoot?.getElementById('map-canvas') as HTMLCanvasElement
+    this.setupMapCanvas()
   }
 
   mouseMove(e: MouseEvent) {
@@ -77,6 +86,14 @@ export class MapCanvasComponent extends LitElement {
     const chipPosition = this._mapCanvas.convertFromCursorPositionToChipPosition(mouseCursorPosition.x, mouseCursorPosition.y)
     this.cursorChipX = chipPosition.x
     this.cursorChipY = chipPosition.y
+  }
+
+  mouseDown(e: MouseEvent) {
+    if (!this._mapCanvas || !this._project) return
+
+    const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY)
+    const chipPosition = this._mapCanvas.convertFromCursorPositionToChipPosition(mouseCursorPosition.x, mouseCursorPosition.y)
+    this._mapCanvas.putChip(this._project.mapChipSelector.selectedChip, chipPosition.x, chipPosition.y)
   }
 
   render() {
@@ -106,8 +123,10 @@ export class MapCanvasComponent extends LitElement {
         <div
           class="grid-image grid"
           @mousemove="${(e: MouseEvent) => this.mouseMove(e)}"
+          @mousedown="${(e: MouseEvent) => this.mouseDown(e)}"
         ></div>
         <canvas
+          id="map-canvas"
           width="${this.width}"
           height="${this.height}"
         ></canvas>

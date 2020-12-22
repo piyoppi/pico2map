@@ -1,5 +1,5 @@
 import { MapChip } from './MapChip'
-import { MapChips } from './MapChips'
+import { MapChips, MapChipsCollection } from './MapChips'
 
 export class TiledMap {
   private _chipCountX = 0
@@ -7,7 +7,7 @@ export class TiledMap {
   private _chipWidth = 0
   private _chipHeight = 0
   private _mapData: Array<MapChip | null> = []
-  private _mapChips: Array<MapChips> = []
+  private _mapChips = new MapChipsCollection()
 
   constructor() {
   }
@@ -26,6 +26,10 @@ export class TiledMap {
 
   get chipCountY() {
     return this._chipCountY
+  }
+
+  get mapChipsCollection() {
+    return this._mapChips
   }
 
   public initialize(chipCountX: number, chipCountY: number, chipWidth: number, chipHeight: number) {
@@ -48,8 +52,15 @@ export class TiledMap {
     this._mapData[mapNumber] = mapChip
   }
 
-  private convertPositionToMapNumber(chipX: number, chipY: number) {
+  public convertPositionToMapNumber(chipX: number, chipY: number) {
     return chipY * this._chipCountY + chipX
+  }
+
+  public convertChipPositionToPixel(chipX: number, chipY: number) {
+    return {
+      x: chipX * this.chipWidth,
+      y: chipY * this.chipHeight
+    }
   }
 
   private allocateMapData() {

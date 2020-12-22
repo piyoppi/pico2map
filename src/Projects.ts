@@ -2,7 +2,7 @@ import { TiledMap } from './TiledMap'
 import { MapChipSelector } from './MapChipSelector'
 
 export class Project {
-  private _mapChipSelector = new MapChipSelector()
+  private _mapChipSelector = new MapChipSelector(this._tiledMap)
 
   constructor(
     private _tiledMap: TiledMap,
