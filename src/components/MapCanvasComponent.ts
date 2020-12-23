@@ -68,10 +68,10 @@ export class MapCanvasComponent extends LitElement {
   private setupMapCanvas() {
     if (!this._project || !this._canvas) return;
 
-    this._mapCanvas = new MapCanvas(this._project.tiledMap, this._canvas)
+    this._mapCanvas = new MapCanvas(this._project, this._canvas)
   }
 
-  updated() {
+  firstUpdated() {
     const element = this.shadowRoot?.getElementById('boundary')
     if (element) this.cursorPositionCalculator.setElement(element)
 
@@ -83,17 +83,22 @@ export class MapCanvasComponent extends LitElement {
     if (!this._mapCanvas) return
 
     const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY)
-    const chipPosition = this._mapCanvas.convertFromCursorPositionToChipPosition(mouseCursorPosition.x, mouseCursorPosition.y)
-    this.cursorChipX = chipPosition.x
-    this.cursorChipY = chipPosition.y
+    const cursor = this._mapCanvas.mouseMove(mouseCursorPosition.x, mouseCursorPosition.y)
+    this.cursorChipX = cursor.x
+    this.cursorChipY = cursor.y
   }
 
   mouseDown(e: MouseEvent) {
     if (!this._mapCanvas || !this._project) return
 
     const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY)
-    const chipPosition = this._mapCanvas.convertFromCursorPositionToChipPosition(mouseCursorPosition.x, mouseCursorPosition.y)
-    this._mapCanvas.putChip(this._project.mapChipSelector.selectedChip, chipPosition.x, chipPosition.y)
+    this._mapCanvas.mouseDown(mouseCursorPosition.x, mouseCursorPosition.y)
+  }
+
+  mouseUp(e: MouseEvent) {
+    if (!this._mapCanvas || !this._project) return
+
+    this._mapCanvas.mouseUp()
   }
 
   render() {
@@ -124,6 +129,7 @@ export class MapCanvasComponent extends LitElement {
           class="grid-image grid"
           @mousemove="${(e: MouseEvent) => this.mouseMove(e)}"
           @mousedown="${(e: MouseEvent) => this.mouseDown(e)}"
+          @mouseup ="${(e: MouseEvent) => this.mouseUp(e)}"
         ></div>
         <canvas
           id="map-canvas"
