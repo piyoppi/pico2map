@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: publish
+name: publish-examples
 
 # Controls when the action will run. 
 on:
@@ -37,6 +37,9 @@ jobs:
       - name: Build
         run: npm run build
         working-directory: ./examples
+      
+      - name: Remove .gitignore file for publish examples
+        run: rm ./examples/.gitignore
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
