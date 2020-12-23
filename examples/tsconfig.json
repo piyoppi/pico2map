@@ -1,9 +1,7 @@
 {
   "include": ["src", "types"],
   "compilerOptions": {
-    "target": "es2015",
-    "module": "esnext",
-    "rootDir": "./src",
+    "target": "esnext",
     "strict": true,
     "moduleResolution": "node",
     "esModuleInterop": true,

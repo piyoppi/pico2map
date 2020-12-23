@@ -1,9 +1,16 @@
-import { TiledMap, Projects, MapChips } from './../../src/main'
+import { MapChipSelector } from './MapChipSelector'
+import { GridImageGenerator } from './GridImageGenerator'
+import { TiledMap } from './TiledMap'
+import { Projects } from './Projects'
+import { MapChips } from './MapChips'
 
-const tiledMap = new TiledMap()
-tiledMap.initialize(10, 10, 32, 32)
-tiledMap.mapChipsCollection.push(new MapChips("images/chip.png", 1))
-Projects.add(tiledMap, 1)
+import './components/MapChipSelectorComponent'
+import './components/MapCanvasComponent'
 
-document.getElementById('mapChipSelector')?.setAttribute('projectId', '1')
-document.getElementById('mapCanvas')?.setAttribute('projectId', '1')
+export {
+  MapChipSelector,
+  GridImageGenerator,
+  TiledMap,
+  Projects,
+  MapChips
+}
