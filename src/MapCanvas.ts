@@ -39,6 +39,7 @@ export class MapCanvas {
     if (!image) return
 
     const position = this._project.tiledMap.convertChipPositionToPixel(chipX, chipY)
+    this._ctx?.clearRect(position.x, position.y, this._project.tiledMap.chipWidth,  this._project.tiledMap.chipHeight)
     this._ctx?.drawImage(
       image,
       mapChip.x * this._project.tiledMap.chipWidth,
