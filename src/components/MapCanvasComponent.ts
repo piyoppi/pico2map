@@ -28,12 +28,25 @@ export class MapCanvasComponent extends LitElement {
 
     this._project = Projects.fromProjectId(value)
 
-    if (!this._project) return;
-
     this.setupMapCanvas()
 
     this.requestUpdate('projectId', oldValue);
   }
+
+  private _brushName = ''
+  @property({type: String})
+  get brush() {
+    return this._brushName
+  }
+  set brush(value: string) {
+    const oldValue = this._brushName
+    this._brushName = value
+
+    this.setupMapCanvas()
+
+    this.requestUpdate('brush', oldValue);
+  }
+
 
   private get width() {
     return this.xCount * this.gridWidth
@@ -69,7 +82,11 @@ export class MapCanvasComponent extends LitElement {
   private setupMapCanvas() {
     if (!this._project || !this._canvas || !this._secondaryCanvas) return;
 
-    this._mapCanvas = new MapCanvas(this._project, this._canvas, this._secondaryCanvas)
+    if (!this._mapCanvas) {
+      this._mapCanvas = new MapCanvas(this._project, this._canvas, this._secondaryCanvas)
+    }
+
+    this._mapCanvas.setBrushFromName(this._brushName)
   }
 
   firstUpdated() {

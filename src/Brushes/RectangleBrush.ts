@@ -1,4 +1,9 @@
-import { Brush, BrushPaint } from './Brush'
+import { Brush, BrushPaint, BrushDescription } from './Brush'
+
+export const RectangleBrushDescription: BrushDescription = {
+  name: 'RectangleBrush',
+  create: () => new RectangleBrush()
+}
 
 export class RectangleBrush implements Brush {
   private _isMouseDown = false

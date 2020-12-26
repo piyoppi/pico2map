@@ -1,4 +1,9 @@
-import { Brush, BrushPaint } from './Brush'
+import { Brush, BrushPaint, BrushDescription } from './Brush'
+
+export const PenDescription: BrushDescription = {
+  name: 'Pen',
+  create: () => new Pen()
+}
 
 export class Pen implements Brush {
   private _isMouseDown = false
@@ -23,7 +28,7 @@ export class Pen implements Brush {
       this._beforeCursorPosition = paint
     }
 
-    return [paint]
+    return this.painting
   }
 
   mouseUp(chipX: number, chipY: number): Array<BrushPaint> {

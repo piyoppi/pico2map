@@ -7,8 +7,13 @@ export interface BrushPaint {
 }
 
 export interface Brush {
-  mouseDown(chipX: number, chipY: number): void,
-  mouseMove(chipX: number, chipY: number): Array<BrushPaint>,
-  mouseUp(chipX: number, chipY: number): Array<BrushPaint>,
+  mouseDown(chipX: number, chipY: number): void
+  mouseMove(chipX: number, chipY: number): Array<BrushPaint>
+  mouseUp(chipX: number, chipY: number): Array<BrushPaint>
   cleanUp(): void
+}
+
+export interface BrushDescription {
+  name: string
+  create(): Brush
 }

@@ -2,19 +2,34 @@ import { TiledMap } from './TiledMap'
 import { MapChip } from './MapChip'
 import { Project } from './Projects'
 import { Pen } from './Brushes/Pen'
-import { RectangleBrush } from './Brushes/RectangleBrush'
+import { Brushes } from './Brushes/Brushes'
+import { Brush } from './Brushes/Brush'
 
 export class MapCanvas {
   private _ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D
   private _secondaryCanvasCtx = this.secondaryCanvas.getContext('2d') as CanvasRenderingContext2D
   private _isMouseDown = false
-  private _brush = new Pen()
+  private _brush: Brush = new Pen()
 
   constructor(
     private _project: Project,
     private canvas: HTMLCanvasElement,
     private secondaryCanvas: HTMLCanvasElement,
   ) {
+  }
+
+  public setBrushFromName(brushName: string) {
+    const registeredBrush = Brushes.find(registeredBrush => registeredBrush.name === brushName)
+
+    if (!registeredBrush) {
+      this.setBrush(new Pen())
+    } else {
+      this.setBrush(registeredBrush.create())
+    }
+  }
+
+  public setBrush(brush: Brush) {
+    this._brush = brush
   }
 
   public mouseDown(x: number, y: number) {
