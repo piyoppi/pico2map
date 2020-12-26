@@ -93,7 +93,7 @@ export class MapChipSelectorComponent extends LitElement {
     this.selectedChipY = this.mapChipSelector.selectedChip.y
   }
 
-  updated() {
+  firstUpdated() {
     const element = this.shadowRoot?.getElementById('boundary')
     if (element) this.cursorPositionCalculator.setElement(element)
   }
