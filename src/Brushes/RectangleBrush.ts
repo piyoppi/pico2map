@@ -1,4 +1,6 @@
 import { Brush, BrushPaint, BrushDescription } from './Brush'
+import { Arrangement } from './Arrangements/Arrangement'
+import { DefaultArrangement } from './Arrangements/DefaultArrangement'
 
 export const RectangleBrushDescription: BrushDescription = {
   name: 'RectangleBrush',
@@ -8,6 +10,11 @@ export const RectangleBrushDescription: BrushDescription = {
 export class RectangleBrush implements Brush {
   private _isMouseDown = false
   private _startPosition = {x: 0, y: 0}
+  private _arrangement: Arrangement = new DefaultArrangement()
+
+  setArrangement(arrangement: Arrangement) {
+    this._arrangement = arrangement
+  }
 
   mouseDown(chipX: number, chipY: number) {
     this._isMouseDown = true
@@ -27,7 +34,7 @@ export class RectangleBrush implements Brush {
   }
 
   private _build(chipX: number, chipY: number) {
-    const paint: Array<BrushPaint> = []
+    const paints: Array<BrushPaint> = []
     const startX = Math.min(this._startPosition.x, chipX)
     const startY = Math.min(this._startPosition.y, chipY)
     const endX = Math.max(this._startPosition.x, chipX)
@@ -35,11 +42,11 @@ export class RectangleBrush implements Brush {
 
     for(let x = startX; x <= endX; x++ ) {
       for(let y = startY; y <= endY; y++ ) {
-        paint.push({x, y})
+        paints.push({x, y})
       }
     }
 
-    return paint
+    return this._arrangement.apply(paints)
   }
 
   cleanUp() {

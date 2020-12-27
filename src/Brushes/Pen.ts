@@ -1,4 +1,6 @@
 import { Brush, BrushPaint, BrushDescription } from './Brush'
+import { Arrangement } from './Arrangements/Arrangement'
+import { DefaultArrangement } from './Arrangements/DefaultArrangement'
 
 export const PenDescription: BrushDescription = {
   name: 'Pen',
@@ -9,6 +11,11 @@ export class Pen implements Brush {
   private _isMouseDown = false
   private painting: Array<BrushPaint> = []
   private _beforeCursorPosition = {x: -1, y: -1}
+  private _arrangement: Arrangement = new DefaultArrangement()
+
+  setArrangement(arrangement: Arrangement) {
+    this._arrangement = arrangement
+  }
 
   mouseDown(chipX: number, chipY: number) {
     this._isMouseDown = true
@@ -28,12 +35,12 @@ export class Pen implements Brush {
       this._beforeCursorPosition = paint
     }
 
-    return this.painting
+    return this._arrangement.apply(this.painting)
   }
 
   mouseUp(chipX: number, chipY: number): Array<BrushPaint> {
     this._isMouseDown = false
-    return this.painting
+    return this._arrangement.apply(this.painting)
   }
 
   cleanUp() {

@@ -1,3 +1,4 @@
+import { Arrangement } from './Arrangements/Arrangement';
 import { MapChip } from './../MapChip'
 
 export interface BrushPaint {
@@ -7,6 +8,7 @@ export interface BrushPaint {
 }
 
 export interface Brush {
+  setArrangement(arrangement: Arrangement): void
   mouseDown(chipX: number, chipY: number): void
   mouseMove(chipX: number, chipY: number): Array<BrushPaint>
   mouseUp(chipX: number, chipY: number): Array<BrushPaint>

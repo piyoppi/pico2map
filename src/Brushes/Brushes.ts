@@ -12,8 +12,6 @@ const registeredBrushDescriptions = [
   RectangleBrushDescription
 ]
 
-console.log(registeredBrushDescriptions)
-
 export const Brushes = registeredBrushDescriptions.map( description => ({
   name: description.name,
   create: () => description.create()
