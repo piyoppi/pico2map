@@ -1,5 +1,5 @@
 import { MapChip } from './MapChip'
-import { MapChips, MapChipsCollection } from './MapChips'
+import { MapChipImage, MapChipsCollection } from './MapChips'
 
 export class TiledMap {
   private _chipCountX = 0

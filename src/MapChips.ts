@@ -1,4 +1,4 @@
-export class MapChips {
+export class MapChipImage {
   private _image: HTMLImageElement | null = null
   private _hasImage = false
   constructor(
@@ -29,9 +29,9 @@ export class MapChips {
 }
 
 export class MapChipsCollection {
-  private _items: Map<number, MapChips> = new Map()
+  private _items: Map<number, MapChipImage> = new Map()
 
-  public push(item: MapChips) {
+  public push(item: MapChipImage) {
     this._items.set(item.id, item)
   }
 
