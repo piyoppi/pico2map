@@ -1,5 +1,105 @@
-export interface MapChip {
-  x: number
-  y: number
-  chipId: number
+export interface MapChipComparable {
+  identifyKey: string
+  compare(others: MapChipComparable): boolean
+}
+
+export type MapChipRenderingArea = 1 | 2 | 3 | 4 | 5 | 8 | 10 | 12 | 15
+
+export class MapChip implements MapChipComparable {
+  private _identifyKey = ''
+
+  constructor(
+    private _x: number,
+    private _y: number,
+    private _chipId: number,
+    /**
+     *  _renderingArea indicates the area where this map-chip is to be drawn.
+     *  It is represented by a OR of the following area-numbers.
+     *
+     * |<- 1chip ->|
+     * *-----*-----* ---
+     * |  1  |  2  |  ↑
+     * *-----*-----* 1chip
+     * |  4  |  8  |  ↓
+     * *-----*-----* ---
+     */
+    private _renderingArea :MapChipRenderingArea = 15
+  ) {
+    this._identifyKey = `${_x},${_y},${_chipId}`
+  }
+
+  get x() {
+    return this._x
+  }
+
+  get y() {
+    return this._y
+  }
+
+  get chipId() {
+    return this._chipId
+  }
+
+  get identifyKey() {
+    return this._identifyKey
+  }
+
+  get renderingArea() {
+    return this._renderingArea
+  }
+
+  withParameter(parameters: {x?: number, y?: number, renderingArea?: MapChipRenderingArea}) {
+    if (parameters.x) this._x = parameters.x
+    if (parameters.y) this._y = parameters.y
+    if (parameters.renderingArea) this._renderingArea = parameters.renderingArea
+
+    return this
+  }
+
+  clone() {
+    return new MapChip(this._x, this._y, this._chipId)
+  }
+
+  compare(others: MapChipComparable) {
+    return this.identifyKey === others.identifyKey
+  }
+}
+
+export class MultiMapChip implements MapChipComparable {
+  private _identifyKey = ''
+
+  constructor(
+    private _items: Array<MapChip> = []
+  ) {
+
+  }
+
+  get items() {
+    return this._items
+  }
+
+  get identifyKey() {
+    return this._identifyKey
+  }
+
+  push(mapChip: MapChip) {
+    this._identifyKey += mapChip.identifyKey + '|'
+    this._items.push(mapChip)
+  }
+
+  clear() {
+    this._identifyKey = ''
+    this._items.length = 0
+  }
+
+  clone() {
+    const cloned = new MultiMapChip()
+    cloned._items = this._items.map(mapChip => mapChip.clone())
+
+    return cloned
+  }
+
+  compare(others: MapChipComparable) {
+    return this.identifyKey === others.identifyKey
+  }
 }

@@ -1,5 +1,5 @@
 import { TiledMap } from './TiledMap'
-import { MapChip } from './MapChip'
+import { MapChip, MultiMapChip } from './MapChip'
 import { Project } from './Projects'
 import { Pen } from './Brushes/Pen'
 import { Brushes } from './Brushes/Brushes'
@@ -45,7 +45,8 @@ export class MapCanvas {
     this.clearSecondaryCanvas()
     this._brush.mouseMove(chipPosition.x, chipPosition.y).forEach(paint => {
       const chip = paint.chip || this._project.mapChipSelector.selectedChip
-      this._putChipToCanvas(this._secondaryCanvasCtx, chip, paint.x, paint.y)
+      if (!chip) return
+      this._putChipOrMultiChipToCanvas(this._secondaryCanvasCtx, chip, paint.x, paint.y)
     })
 
     return chipPosition
@@ -58,6 +59,7 @@ export class MapCanvas {
 
     this._brush.mouseUp(chipPosition.x, chipPosition.y).forEach(paint => {
       const chip = paint.chip || this._project.mapChipSelector.selectedChip
+      if (!chip) return
       this.putChip(chip, paint.x, paint.y)
     })
 
@@ -65,13 +67,23 @@ export class MapCanvas {
     this._brush.cleanUp()
   }
 
-  public putChip(mapChip: MapChip, chipX: number, chipY: number) {
+  public putChip(mapChip: MapChip | MultiMapChip, chipX: number, chipY: number) {
     this._project.tiledMap.putChip(mapChip, chipX, chipY)
-    this._putChipToCanvas(this._ctx, mapChip, chipX, chipY)
+    this._putChipOrMultiChipToCanvas(this._ctx, mapChip, chipX, chipY)
   }
 
   private clearSecondaryCanvas() {
     this._secondaryCanvasCtx.clearRect(0, 0, this.secondaryCanvas.width, this.secondaryCanvas.height)
+  }
+
+  private _putChipOrMultiChipToCanvas(ctx: CanvasRenderingContext2D, mapChip: MapChip | MultiMapChip, chipX: number, chipY: number) {
+    if (mapChip instanceof MapChip) {
+      this._putChipToCanvas(ctx, mapChip, chipX, chipY)
+    } else if (mapChip instanceof MultiMapChip) {
+      mapChip.items.forEach(item => {
+        this._putChipToCanvas(ctx, item, chipX, chipY)
+      })
+    }
   }
 
   private _putChipToCanvas(ctx: CanvasRenderingContext2D, mapChip: MapChip, chipX: number, chipY: number) {
@@ -79,19 +91,56 @@ export class MapCanvas {
     const image = mapChips?.image
     if (!image) return
 
+    const renderingArea = this._getRenderingArea(mapChip)
     const position = this._project.tiledMap.convertChipPositionToPixel(chipX, chipY)
-    ctx.clearRect(position.x, position.y, this._project.tiledMap.chipWidth,  this._project.tiledMap.chipHeight)
+    position.x += renderingArea.destOffsetX
+    position.y += renderingArea.destOffsetY
+
+    ctx.clearRect(position.x, position.y, renderingArea.width, renderingArea.height)
     ctx.drawImage(
       image,
-      mapChip.x * this._project.tiledMap.chipWidth,
-      mapChip.y * this._project.tiledMap.chipHeight,
-      this._project.tiledMap.chipWidth,
-      this._project.tiledMap.chipHeight,
+      renderingArea.x,
+      renderingArea.y,
+      renderingArea.width,
+      renderingArea.height,
       position.x,
       position.y,
-      this._project.tiledMap.chipWidth,
-      this._project.tiledMap.chipHeight,
+      renderingArea.width,
+      renderingArea.height
     )
+  }
+
+  private _getRenderingArea(mapChip: MapChip) {
+    const width = this._project.tiledMap.chipWidth
+    const height = this._project.tiledMap.chipHeight
+    const x = mapChip.x * width
+    const y = mapChip.y * height
+
+    if (mapChip.renderingArea === 15) {
+      return {x, y, width, height, destOffsetX: 0, destOffsetY: 0}
+    }
+
+    const halfWidth = Math.round(width / 2)
+    const halfHeight = Math.round(height / 2)
+
+    switch(mapChip.renderingArea) {
+      case 1:
+        return {x, y, width: halfWidth, height: halfHeight, destOffsetX: 0, destOffsetY: 0}
+      case 2:
+        return {x: x + halfWidth, y, width: halfWidth, height: halfHeight, destOffsetX: halfWidth, destOffsetY: 0}
+      case 3:
+        return {x, y, width, height: halfHeight, destOffsetX: 0, destOffsetY: 0}
+      case 4:
+        return {x, y: y + halfHeight, width: halfWidth, height: halfHeight, destOffsetX: 0, destOffsetY: halfHeight}
+      case 5:
+        return {x, y, width: halfWidth, height, destOffsetX: 0, destOffsetY: 0}
+      case 8:
+        return {x: x + halfWidth, y: y + halfHeight, width: halfWidth, height: halfHeight, destOffsetX: halfWidth, destOffsetY: halfHeight}
+      case 10:
+        return {x: x + halfWidth, y, width: halfWidth, height, destOffsetX: halfWidth, destOffsetY: 0}
+      case 12:
+        return {x, y: y + halfHeight, width, height: halfHeight, destOffsetX: 0, destOffsetY: halfHeight}
+    }
   }
 
   public convertFromCursorPositionToChipPosition(x: number, y: number) {

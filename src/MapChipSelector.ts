@@ -4,7 +4,7 @@ import { MapChip } from './MapChip'
 export class MapChipSelector {
   private chipWidth: number = 0
   private chipHeight: number = 0
-  private _selectedChip: MapChip = {x: 0, y: 0, chipId: 0}
+  private _selectedChip: MapChip | null = null
   private _activeChipId: number = -1
 
   constructor(
@@ -26,7 +26,7 @@ export class MapChipSelector {
   }
 
   public select(x: number, y: number) {
-    this._selectedChip = {x, y, chipId: this._activeChipId}
+    this._selectedChip = new MapChip(x, y, this._activeChipId)
   }
 
   public selectAtMouseCursor(cursorX: number, cursorY: number) {

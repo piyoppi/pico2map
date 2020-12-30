@@ -89,6 +89,7 @@ export class MapChipSelectorComponent extends LitElement {
 
     const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY)
     this.mapChipSelector.selectAtMouseCursor(mouseCursorPosition.x, mouseCursorPosition.y)
+    if (!this.mapChipSelector.selectedChip) return
     this.selectedChipX = this.mapChipSelector.selectedChip.x
     this.selectedChipY = this.mapChipSelector.selectedChip.y
   }
