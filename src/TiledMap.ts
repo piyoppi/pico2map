@@ -59,7 +59,7 @@ export class TiledMapData {
   }
 
   convertPositionToMapNumber(x: number, y: number) {
-    return y * this._chipCountY + x
+    return y * this._chipCountX + x
   }
 
   convertMapNumberToPosition(num: number) {

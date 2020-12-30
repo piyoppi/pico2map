@@ -46,14 +46,26 @@ export class AutoTileArrangement implements Arrangement {
       width: x2 - x1 + 1,
       height: y2 - y1 + 1
     }
-    const tiledBuffer = new TiledMapData(size.width, size.height)
+    const sizeWithPatch = {
+      width: size.width + 2,
+      height: size.height + 2
+    }
+    const tiledBuffer = new TiledMapData(sizeWithPatch.width, sizeWithPatch.height)
+    const offsetX1 = 1
+    const offsetY1 = 1
+    const offsetX2 = 1
+    const offsetY2 = 1
+
+    tiledBuffer.transferFromTiledMapData(this._tiledMapData, x1 - offsetX1, y1 - offsetY1, sizeWithPatch.width + offsetX2, sizeWithPatch.height + offsetY2, 0, 0)
 
     paints.forEach(paint => {
-      tiledBuffer.put(this._mapChips[0], paint.x - x1, paint.y - y1)
+      tiledBuffer.put(this._mapChips[0], paint.x - x1 + offsetX1, paint.y - y1 + offsetY1)
     })
 
-    for(let y = 0; y < size.height; y++) {
-      for(let x = 0; x < size.width; x++) {
+    console.log(tiledBuffer.mapData)
+
+    for(let y = 1; y <= size.height; y++) {
+      for(let x = 1; x <= size.width; x++) {
         if (!tiledBuffer.getMapDataFromChipPosition(x, y)) continue
        /**
         * adjacent 
@@ -78,8 +90,7 @@ export class AutoTileArrangement implements Arrangement {
         adjacent += this._isAutoTileChip(tiledBuffer.getMapDataFromChipPosition(x - 1, y + 1)) ? 64 : 0
         adjacent += this._isAutoTileChip(tiledBuffer.getMapDataFromChipPosition(x + 1, y + 1)) ? 128 : 0
 
-        console.log(adjacent)
-        result.push({x: x + x1, y: y + y1, chip: this.getTiledPattern(adjacent)})
+        result.push({x: x + x1 - offsetX1, y: y + y1 - offsetY1, chip: this.getTiledPattern(adjacent)})
       }
     }
 
@@ -146,16 +157,58 @@ export class AutoTileArrangement implements Arrangement {
 
       /* Straight */
       case 6:   // 2 + 4
+      case 86:  // 2 + 4 + 16 + 64
+      case 166: // 2 + 4 + 32 + 128
         return this._mapChips[2]
 
       case 9:   // 1 + 8
+      case 201: // 1 + 8 + 64 + 128
+      case 57:  // 1 + 8 + 16 + 32
         return this._mapChips[1]
 
       /* T Junction */
       case 7:   // 1 + 2 + 4
+        return new MultiMapChip([
+          this._mapChips[2].clone().withParameter({renderingArea: 12}),
+          this._mapChips[3].clone().withParameter({renderingArea: 3})
+        ])
       case 11:  // 1 + 2 + 8
+        return new MultiMapChip([
+          this._mapChips[1].clone().withParameter({renderingArea: 10}),
+          this._mapChips[3].clone().withParameter({renderingArea: 5})
+        ])
       case 13:  // 1 + 4 + 8
+        return new MultiMapChip([
+          this._mapChips[1].clone().withParameter({renderingArea: 5}),
+          this._mapChips[3].clone().withParameter({renderingArea: 10})
+        ])
       case 14:  // 2 + 4 + 8
+        return new MultiMapChip([
+          this._mapChips[2].clone().withParameter({renderingArea: 3}),
+          this._mapChips[3].clone().withParameter({renderingArea: 12})
+        ])
+
+      /* Square to road */
+      case 63:   // 1 + 2 + 4 + 8 + 16 + 32
+        return new MultiMapChip([
+          this._mapChips[3].clone().withParameter({renderingArea: 12}),
+          this._mapChips[4].clone().withParameter({renderingArea: 3})
+        ])
+      case 95:  // 1 + 2 + 4 + 8 + 16 + 64
+        return new MultiMapChip([
+          this._mapChips[3].clone().withParameter({renderingArea: 10}),
+          this._mapChips[4].clone().withParameter({renderingArea: 5})
+        ])
+      case 207:  // 1 + 2 + 4 + 8 + 64 + 128
+        return new MultiMapChip([
+          this._mapChips[3].clone().withParameter({renderingArea: 3}),
+          this._mapChips[4].clone().withParameter({renderingArea: 12})
+        ])
+      case 175:  // 1 + 2 + 4 + 8 + 32 + 128
+        return new MultiMapChip([
+          this._mapChips[3].clone().withParameter({renderingArea: 5}),
+          this._mapChips[4].clone().withParameter({renderingArea: 10})
+        ])
 
       /* Corner */
       case 19:  // 1 + 2 + 16
