@@ -62,8 +62,6 @@ export class AutoTileArrangement implements Arrangement {
       tiledBuffer.put(this._mapChips[0], paint.x - x1 + offsetX1, paint.y - y1 + offsetY1)
     })
 
-    console.log(tiledBuffer.mapData)
-
     for(let y = 1; y <= size.height; y++) {
       for(let x = 1; x <= size.width; x++) {
         if (!tiledBuffer.getMapDataFromChipPosition(x, y)) continue
@@ -142,29 +140,18 @@ export class AutoTileArrangement implements Arrangement {
         ])
       case 10:  // 2 + 8
         return new MultiMapChip([
-          this._mapChips[0].clone().withParameter({renderingArea: 4}),
-          this._mapChips[1].clone().withParameter({renderingArea: 1}),
-          this._mapChips[2].clone().withParameter({renderingArea: 8}),
-          this._mapChips[3].clone().withParameter({renderingArea: 2})
+          this._mapChips[0].clone().withParameter({renderingArea: 2}),
+          this._mapChips[1].clone().withParameter({renderingArea: 8}),
+          this._mapChips[2].clone().withParameter({renderingArea: 1}),
+          this._mapChips[3].clone().withParameter({renderingArea: 4})
         ])
       case 12:  // 4 + 8
         return new MultiMapChip([
-          this._mapChips[0].clone().withParameter({renderingArea: 4}),
-          this._mapChips[1].clone().withParameter({renderingArea: 1}),
-          this._mapChips[2].clone().withParameter({renderingArea: 8}),
-          this._mapChips[3].clone().withParameter({renderingArea: 2})
+          this._mapChips[0].clone().withParameter({renderingArea: 1}),
+          this._mapChips[1].clone().withParameter({renderingArea: 4}),
+          this._mapChips[2].clone().withParameter({renderingArea: 2}),
+          this._mapChips[3].clone().withParameter({renderingArea: 8})
         ])
-
-      /* Straight */
-      case 6:   // 2 + 4
-      case 86:  // 2 + 4 + 16 + 64
-      case 166: // 2 + 4 + 32 + 128
-        return this._mapChips[2]
-
-      case 9:   // 1 + 8
-      case 201: // 1 + 8 + 64 + 128
-      case 57:  // 1 + 8 + 16 + 32
-        return this._mapChips[1]
 
       /* T Junction */
       case 7:   // 1 + 2 + 4
@@ -210,6 +197,35 @@ export class AutoTileArrangement implements Arrangement {
           this._mapChips[4].clone().withParameter({renderingArea: 10})
         ])
 
+      /* Square to other square */
+      case 191:  // 1 + 2 + 4 + 8 + 16 + 32 + 128
+        return new MultiMapChip([
+          this._mapChips[4].clone().withParameter({renderingArea: 3}),
+          this._mapChips[4].clone().withParameter({renderingArea: 8}),
+          this._mapChips[3].clone().withParameter({renderingArea: 4})
+        ])
+
+      case 127:  // 1 + 2 + 4 + 8 + 16 + 32 + 64
+        return new MultiMapChip([
+          this._mapChips[4].clone().withParameter({renderingArea: 3}),
+          this._mapChips[4].clone().withParameter({renderingArea: 4}),
+          this._mapChips[3].clone().withParameter({renderingArea: 8})
+        ])
+
+      case 223:  // 1 + 2 + 4 + 8 + 16 + 64 + 128
+        return new MultiMapChip([
+          this._mapChips[4].clone().withParameter({renderingArea: 5}),
+          this._mapChips[4].clone().withParameter({renderingArea: 8}),
+          this._mapChips[3].clone().withParameter({renderingArea: 2})
+        ])
+
+      case 239: // 1 + 2 + 4 + 8 + 32 + 64 + 128
+        return new MultiMapChip([
+          this._mapChips[4].clone().withParameter({renderingArea: 12}),
+          this._mapChips[4].clone().withParameter({renderingArea: 2}),
+          this._mapChips[3].clone().withParameter({renderingArea: 1})
+        ])
+
       /* Corner */
       case 19:  // 1 + 2 + 16
         return new MultiMapChip([
@@ -244,34 +260,42 @@ export class AutoTileArrangement implements Arrangement {
       case 15:
         return this._mapChips[3]
 
-      /* Square Edge */
-      case 55:  // 1 + 2 + 4 + 16 + 32
-        return new MultiMapChip([
-          this._mapChips[2].clone().withParameter({renderingArea: 12}),
-          this._mapChips[4].clone().withParameter({renderingArea: 3})
-        ])
-
-      case 206: // 2 + 4 + 8 + 64 + 128
-        return new MultiMapChip([
-          this._mapChips[2].clone().withParameter({renderingArea: 3}),
-          this._mapChips[4].clone().withParameter({renderingArea: 12})
-        ])
-
-      case 173: // 1 + 4 + 8 + 32 + 128
-        return new MultiMapChip([
-          this._mapChips[1].clone().withParameter({renderingArea: 5}),
-          this._mapChips[4].clone().withParameter({renderingArea: 10})
-        ])
-
-      case 91:  // 1 + 2 + 8 + 16 + 64
-        return new MultiMapChip([
-          this._mapChips[1].clone().withParameter({renderingArea: 10}),
-          this._mapChips[4].clone().withParameter({renderingArea: 5})
-        ])
-
       /* Square */
-      default: // usually 1 + 2 + 4 + 8 + 16 + 32 + 64 + 128 = 255
+      case 255: // 1 + 2 + 4 + 8 + 16 + 32 + 64 + 128 = 255
         return this._mapChips[4]
+
+      default:
+        if((adjacent & 173) === 173) {
+          /* Square Edge */
+          return new MultiMapChip([
+            this._mapChips[1].clone().withParameter({renderingArea: 5}),
+            this._mapChips[4].clone().withParameter({renderingArea: 10})
+          ])
+        } else if((adjacent & 55) === 55) {
+          /* Square Edge */
+          return new MultiMapChip([
+            this._mapChips[2].clone().withParameter({renderingArea: 12}),
+            this._mapChips[4].clone().withParameter({renderingArea: 3})
+          ])
+        } else if((adjacent & 206) === 206) {
+          /* Square Edge */
+          return new MultiMapChip([
+            this._mapChips[2].clone().withParameter({renderingArea: 3}),
+            this._mapChips[4].clone().withParameter({renderingArea: 12})
+          ])
+        } else if((adjacent & 91) === 91) {
+          /* Square Edge */
+          return new MultiMapChip([
+            this._mapChips[1].clone().withParameter({renderingArea: 10}),
+            this._mapChips[4].clone().withParameter({renderingArea: 5})
+          ])
+        } else if ((adjacent & 9) === 9) {
+          /* Straight */
+          return this._mapChips[1]
+        } else if((adjacent & 6) === 6) {
+          /* Straight */
+          return this._mapChips[2]
+        }
     }
   }
 
