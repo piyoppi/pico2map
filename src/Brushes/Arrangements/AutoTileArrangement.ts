@@ -96,207 +96,57 @@ export class AutoTileArrangement implements Arrangement {
   }
 
   private getTiledPattern(adjacent: number) {
-    switch(adjacent) {
-      /* Isolated */
-      case 0:
-        return this._mapChips[0]
+    const multiMapChip = new MultiMapChip()
 
-      /* End */
-      case 1:
-        return new MultiMapChip([
-          this._mapChips[0].clone().withParameter({renderingArea: 12}),
-          this._mapChips[1].clone().withParameter({renderingArea: 3})
-        ])
-      case 2:
-        return new MultiMapChip([
-          this._mapChips[0].clone().withParameter({renderingArea: 10}),
-          this._mapChips[2].clone().withParameter({renderingArea: 5})
-        ])
-      case 4:
-        return new MultiMapChip([
-          this._mapChips[0].clone().withParameter({renderingArea: 5}),
-          this._mapChips[2].clone().withParameter({renderingArea: 10})
-        ])
-      case 8:
-        return new MultiMapChip([
-          this._mapChips[0].clone().withParameter({renderingArea: 3}),
-          this._mapChips[1].clone().withParameter({renderingArea: 12})
-        ])
-
-      /* Curve */
-      case 3:   // 1 + 2
-        return new MultiMapChip([
-          this._mapChips[0].clone().withParameter({renderingArea: 8}),
-          this._mapChips[1].clone().withParameter({renderingArea: 2}),
-          this._mapChips[2].clone().withParameter({renderingArea: 4}),
-          this._mapChips[3].clone().withParameter({renderingArea: 1})
-        ])
-      case 5:   // 1 + 4
-        return new MultiMapChip([
-          this._mapChips[0].clone().withParameter({renderingArea: 4}),
-          this._mapChips[1].clone().withParameter({renderingArea: 1}),
-          this._mapChips[2].clone().withParameter({renderingArea: 8}),
-          this._mapChips[3].clone().withParameter({renderingArea: 2})
-        ])
-      case 10:  // 2 + 8
-        return new MultiMapChip([
-          this._mapChips[0].clone().withParameter({renderingArea: 2}),
-          this._mapChips[1].clone().withParameter({renderingArea: 8}),
-          this._mapChips[2].clone().withParameter({renderingArea: 1}),
-          this._mapChips[3].clone().withParameter({renderingArea: 4})
-        ])
-      case 12:  // 4 + 8
-        return new MultiMapChip([
-          this._mapChips[0].clone().withParameter({renderingArea: 1}),
-          this._mapChips[1].clone().withParameter({renderingArea: 4}),
-          this._mapChips[2].clone().withParameter({renderingArea: 2}),
-          this._mapChips[3].clone().withParameter({renderingArea: 8})
-        ])
-
-      /* T Junction */
-      case 7:   // 1 + 2 + 4
-        return new MultiMapChip([
-          this._mapChips[2].clone().withParameter({renderingArea: 12}),
-          this._mapChips[3].clone().withParameter({renderingArea: 3})
-        ])
-      case 11:  // 1 + 2 + 8
-        return new MultiMapChip([
-          this._mapChips[1].clone().withParameter({renderingArea: 10}),
-          this._mapChips[3].clone().withParameter({renderingArea: 5})
-        ])
-      case 13:  // 1 + 4 + 8
-        return new MultiMapChip([
-          this._mapChips[1].clone().withParameter({renderingArea: 5}),
-          this._mapChips[3].clone().withParameter({renderingArea: 10})
-        ])
-      case 14:  // 2 + 4 + 8
-        return new MultiMapChip([
-          this._mapChips[2].clone().withParameter({renderingArea: 3}),
-          this._mapChips[3].clone().withParameter({renderingArea: 12})
-        ])
-
-      /* Square to road */
-      case 63:   // 1 + 2 + 4 + 8 + 16 + 32
-        return new MultiMapChip([
-          this._mapChips[3].clone().withParameter({renderingArea: 12}),
-          this._mapChips[4].clone().withParameter({renderingArea: 3})
-        ])
-      case 95:  // 1 + 2 + 4 + 8 + 16 + 64
-        return new MultiMapChip([
-          this._mapChips[3].clone().withParameter({renderingArea: 10}),
-          this._mapChips[4].clone().withParameter({renderingArea: 5})
-        ])
-      case 207:  // 1 + 2 + 4 + 8 + 64 + 128
-        return new MultiMapChip([
-          this._mapChips[3].clone().withParameter({renderingArea: 3}),
-          this._mapChips[4].clone().withParameter({renderingArea: 12})
-        ])
-      case 175:  // 1 + 2 + 4 + 8 + 32 + 128
-        return new MultiMapChip([
-          this._mapChips[3].clone().withParameter({renderingArea: 5}),
-          this._mapChips[4].clone().withParameter({renderingArea: 10})
-        ])
-
-      /* Square to other square */
-      case 191:  // 1 + 2 + 4 + 8 + 16 + 32 + 128
-        return new MultiMapChip([
-          this._mapChips[4].clone().withParameter({renderingArea: 3}),
-          this._mapChips[4].clone().withParameter({renderingArea: 8}),
-          this._mapChips[3].clone().withParameter({renderingArea: 4})
-        ])
-
-      case 127:  // 1 + 2 + 4 + 8 + 16 + 32 + 64
-        return new MultiMapChip([
-          this._mapChips[4].clone().withParameter({renderingArea: 3}),
-          this._mapChips[4].clone().withParameter({renderingArea: 4}),
-          this._mapChips[3].clone().withParameter({renderingArea: 8})
-        ])
-
-      case 223:  // 1 + 2 + 4 + 8 + 16 + 64 + 128
-        return new MultiMapChip([
-          this._mapChips[4].clone().withParameter({renderingArea: 5}),
-          this._mapChips[4].clone().withParameter({renderingArea: 8}),
-          this._mapChips[3].clone().withParameter({renderingArea: 2})
-        ])
-
-      case 239: // 1 + 2 + 4 + 8 + 32 + 64 + 128
-        return new MultiMapChip([
-          this._mapChips[4].clone().withParameter({renderingArea: 12}),
-          this._mapChips[4].clone().withParameter({renderingArea: 2}),
-          this._mapChips[3].clone().withParameter({renderingArea: 1})
-        ])
-
-      /* Corner */
-      case 19:  // 1 + 2 + 16
-        return new MultiMapChip([
-          this._mapChips[0].clone().withParameter({renderingArea: 8}),
-          this._mapChips[1].clone().withParameter({renderingArea: 2}),
-          this._mapChips[2].clone().withParameter({renderingArea: 4}),
-          this._mapChips[4].clone().withParameter({renderingArea: 1})
-        ])
-      case 37:  // 1 + 4 + 32
-        return new MultiMapChip([
-          this._mapChips[0].clone().withParameter({renderingArea: 4}),
-          this._mapChips[1].clone().withParameter({renderingArea: 1}),
-          this._mapChips[2].clone().withParameter({renderingArea: 8}),
-          this._mapChips[4].clone().withParameter({renderingArea: 2})
-        ])
-      case 74:  // 2 + 8 + 64
-        return new MultiMapChip([
-          this._mapChips[0].clone().withParameter({renderingArea: 2}),
-          this._mapChips[1].clone().withParameter({renderingArea: 8}),
-          this._mapChips[2].clone().withParameter({renderingArea: 1}),
-          this._mapChips[4].clone().withParameter({renderingArea: 4})
-        ])
-      case 140: // 4 + 8 + 128
-        return new MultiMapChip([
-          this._mapChips[0].clone().withParameter({renderingArea: 1}),
-          this._mapChips[1].clone().withParameter({renderingArea: 4}),
-          this._mapChips[2].clone().withParameter({renderingArea: 2}),
-          this._mapChips[4].clone().withParameter({renderingArea: 8})
-        ])
-
-      /* Cross */
-      case 15:
-        return this._mapChips[3]
-
-      /* Square */
-      case 255: // 1 + 2 + 4 + 8 + 16 + 32 + 64 + 128 = 255
-        return this._mapChips[4]
-
-      default:
-        if((adjacent & 173) === 173) {
-          /* Square Edge */
-          return new MultiMapChip([
-            this._mapChips[1].clone().withParameter({renderingArea: 5}),
-            this._mapChips[4].clone().withParameter({renderingArea: 10})
-          ])
-        } else if((adjacent & 55) === 55) {
-          /* Square Edge */
-          return new MultiMapChip([
-            this._mapChips[2].clone().withParameter({renderingArea: 12}),
-            this._mapChips[4].clone().withParameter({renderingArea: 3})
-          ])
-        } else if((adjacent & 206) === 206) {
-          /* Square Edge */
-          return new MultiMapChip([
-            this._mapChips[2].clone().withParameter({renderingArea: 3}),
-            this._mapChips[4].clone().withParameter({renderingArea: 12})
-          ])
-        } else if((adjacent & 91) === 91) {
-          /* Square Edge */
-          return new MultiMapChip([
-            this._mapChips[1].clone().withParameter({renderingArea: 10}),
-            this._mapChips[4].clone().withParameter({renderingArea: 5})
-          ])
-        } else if ((adjacent & 9) === 9) {
-          /* Straight */
-          return this._mapChips[1]
-        } else if((adjacent & 6) === 6) {
-          /* Straight */
-          return this._mapChips[2]
-        }
+    if ((adjacent & 3) === 2) {
+      multiMapChip.push(this._mapChips[2].clone().withParameter({renderingArea: 1}))
+    } else if ((adjacent & 3) === 1) {
+      multiMapChip.push(this._mapChips[1].clone().withParameter({renderingArea: 1}))
+    } else if ((adjacent & 19) === 0) {
+      multiMapChip.push(this._mapChips[0].clone().withParameter({renderingArea: 1}))
+    } else if ((adjacent & 19) === 19) {
+      multiMapChip.push(this._mapChips[4].clone().withParameter({renderingArea: 1}))
+    } else if ((adjacent & 19) === 3) {
+      multiMapChip.push(this._mapChips[3].clone().withParameter({renderingArea: 1}))
     }
+
+    if ((adjacent & 5) === 4) {
+      multiMapChip.push(this._mapChips[2].clone().withParameter({renderingArea: 2}))
+    } else if ((adjacent & 5) === 1) {
+      multiMapChip.push(this._mapChips[1].clone().withParameter({renderingArea: 2}))
+    } else if ((adjacent & 37) === 0) {
+      multiMapChip.push(this._mapChips[0].clone().withParameter({renderingArea: 2}))
+    } else if ((adjacent & 37) === 37) {
+      multiMapChip.push(this._mapChips[4].clone().withParameter({renderingArea: 2}))
+    } else if ((adjacent & 37) === 5) {
+      multiMapChip.push(this._mapChips[3].clone().withParameter({renderingArea: 2}))
+    }
+
+    if ((adjacent & 10) === 2) {
+      multiMapChip.push(this._mapChips[2].clone().withParameter({renderingArea: 4}))
+    } else if ((adjacent & 10) === 8) {
+      multiMapChip.push(this._mapChips[1].clone().withParameter({renderingArea: 4}))
+    } else if ((adjacent & 74) === 0) {
+      multiMapChip.push(this._mapChips[0].clone().withParameter({renderingArea: 4}))
+    } else if ((adjacent & 74) === 74) {
+      multiMapChip.push(this._mapChips[4].clone().withParameter({renderingArea: 4}))
+    } else if ((adjacent & 74) === 10) {
+      multiMapChip.push(this._mapChips[3].clone().withParameter({renderingArea: 4}))
+    }
+
+    if ((adjacent & 12) === 4) {
+      multiMapChip.push(this._mapChips[2].clone().withParameter({renderingArea: 8}))
+    } else if ((adjacent & 12) === 8) {
+      multiMapChip.push(this._mapChips[1].clone().withParameter({renderingArea: 8}))
+    } else if ((adjacent & 140) === 0) {
+      multiMapChip.push(this._mapChips[0].clone().withParameter({renderingArea: 8}))
+    } else if ((adjacent & 140) === 140) {
+      multiMapChip.push(this._mapChips[4].clone().withParameter({renderingArea: 8}))
+    } else if ((adjacent & 140) === 12) {
+      multiMapChip.push(this._mapChips[3].clone().withParameter({renderingArea: 8}))
+    }
+
+    return multiMapChip
   }
 
   private _isAutoTileChip(chip: MapChip | MultiMapChip | null) {
