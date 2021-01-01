@@ -71,7 +71,7 @@ export class MultiMapChip implements MapChipComparable {
   constructor(
     private _items: Array<MapChip> = []
   ) {
-
+    this._buildIdentifyKey()
   }
 
   get items() {
@@ -82,14 +82,18 @@ export class MultiMapChip implements MapChipComparable {
     return this._identifyKey
   }
 
+  private _buildIdentifyKey() {
+    this._identifyKey = this._items.map(item => item.identifyKey).join('|')
+  }
+
   push(mapChip: MapChip) {
-    this._identifyKey += mapChip.identifyKey + '|'
     this._items.push(mapChip)
+    this._buildIdentifyKey()
   }
 
   clear() {
-    this._identifyKey = ''
     this._items.length = 0
+    this._buildIdentifyKey()
   }
 
   clone() {
