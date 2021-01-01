@@ -108,3 +108,24 @@ describe('#getMapDataFromChipPosition', () => {
     expect(data.getMapDataFromChipPosition(1, 2)).toEqual(null)
   })
 })
+
+describe('#filter', () => {
+  it('Return filtered map data', () => {
+    const data = new TiledMapData(3, 3)
+    const c1 = new MapChip(0, 0, 0)
+    const c2 = new MapChip(2, 0, 0)
+    const source = [
+      c1, null,   c2,
+      c2,   c2,   c1,
+      c1, null,   c1,
+    ]
+    data.set(source)
+
+    const filtered = data.filter([c1])
+    expect(filtered.mapData).toEqual([
+        c1, null, null,
+      null, null,   c1,
+        c1, null,   c1,
+    ])
+  })
+})

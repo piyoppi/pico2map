@@ -7,7 +7,15 @@ export class TiledMapData {
     private _chipCountY: number,
     private _mapData: Array<MapChip | MultiMapChip | null> = []
   ) {
-    this.allocate()
+    if (this._mapData.length > 0 && this.size !== this._mapData.length) {
+      throw new Error()
+    }
+
+    if (this._mapData.length === 0) this.allocate()
+  }
+
+  get size() {
+    return this._chipCountX * this._chipCountY
   }
 
   get width() {
@@ -44,6 +52,15 @@ export class TiledMapData {
         this.put(src.getMapDataFromChipPosition(pickupX, pickupY), putX, putY)
       }
     }
+  }
+
+  filter(needles: Array<MapChip | MultiMapChip>): TiledMapData {
+    const filtered = this._mapData.map(chip => needles.some(needle => !!chip && needle.compare(chip)) ? chip : null)
+    return new TiledMapData(
+      this.width,
+      this.height,
+      filtered
+    )
   }
 
   getMapDataFromChipPosition(x: number, y: number) {
