@@ -137,7 +137,7 @@ export class AutoTileArrangement implements Arrangement {
       multiMapChip.push(this._mapChips[1].clone().withParameter({renderingArea: 1}))
       boundary.top = false
       boundary.left = true
-    } else if ((adjacent & 19) === 0) {
+    } else if ((adjacent & 3) === 0) {
       /* Corner */
       multiMapChip.push(this._mapChips[0].clone().withParameter({renderingArea: 1}))
       boundary.top =  true
@@ -155,7 +155,7 @@ export class AutoTileArrangement implements Arrangement {
       multiMapChip.push(this._mapChips[2].clone().withParameter({renderingArea: 2}))
     } else if ((adjacent & 5) === 1) {
       multiMapChip.push(this._mapChips[1].clone().withParameter({renderingArea: 2}))
-    } else if ((adjacent & 37) === 0) {
+    } else if ((adjacent & 5) === 0) {
       multiMapChip.push(this._mapChips[0].clone().withParameter({renderingArea: 2}))
     } else if ((adjacent & 37) === 5) {
       multiMapChip.push(this._mapChips[3].clone().withParameter({renderingArea: 2}))
@@ -167,7 +167,7 @@ export class AutoTileArrangement implements Arrangement {
       multiMapChip.push(this._mapChips[2].clone().withParameter({renderingArea: 4}))
     } else if ((adjacent & 10) === 8) {
       multiMapChip.push(this._mapChips[1].clone().withParameter({renderingArea: 4}))
-    } else if ((adjacent & 74) === 0) {
+    } else if ((adjacent & 10) === 0) {
       multiMapChip.push(this._mapChips[0].clone().withParameter({renderingArea: 4}))
     } else if ((adjacent & 74) === 10) {
       multiMapChip.push(this._mapChips[3].clone().withParameter({renderingArea: 4}))
@@ -185,7 +185,7 @@ export class AutoTileArrangement implements Arrangement {
       multiMapChip.push(this._mapChips[1].clone().withParameter({renderingArea: 8}))
       boundary.bottom = false
       boundary.right = true
-    } else if ((adjacent & 140) === 0) {
+    } else if ((adjacent & 12) === 0) {
       multiMapChip.push(this._mapChips[0].clone().withParameter({renderingArea: 8}))
       boundary.bottom = true
       boundary.right = true
