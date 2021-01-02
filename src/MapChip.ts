@@ -3,10 +3,23 @@ export interface MapChipComparable {
   compare(others: MapChipComparable): boolean
 }
 
+export type Boundary = {
+  top: boolean,
+  left: boolean,
+  bottom: boolean,
+  right: boolean
+}
+
 export type MapChipRenderingArea = 1 | 2 | 3 | 4 | 5 | 8 | 10 | 12 | 15
 
 export class MapChip implements MapChipComparable {
   private _identifyKey = ''
+  private _boundary: Boundary = {
+    top: false,
+    bottom: false,
+    left: false,
+    right: false
+  }
 
   constructor(
     private _x: number,
@@ -26,6 +39,10 @@ export class MapChip implements MapChipComparable {
     private _renderingArea :MapChipRenderingArea = 15
   ) {
     this._identifyKey = `${_x},${_y},${_chipId}`
+  }
+
+  get boundary() {
+    return this._boundary
   }
 
   get x() {
@@ -48,6 +65,10 @@ export class MapChip implements MapChipComparable {
     return this._renderingArea
   }
 
+  setBoundary(boundary: Boundary) {
+    this._boundary = boundary
+  }
+
   withParameter(parameters: {x?: number, y?: number, renderingArea?: MapChipRenderingArea}) {
     if (parameters.x) this._x = parameters.x
     if (parameters.y) this._y = parameters.y
@@ -67,6 +88,12 @@ export class MapChip implements MapChipComparable {
 
 export class MultiMapChip implements MapChipComparable {
   private _identifyKey = ''
+  private _boundary: Boundary = {
+    top: false,
+    bottom: false,
+    left: false,
+    right: false
+  }
 
   constructor(
     private _items: Array<MapChip> = []
@@ -82,8 +109,16 @@ export class MultiMapChip implements MapChipComparable {
     return this._identifyKey
   }
 
+  get boundary() {
+    return this._boundary
+  }
+
   private _buildIdentifyKey() {
     this._identifyKey = this._items.map(item => item.identifyKey).join('|')
+  }
+
+  setBoundary(boundary: Boundary) {
+    this._boundary = boundary
   }
 
   push(mapChip: MapChip) {

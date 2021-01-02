@@ -24,9 +24,7 @@ import { TiledMapData } from '../../TiledMap';
 export class AutoTileArrangement implements Arrangement {
   private _mapChips: Array<MapChip> = []
   private _tiledMapData: TiledMapData | null = null
-
   private temporaryChip = new MapChip(-1, -1, -1)
-  private temporaryOverlappedChip = new MapChip(-2, -2, -1)
 
   setMapChips(mapChips: Array<MapChip>) {
     if (mapChips.length !== 5) throw new Error()
@@ -64,11 +62,7 @@ export class AutoTileArrangement implements Arrangement {
     paints.forEach(paint => {
       const x = paint.x - x1 + offsetX1
       const y = paint.y - y1 + offsetY1
-      if (this._isAutoTileChip(tiledBuffer.getMapDataFromChipPosition(x, y))) {
-        tiledBuffer.put(this.temporaryOverlappedChip, x, y)
-      } else {
-        tiledBuffer.put(this.temporaryChip, x, y)
-      }
+      tiledBuffer.put(this.temporaryChip, x, y)
     })
 
     for(let y = offsetY1; y < size.height + offsetY2; y++) {
@@ -90,21 +84,26 @@ export class AutoTileArrangement implements Arrangement {
         * *-----*-----*-----*
         */
         let adjacent = 0
-        const isOverlapped = this.temporaryOverlappedChip.compare(cursor)
 
-        adjacent += this._isAdjacent(tiledBuffer.getMapDataFromChipPosition(x, y - 1), isOverlapped) ? 1 : 0
-        adjacent += this._isAdjacent(tiledBuffer.getMapDataFromChipPosition(x - 1, y), isOverlapped) ? 2 : 0
-        adjacent += this._isAdjacent(tiledBuffer.getMapDataFromChipPosition(x + 1, y), isOverlapped) ? 4 : 0
-        adjacent += this._isAdjacent(tiledBuffer.getMapDataFromChipPosition(x, y + 1), isOverlapped) ? 8 : 0
-        adjacent += this._isAdjacent(tiledBuffer.getMapDataFromChipPosition(x - 1, y - 1), isOverlapped) ? 16 : 0
-        adjacent += this._isAdjacent(tiledBuffer.getMapDataFromChipPosition(x + 1, y - 1), isOverlapped) ? 32 : 0
-        adjacent += this._isAdjacent(tiledBuffer.getMapDataFromChipPosition(x - 1, y + 1), isOverlapped) ? 64 : 0
-        adjacent += this._isAdjacent(tiledBuffer.getMapDataFromChipPosition(x + 1, y + 1), isOverlapped) ? 128 : 0
+        const aroundChips = [
+          tiledBuffer.getMapDataFromChipPosition(x, y - 1),
+          tiledBuffer.getMapDataFromChipPosition(x - 1, y),
+          tiledBuffer.getMapDataFromChipPosition(x + 1, y),
+          tiledBuffer.getMapDataFromChipPosition(x, y + 1),
+          tiledBuffer.getMapDataFromChipPosition(x - 1, y - 1),
+          tiledBuffer.getMapDataFromChipPosition(x + 1, y - 1),
+          tiledBuffer.getMapDataFromChipPosition(x - 1, y + 1),
+          tiledBuffer.getMapDataFromChipPosition(x + 1, y + 1)
+        ]
 
-        const isTop = (y === offsetY1)
-        const isBottom = (y === size.height)
-        const isLeft = (x === offsetX1)
-        const isRight = (x === size.width)
+        if (!aroundChips[0]?.boundary.bottom) adjacent += this._isAdjacent(aroundChips[0]) ? 1 : 0
+        if (!aroundChips[1]?.boundary.right) adjacent += this._isAdjacent(aroundChips[1]) ? 2 : 0
+        if (!aroundChips[2]?.boundary.left) adjacent += this._isAdjacent(aroundChips[2]) ? 4 : 0
+        if (!aroundChips[3]?.boundary.top) adjacent += this._isAdjacent(aroundChips[3]) ? 8 : 0
+        if (!aroundChips[4]?.boundary.bottom && !aroundChips[4]?.boundary.right) adjacent += this._isAdjacent(aroundChips[4]) ? 16 : 0
+        if (!aroundChips[5]?.boundary.bottom && !aroundChips[5]?.boundary.left) adjacent += this._isAdjacent(aroundChips[5]) ? 32 : 0
+        if (!aroundChips[6]?.boundary.top && !aroundChips[6]?.boundary.right) adjacent += this._isAdjacent(aroundChips[6]) ? 64 : 0
+        if (!aroundChips[7]?.boundary.top && !aroundChips[7]?.boundary.left) adjacent += this._isAdjacent(aroundChips[7]) ? 128 : 0
 
         result.push({x: x + x1 - offsetX1, y: y + y1 - offsetY1, chip: this.getTiledPattern(adjacent)})
       }
@@ -116,21 +115,38 @@ export class AutoTileArrangement implements Arrangement {
   private getTiledPattern(adjacent: number) {
     const multiMapChip = new MultiMapChip()
 
+    const boundary = {
+      top: false,
+      bottom: false,
+      left: false,
+      right: false
+    }
+
     if ((adjacent & 19) === 19) {
       /* Square */
       multiMapChip.push(this._mapChips[4].clone().withParameter({renderingArea: 1}))
+      boundary.top = false
+      boundary.left = false
     } else if ((adjacent & 3) === 2) {
       /* Straight(sideways) */
       multiMapChip.push(this._mapChips[2].clone().withParameter({renderingArea: 1}))
+      boundary.top = true
+      boundary.left = false
     } else if ((adjacent & 3) === 1) {
       /* Straight(lengthwise) */
       multiMapChip.push(this._mapChips[1].clone().withParameter({renderingArea: 1}))
+      boundary.top = false
+      boundary.left = true
     } else if ((adjacent & 19) === 0) {
       /* Corner */
       multiMapChip.push(this._mapChips[0].clone().withParameter({renderingArea: 1}))
+      boundary.top =  true
+      boundary.left = true
     } else if ((adjacent & 19) === 3) {
       /* Cross */
       multiMapChip.push(this._mapChips[3].clone().withParameter({renderingArea: 1}))
+      boundary.top = false
+      boundary.left = false
     }
 
     if ((adjacent & 37) === 37) {
@@ -159,27 +175,36 @@ export class AutoTileArrangement implements Arrangement {
 
     if ((adjacent & 140) === 140) {
       multiMapChip.push(this._mapChips[4].clone().withParameter({renderingArea: 8}))
+      boundary.bottom = false
+      boundary.right = false
     } else if ((adjacent & 12) === 4) {
       multiMapChip.push(this._mapChips[2].clone().withParameter({renderingArea: 8}))
+      boundary.bottom = true
+      boundary.right = false
     } else if ((adjacent & 12) === 8) {
       multiMapChip.push(this._mapChips[1].clone().withParameter({renderingArea: 8}))
+      boundary.bottom = false
+      boundary.right = true
     } else if ((adjacent & 140) === 0) {
       multiMapChip.push(this._mapChips[0].clone().withParameter({renderingArea: 8}))
+      boundary.bottom = true
+      boundary.right = true
     } else if ((adjacent & 140) === 12) {
       multiMapChip.push(this._mapChips[3].clone().withParameter({renderingArea: 8}))
+      boundary.bottom = false
+      boundary.right = false
     }
+
+    multiMapChip.setBoundary(boundary)
 
     return multiMapChip
   }
 
-  private _isAdjacent(chip: MapChip | MultiMapChip | null, isOveerlapped: boolean): boolean {
-    const isTemporaryChip = (chip instanceof MapChip) ? (this.temporaryChip.compare(chip) || this.temporaryOverlappedChip.compare(chip)) : false
+  private _isAdjacent(chip: MapChip | MultiMapChip | null): boolean {
+    const isTemporaryChip = (chip instanceof MapChip) ? this.temporaryChip.compare(chip) : false
+    const isAutoTileChip = this._isAutoTileChip(chip)
 
-    if (isOveerlapped) {
-      return this._isAutoTileChip(chip) || isTemporaryChip
-    } else {
-      return isTemporaryChip
-    }
+    return isAutoTileChip || isTemporaryChip
   }
 
   private _isAutoTileChip(chip: MapChip | MultiMapChip | null): boolean {
