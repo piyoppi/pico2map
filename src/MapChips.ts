@@ -21,6 +21,15 @@ export class MapChipImage {
     return this._image
   }
 
+  getChipCount(chipWidth: number, chipHeight: number) {
+    if (!this._image) throw new Error('Image loading is not complete.')
+
+    return {
+      width: Math.floor(this._image.width / chipWidth),
+      height: Math.floor(this._image.height / chipHeight)
+    }
+  }
+
   loadImage() {
     this._image = new Image()
     this._image.onload = () => this._hasImage = true

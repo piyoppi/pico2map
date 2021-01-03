@@ -84,10 +84,15 @@ export class AutoTileSelectorComponent extends LitElement {
   }
 
   mouseMove(e: MouseEvent) {
-    if (!this.mapChipSelector) return;
+    if (!this.mapChipSelector || !this._chipImage || !this._project) return;
 
     const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY)
-    const chip = this.mapChipSelector.convertFromImagePositionToChipPosition(mouseCursorPosition.x, mouseCursorPosition.y)
+    const chip = this.mapChipSelector.convertFromImagePositionToChipPosition(this._chipImage, mouseCursorPosition.x, mouseCursorPosition.y)
+    const chipCount = this._chipImage.getChipCount(this._project.tiledMap.chipWidth, this._project.tiledMap.chipHeight)
+
+    if (chip.x + AutoTileSelectorComponent.Format.width > chipCount.width) return
+    if (chip.y + AutoTileSelectorComponent.Format.height > chipCount.height) return
+
     this.cursorChipX = chip.x
     this.cursorChipY = chip.y
   }

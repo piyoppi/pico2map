@@ -79,10 +79,10 @@ export class MapChipSelectorComponent extends LitElement {
   }
 
   mouseMove(e: MouseEvent) {
-    if (!this.mapChipSelector) return;
+    if (!this.mapChipSelector || !this._chipImage) return;
 
     const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY)
-    const chip = this.mapChipSelector.convertFromImagePositionToChipPosition(mouseCursorPosition.x, mouseCursorPosition.y)
+    const chip = this.mapChipSelector.convertFromImagePositionToChipPosition(this._chipImage, mouseCursorPosition.x, mouseCursorPosition.y)
     this.cursorChipX = chip.x
     this.cursorChipY = chip.y
   }

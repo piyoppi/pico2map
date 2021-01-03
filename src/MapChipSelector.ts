@@ -3,8 +3,6 @@ import { MapChip, MultiMapChip } from './MapChip'
 import { MapChipImage } from './MapChips'
 
 export class MapChipSelector {
-  private chipWidth: number = 0
-  private chipHeight: number = 0
   private _selectedChips: Array<MapChip> = []
 
   constructor(
@@ -28,7 +26,21 @@ export class MapChipSelector {
   public selectAtMouseCursor(chipImage: MapChipImage, cursorX: number, cursorY: number, width: number = 1, height: number = 1) {
     this.clear()
 
-    const chipPosition = this.convertFromImagePositionToChipPosition(cursorX, cursorY)
+    const chipPosition = this.convertFromImagePositionToChipPosition(chipImage, cursorX, cursorY)
+    const chipCount = chipImage.getChipCount(this._tiledMap.chipWidth, this._tiledMap.chipHeight)
+
+    if (chipPosition.x + width > chipCount.width) {
+      chipPosition.x = chipCount.width - width
+    }
+
+    if (chipPosition.y + height > chipCount.height) {
+      chipPosition.y = chipCount.height - height
+    }
+
+    if (chipPosition.x < 0 || chipPosition.y < 0) {
+      throw new Error('MapChipImage is not enough size.')
+    }
+
     for (let x = 0; x < width; x++ ) {
       for (let y = 0; y < height; y++ ) {
         this.select(chipImage, chipPosition.x + x, chipPosition.y + y)
@@ -36,10 +48,11 @@ export class MapChipSelector {
     }
   }
 
-  public convertFromImagePositionToChipPosition(x: number, y: number) {
+  public convertFromImagePositionToChipPosition(chipImage: MapChipImage, x: number, y: number) {
+    const chipCount = chipImage.getChipCount(this._tiledMap.chipWidth, this._tiledMap.chipHeight)
     return {
-      x: Math.floor(x / this._tiledMap.chipWidth),
-      y: Math.floor(y / this._tiledMap.chipHeight)
+      x: Math.max(0, Math.min(Math.floor(x / this._tiledMap.chipWidth), chipCount.width - 1)),
+      y: Math.max(0, Math.min(Math.floor(y / this._tiledMap.chipHeight), chipCount.height - 1))
     }
   }
 }
