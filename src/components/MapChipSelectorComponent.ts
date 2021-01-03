@@ -98,6 +98,14 @@ export class MapChipSelectorComponent extends LitElement {
 
     this.selectedChipX = selectedChip.x
     this.selectedChipY = selectedChip.y
+
+    this.dispatchEvent(
+      new CustomEvent('selected', {
+        detail: {},
+        bubbles: true,
+        composed: true
+      })
+    )
   }
 
   firstUpdated() {
