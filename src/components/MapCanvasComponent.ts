@@ -47,6 +47,20 @@ export class MapCanvasComponent extends LitElement {
     this.requestUpdate('brush', oldValue);
   }
 
+  private _arrangementName = ''
+  @property({type: String})
+  get arrangement() {
+    return this._arrangementName
+  }
+  set arrangement(value: string) {
+    const oldValue = this._arrangementName
+    this._arrangementName = value
+
+    this.setupMapCanvas()
+
+    this.requestUpdate('arrangement', oldValue);
+  }
+
 
   private get width() {
     return this.xCount * this.gridWidth
@@ -87,6 +101,7 @@ export class MapCanvasComponent extends LitElement {
     }
 
     this._mapCanvas.setBrushFromName(this._brushName)
+    this._mapCanvas.setArrangementFromName(this._arrangementName)
   }
 
   firstUpdated() {

@@ -92,7 +92,7 @@ export class TiledMapData {
 }
 
 export class TiledMap {
-  private _mapChips = new MapChipsCollection()
+  private _mapChipImages = new MapChipsCollection()
   private _data = new TiledMapData(this._chipCountX, this._chipCountY)
 
   constructor(
@@ -120,7 +120,7 @@ export class TiledMap {
   }
 
   get mapChipsCollection() {
-    return this._mapChips
+    return this._mapChipImages
   }
 
   get data() {

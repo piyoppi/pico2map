@@ -1,7 +1,12 @@
 import { MapChip, MultiMapChip } from '../../MapChip';
-import { Arrangement } from './Arrangement';
+import { Arrangement, ArrangementDescription, TiledMapDataRequired } from './Arrangement';
 import { BrushPaint } from './../Brush'
 import { TiledMapData } from '../../TiledMap';
+
+export const AutoTileArrangementDescription: ArrangementDescription = {
+  name: 'AutoTileArrangement',
+  create: () => new AutoTileArrangement()
+}
 
 /**
  * AutoTileArrangement
@@ -21,13 +26,13 @@ import { TiledMapData } from '../../TiledMap';
  * ┠square                     ┠↓
  * ┗┷┿┿┿┿┿┿┿┿┛---
  */
-export class AutoTileArrangement implements Arrangement {
+export class AutoTileArrangement implements Arrangement, TiledMapDataRequired {
   private _mapChips: Array<MapChip> = []
   private _tiledMapData: TiledMapData | null = null
   private temporaryChip = new MapChip(-1, -1, -1)
 
   setMapChips(mapChips: Array<MapChip>) {
-    if (mapChips.length !== 5) throw new Error()
+    if (mapChips.length !== 5) throw new Error('Too few map chips. AutoTileArrangement requires 5 map chips.')
     this._mapChips = mapChips 
   }
 
@@ -36,7 +41,7 @@ export class AutoTileArrangement implements Arrangement {
   }
 
   apply(paints: Array<BrushPaint>): Array<BrushPaint> {
-    if (!this._tiledMapData) throw new Error()
+    if (!this._tiledMapData) throw new Error('MapData is not set.')
 
     const result: Array<BrushPaint> = []
     const x1 = paints.reduce((acc, val) => Math.min(acc, val.x), this._tiledMapData.width)

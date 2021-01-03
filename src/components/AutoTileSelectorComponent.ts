@@ -4,13 +4,18 @@ import { CursorPositionCalculator } from './helpers/CursorPositionCalculator'
 import { Projects, Project } from './../Projects'
 import { MapChipImage } from './../MapChips'
 
-@customElement('map-chip-selector-component')
-export class MapChipSelectorComponent extends LitElement {
+@customElement('auto-tile-selector-component')
+export class AutoTileSelectorComponent extends LitElement {
   private _gridImageSrc = ''
   private gridImageGenerator = new GridImageGenerator()
   private cursorPositionCalculator = new CursorPositionCalculator()
   private _project: Project | null = null
   private _chipImage: MapChipImage | null = null
+
+  static readonly Format = {
+    width: 1,
+    height: 5
+  }
 
   private _projectId = -1
   @property({type: Number})
@@ -91,10 +96,10 @@ export class MapChipSelectorComponent extends LitElement {
     if (!this.mapChipSelector || !this._chipImage) return
 
     const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY)
-    this.mapChipSelector.selectAtMouseCursor(this._chipImage, mouseCursorPosition.x, mouseCursorPosition.y)
+    this.mapChipSelector.selectAtMouseCursor(this._chipImage, mouseCursorPosition.x, mouseCursorPosition.y, AutoTileSelectorComponent.Format.width, AutoTileSelectorComponent.Format.height)
 
     const selectedChip = this.mapChipSelector.selectedChips[0]
-    if (!selectedChip) return
+    if (!selectedChip || this.mapChipSelector.selectedChips.length !== AutoTileSelectorComponent.Format.width * AutoTileSelectorComponent.Format.height) return
 
     this.selectedChipX = selectedChip.x
     this.selectedChipY = selectedChip.y
@@ -111,6 +116,9 @@ export class MapChipSelectorComponent extends LitElement {
       this._gridImageSrc = this.gridImageGenerator.generateLinePart().toDataURL()
     }
 
+    const cursorWidth = this.gridWidth * AutoTileSelectorComponent.Format.width
+    const cursorHeight = this.gridHeight * AutoTileSelectorComponent.Format.height
+
     return html`
       <style>
         .grid {
@@ -118,15 +126,15 @@ export class MapChipSelectorComponent extends LitElement {
         }
 
         .cursor {
-          width: ${this.gridWidth}px;
-          height: ${this.gridHeight}px;
+          width: ${cursorWidth}px;
+          height: ${cursorHeight}px;
           left: ${this.cursorPosition.x}px;
           top: ${this.cursorPosition.y}px;
         }
 
         .selected {
-          width: ${this.gridWidth}px;
-          height: ${this.gridHeight}px;
+          width: ${cursorWidth}px;
+          height: ${cursorHeight}px;
           left: ${this.selectedPosition.x}px;
           top: ${this.selectedPosition.y}px;
         }

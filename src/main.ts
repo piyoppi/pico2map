@@ -1,15 +1,14 @@
 import { MapChipSelector } from './MapChipSelector'
-import { GridImageGenerator } from './GridImageGenerator'
 import { TiledMap } from './TiledMap'
 import { Projects } from './Projects'
 import { MapChipImage } from './MapChips'
 
 import './components/MapChipSelectorComponent'
 import './components/MapCanvasComponent'
+import './components/AutoTileSelectorComponent'
 
 export {
   MapChipSelector,
-  GridImageGenerator,
   TiledMap,
   Projects,
   MapChipImage

@@ -1,11 +1,11 @@
 import { TiledMap } from "./TiledMap"
-import { MapChip } from './MapChip'
+import { MapChip, MultiMapChip } from './MapChip'
+import { MapChipImage } from './MapChips'
 
 export class MapChipSelector {
   private chipWidth: number = 0
   private chipHeight: number = 0
-  private _selectedChip: MapChip | null = null
-  private _activeChipId: number = -1
+  private _selectedChips: Array<MapChip> = []
 
   constructor(
     private _tiledMap: TiledMap
@@ -13,25 +13,27 @@ export class MapChipSelector {
     
   }
 
-  get selectedChip() {
-    return this._selectedChip
+  get selectedChips() {
+    return this._selectedChips
   }
 
-  get activeChips() {
-    return this._tiledMap.mapChipsCollection.findById(this._activeChipId)
+  public select(chipImage: MapChipImage, x: number, y: number) {
+    this._selectedChips.push(new MapChip(x, y, chipImage.id))
   }
 
-  public setActiveChipId(value: number) {
-    return this._activeChipId = value
+  public clear() {
+    this._selectedChips.length = 0
   }
 
-  public select(x: number, y: number) {
-    this._selectedChip = new MapChip(x, y, this._activeChipId)
-  }
+  public selectAtMouseCursor(chipImage: MapChipImage, cursorX: number, cursorY: number, width: number = 1, height: number = 1) {
+    this.clear()
 
-  public selectAtMouseCursor(cursorX: number, cursorY: number) {
     const chipPosition = this.convertFromImagePositionToChipPosition(cursorX, cursorY)
-    this.select(chipPosition.x, chipPosition.y)
+    for (let x = 0; x < width; x++ ) {
+      for (let y = 0; y < height; y++ ) {
+        this.select(chipImage, chipPosition.x + x, chipPosition.y + y)
+      }
+    }
   }
 
   public convertFromImagePositionToChipPosition(x: number, y: number) {

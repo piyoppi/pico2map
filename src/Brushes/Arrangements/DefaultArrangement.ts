@@ -1,6 +1,11 @@
-import { MapChip } from '../../MapChip';
-import { Arrangement } from './Arrangement';
+import { MapChip } from '../../MapChip'
+import { Arrangement, ArrangementDescription } from './Arrangement'
 import { BrushPaint } from './../Brush'
+
+export const DefaultArrangementDescription: ArrangementDescription = {
+  name: 'DefaultArrangement',
+  create: () => new DefaultArrangement()
+}
 
 export class DefaultArrangement implements Arrangement {
   private _mapChips: Array<MapChip> = []

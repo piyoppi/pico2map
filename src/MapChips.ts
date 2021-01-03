@@ -36,6 +36,6 @@ export class MapChipsCollection {
   }
 
   public findById(chipId: number) {
-    return this._items.get(chipId)
+    return this._items.get(chipId) || null
   }
 }

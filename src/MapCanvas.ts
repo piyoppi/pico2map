@@ -1,15 +1,19 @@
-import { TiledMap } from './TiledMap'
+import { TiledMap, TiledMapData } from './TiledMap'
 import { MapChip, MultiMapChip } from './MapChip'
 import { Project } from './Projects'
 import { Pen } from './Brushes/Pen'
 import { Brushes } from './Brushes/Brushes'
+import { Arrangements } from './Brushes/Arrangements/Arrangements'
 import { Brush } from './Brushes/Brush'
+import { Arrangement, isTiledMapDataRequired } from './Brushes/Arrangements/Arrangement'
+import { DefaultArrangement } from './Brushes/Arrangements/DefaultArrangement'
 
 export class MapCanvas {
   private _ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D
   private _secondaryCanvasCtx = this.secondaryCanvas.getContext('2d') as CanvasRenderingContext2D
   private _isMouseDown = false
   private _brush: Brush = new Pen()
+  private _arrangement: Arrangement = new DefaultArrangement()
 
   constructor(
     private _project: Project,
@@ -28,12 +32,40 @@ export class MapCanvas {
     }
   }
 
+  public setArrangementFromName(arrangementName: string) {
+    const registeredArrangement = Arrangements.find(registered => registered.name === arrangementName)
+
+    if (!registeredArrangement) {
+      this.setArrangement(new DefaultArrangement())
+    } else {
+      this.setArrangement(registeredArrangement.create())
+    }
+  }
+
+  private _setupBrush() {
+    if (!this._arrangement) return
+
+    this._brush.setArrangement(this._arrangement)
+
+    if (isTiledMapDataRequired(this._arrangement)) {
+      this._arrangement.setTiledMapData(this._project.tiledMap.data)
+    }
+  }
+
+  public setArrangement(arrangement: Arrangement) {
+    this._arrangement = arrangement
+    this._setupBrush()
+  }
+
   public setBrush(brush: Brush) {
     this._brush = brush
+    this._setupBrush()
   }
 
   public mouseDown(x: number, y: number) {
     this._isMouseDown = true
+
+    this._arrangement.setMapChips(this._project.mapChipSelector.selectedChips)
 
     const chipPosition = this.convertFromCursorPositionToChipPosition(x, y)
     this._brush.mouseDown(chipPosition.x, chipPosition.y)
@@ -44,7 +76,8 @@ export class MapCanvas {
 
     this.clearSecondaryCanvas()
     this._brush.mouseMove(chipPosition.x, chipPosition.y).forEach(paint => {
-      const chip = paint.chip || this._project.mapChipSelector.selectedChip
+      const defaultChip = this._project.mapChipSelector.selectedChips[0]
+      const chip = paint.chip || defaultChip
       if (!chip) return
       this._putChipOrMultiChipToCanvas(this._secondaryCanvasCtx, chip, paint.x, paint.y)
     })
@@ -58,7 +91,8 @@ export class MapCanvas {
     const chipPosition = this.convertFromCursorPositionToChipPosition(x, y)
 
     this._brush.mouseUp(chipPosition.x, chipPosition.y).forEach(paint => {
-      const chip = paint.chip || this._project.mapChipSelector.selectedChip
+      const defaultChip = this._project.mapChipSelector.selectedChips[0]
+      const chip = paint.chip || defaultChip
       if (!chip) return
       this.putChip(chip, paint.x, paint.y)
     })
