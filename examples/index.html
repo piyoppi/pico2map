@@ -10,13 +10,20 @@
     <article>
       <map-canvas-component
         id="mapCanvas"
-        brush="Pen"
+        brush="RectangleBrush"
+        arrangement="AutoTileArrangement"
         ></map-canvas-component>
       <div class="map-chips">
         <map-chip-selector-component
           id="mapChipSelector"
           chipId="1"
           ></map-chip-selector-component>
+      </div>
+      <div class="map-chips">
+        <auto-tile-selector-component
+          id="autoTileSelector"
+          chipId="2"
+          ></auto-tile-selector-component>
       </div>
     </article>
 
