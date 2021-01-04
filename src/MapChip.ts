@@ -7,7 +7,14 @@ export type Boundary = {
   top: boolean,
   left: boolean,
   bottom: boolean,
-  right: boolean
+  right: boolean,
+}
+
+export type Cross = {
+  topLeft: boolean,
+  topRight: boolean,
+  bottomLeft: boolean,
+  bottomRight: boolean
 }
 
 export type MapChipRenderingArea = 1 | 2 | 3 | 4 | 5 | 8 | 10 | 12 | 15
@@ -19,6 +26,12 @@ export class MapChip implements MapChipComparable {
     bottom: false,
     left: false,
     right: false
+  }
+  private _cross : Cross = {
+    topLeft: false,
+    topRight: false,
+    bottomLeft: false,
+    bottomRight: false
   }
 
   constructor(
@@ -45,6 +58,10 @@ export class MapChip implements MapChipComparable {
     return this._boundary
   }
 
+  get cross() {
+    return this._cross
+  }
+
   get x() {
     return this._x
   }
@@ -67,6 +84,10 @@ export class MapChip implements MapChipComparable {
 
   setBoundary(boundary: Boundary) {
     this._boundary = boundary
+  }
+
+  setCross(cross: Cross) {
+    this._cross = cross
   }
 
   withParameter(parameters: {x?: number, y?: number, renderingArea?: MapChipRenderingArea}) {
@@ -94,6 +115,12 @@ export class MultiMapChip implements MapChipComparable {
     left: false,
     right: false
   }
+  private _cross: Cross = {
+    topLeft: false,
+    topRight: false,
+    bottomLeft: false,
+    bottomRight: false
+  }
 
   constructor(
     private _items: Array<MapChip> = []
@@ -113,12 +140,20 @@ export class MultiMapChip implements MapChipComparable {
     return this._boundary
   }
 
+  get cross() {
+    return this._cross
+  }
+
   private _buildIdentifyKey() {
     this._identifyKey = this._items.map(item => item.identifyKey).join('|')
   }
 
   setBoundary(boundary: Boundary) {
     this._boundary = boundary
+  }
+
+  setCross(cross: Cross) {
+    this._cross = cross
   }
 
   push(mapChip: MapChip) {

@@ -105,10 +105,10 @@ export class AutoTileArrangement implements Arrangement, TiledMapDataRequired {
         if (!aroundChips[1]?.boundary.right) adjacent += this._isAdjacent(aroundChips[1]) ? 2 : 0
         if (!aroundChips[2]?.boundary.left) adjacent += this._isAdjacent(aroundChips[2]) ? 4 : 0
         if (!aroundChips[3]?.boundary.top) adjacent += this._isAdjacent(aroundChips[3]) ? 8 : 0
-        if (!aroundChips[4]?.boundary.bottom && !aroundChips[4]?.boundary.right) adjacent += this._isAdjacent(aroundChips[4]) ? 16 : 0
-        if (!aroundChips[5]?.boundary.bottom && !aroundChips[5]?.boundary.left) adjacent += this._isAdjacent(aroundChips[5]) ? 32 : 0
-        if (!aroundChips[6]?.boundary.top && !aroundChips[6]?.boundary.right) adjacent += this._isAdjacent(aroundChips[6]) ? 64 : 0
-        if (!aroundChips[7]?.boundary.top && !aroundChips[7]?.boundary.left) adjacent += this._isAdjacent(aroundChips[7]) ? 128 : 0
+        if (!aroundChips[4]?.boundary.bottom && !aroundChips[4]?.boundary.right && !aroundChips[4]?.cross.bottomRight) adjacent += this._isAdjacent(aroundChips[4]) ? 16 : 0
+        if (!aroundChips[5]?.boundary.bottom && !aroundChips[5]?.boundary.left && !aroundChips[5]?.cross.bottomLeft) adjacent += this._isAdjacent(aroundChips[5]) ? 32 : 0
+        if (!aroundChips[6]?.boundary.top && !aroundChips[6]?.boundary.right && !aroundChips[6]?.cross.topRight) adjacent += this._isAdjacent(aroundChips[6]) ? 64 : 0
+        if (!aroundChips[7]?.boundary.top && !aroundChips[7]?.boundary.left && !aroundChips[7]?.cross.topLeft) adjacent += this._isAdjacent(aroundChips[7]) ? 128 : 0
 
         result.push({x: x + x1 - offsetX1, y: y + y1 - offsetY1, chip: this.getTiledPattern(adjacent)})
       }
@@ -125,6 +125,13 @@ export class AutoTileArrangement implements Arrangement, TiledMapDataRequired {
       bottom: false,
       left: false,
       right: false
+    }
+
+    const cross = {
+      topLeft: false,
+      topRight: false,
+      bottomLeft: false,
+      bottomRight: false
     }
 
     if ((adjacent & 19) === 19) {
@@ -152,6 +159,7 @@ export class AutoTileArrangement implements Arrangement, TiledMapDataRequired {
       multiMapChip.push(this._mapChips[3].clone().withParameter({renderingArea: 1}))
       boundary.top = false
       boundary.left = false
+      cross.topLeft = true
     }
 
     if ((adjacent & 37) === 37) {
@@ -164,6 +172,7 @@ export class AutoTileArrangement implements Arrangement, TiledMapDataRequired {
       multiMapChip.push(this._mapChips[0].clone().withParameter({renderingArea: 2}))
     } else if ((adjacent & 37) === 5) {
       multiMapChip.push(this._mapChips[3].clone().withParameter({renderingArea: 2}))
+      cross.topRight = true
     }
 
     if ((adjacent & 74) === 74) {
@@ -176,6 +185,7 @@ export class AutoTileArrangement implements Arrangement, TiledMapDataRequired {
       multiMapChip.push(this._mapChips[0].clone().withParameter({renderingArea: 4}))
     } else if ((adjacent & 74) === 10) {
       multiMapChip.push(this._mapChips[3].clone().withParameter({renderingArea: 4}))
+      cross.bottomLeft = true
     }
 
     if ((adjacent & 140) === 140) {
@@ -198,9 +208,11 @@ export class AutoTileArrangement implements Arrangement, TiledMapDataRequired {
       multiMapChip.push(this._mapChips[3].clone().withParameter({renderingArea: 8}))
       boundary.bottom = false
       boundary.right = false
+      cross.bottomRight = true
     }
 
     multiMapChip.setBoundary(boundary)
+    multiMapChip.setCross(cross)
 
     return multiMapChip
   }
