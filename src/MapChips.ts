@@ -16,6 +16,10 @@ export class MapChipImage {
     return this._src
   }
 
+  get hasImage() {
+    return this._hasImage
+  }
+
   get image() {
     if (!this._hasImage) return null
     return this._image

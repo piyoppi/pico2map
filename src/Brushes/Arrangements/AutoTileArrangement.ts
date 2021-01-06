@@ -139,17 +139,17 @@ export class AutoTileArrangement implements Arrangement, TiledMapDataRequired {
       multiMapChip.push(this._mapChips[4].clone().withParameter({renderingArea: 1}))
       boundary.top = false
       boundary.left = false
-    } else if ((adjacent & 3) === 2) {
+    } else if ((adjacent & 19) === 2) {
       /* Straight(sideways) */
       multiMapChip.push(this._mapChips[2].clone().withParameter({renderingArea: 1}))
       boundary.top = true
       boundary.left = false
-    } else if ((adjacent & 3) === 1) {
+    } else if ((adjacent & 19) === 1) {
       /* Straight(lengthwise) */
       multiMapChip.push(this._mapChips[1].clone().withParameter({renderingArea: 1}))
       boundary.top = false
       boundary.left = true
-    } else if ((adjacent & 3) === 0) {
+    } else if ((adjacent & 19) === 0) {
       /* Corner */
       multiMapChip.push(this._mapChips[0].clone().withParameter({renderingArea: 1}))
       boundary.top =  true
