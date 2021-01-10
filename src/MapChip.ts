@@ -109,21 +109,21 @@ export class MapChip implements MapChipComparable {
 
 export class MultiMapChip implements MapChipComparable {
   private _identifyKey = ''
-  private _boundary: Boundary = {
-    top: false,
-    bottom: false,
-    left: false,
-    right: false
-  }
-  private _cross: Cross = {
-    topLeft: false,
-    topRight: false,
-    bottomLeft: false,
-    bottomRight: false
-  }
 
   constructor(
-    private _items: Array<MapChip> = []
+    private _items: Array<MapChip> = [],
+    private _boundary: Boundary = {
+      top: false,
+      bottom: false,
+      left: false,
+      right: false
+    },
+    private _cross: Cross = {
+      topLeft: false,
+      topRight: false,
+      bottomLeft: false,
+      bottomRight: false
+    }
   ) {
     this._buildIdentifyKey()
   }
