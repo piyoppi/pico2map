@@ -28,9 +28,17 @@ export class Projects {
   private static _idCounter = 0
   private static _items: Array<Project> = []
 
+  static get items() {
+    return Projects._items
+  }
+
   static add(tiledMap: TiledMap, projectId: number = -1) {
     const id = projectId > 0 ? projectId : Projects.createId()
     Projects._items.push(new Project(tiledMap, id))
+  }
+
+  static clear() {
+    this._items.length = 0
   }
 
   static fromProjectId(projectId: number): Project | null {
