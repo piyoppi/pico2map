@@ -134,7 +134,7 @@ export class TiledMap {
     }
   }
 
-  public putChip(mapChip: MapChip | MultiMapChip, chipX: number, chipY: number) {
+  public put(mapChip: MapChip | MultiMapChip, chipX: number, chipY: number) {
     this._data.put(mapChip, chipX, chipY)
   }
 }

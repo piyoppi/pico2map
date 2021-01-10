@@ -102,7 +102,7 @@ export class MapCanvas {
   }
 
   public putChip(mapChip: MapChip | MultiMapChip, chipX: number, chipY: number) {
-    this._project.tiledMap.putChip(mapChip, chipX, chipY)
+    this._project.tiledMap.put(mapChip, chipX, chipY)
     this._putChipOrMultiChipToCanvas(this._ctx, mapChip, chipX, chipY)
   }
 
