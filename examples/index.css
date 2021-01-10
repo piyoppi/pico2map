@@ -3,3 +3,8 @@
   width: 300px;
   height: 300px;
 }
+
+.map-editor-boundary {
+  display: flex;
+  max-width: 100%;
+}
