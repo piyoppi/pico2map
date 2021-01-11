@@ -79,12 +79,6 @@
       </style>
 
       <div id="boundary">
-        <div
-          class="grid-image grid"
-          @mousemove="${t=>this.mouseMove(t)}"
-          @mousedown="${t=>this.mouseDown(t)}"
-          @mouseup ="${t=>this.mouseUp(t)}"
-        ></div>
         <canvas
           id="map-canvas"
           width="${this.width}"
@@ -95,6 +89,12 @@
           width="${this.width}"
           height="${this.height}"
         ></canvas>
+        <div
+          class="grid-image grid"
+          @mousemove="${t=>this.mouseMove(t)}"
+          @mousedown="${t=>this.mouseDown(t)}"
+          @mouseup ="${t=>this.mouseUp(t)}"
+        ></div>
         <div class="cursor"></div>
       </div>
     `}static get styles(){return at`
