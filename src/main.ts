@@ -29,10 +29,10 @@ const init = () => {
   autoTileSelector.addEventListener('selected', () => {
     mapCanvas.setAttribute('brush', 'RectangleBrush')
     mapCanvas.setAttribute('arrangement', 'AutoTileArrangement')
+    rectangleRadioButton.checked = true
   })
 
   mapChipSelector.addEventListener('selected', () => {
-    mapCanvas.setAttribute('brush', 'Pen')
     mapCanvas.setAttribute('arrangement', 'DefaultArrangement')
   })
 }
