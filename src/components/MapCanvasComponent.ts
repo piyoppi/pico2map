@@ -147,8 +147,8 @@ export class MapCanvasComponent extends LitElement {
         }
 
         #boundary {
-          width: ${this.width}px;
-          height: ${this.height}px;
+          width: ${this.width + 1}px;
+          height: ${this.height + 1}px;
         }
 
         .cursor {
@@ -156,6 +156,10 @@ export class MapCanvasComponent extends LitElement {
           height: ${this.gridHeight}px;
           left: ${this.cursorPosition.x}px;
           top: ${this.cursorPosition.y}px;
+        }
+
+        .grid-image {
+          background-position: 1px 1px
         }
       </style>
 
