@@ -73,7 +73,10 @@ export class AutoTileArrangement implements Arrangement, TiledMapDataRequired {
     for(let y = offsetY1; y < size.height + offsetY2; y++) {
       for(let x = offsetX1; x < size.width + offsetX2; x++) {
         const cursor = tiledBuffer.getMapDataFromChipPosition(x, y)
+        const targetChip = tiledBuffer.getMapDataFromChipPosition(x, y)
+        const isTemporaryChip = (targetChip instanceof MapChip) ? this.temporaryChip.compare(targetChip) : false
         if (!cursor) continue
+        if (!isTemporaryChip) continue
 
        /**
         * adjacent 
@@ -110,7 +113,9 @@ export class AutoTileArrangement implements Arrangement, TiledMapDataRequired {
         if (!aroundChips[6]?.boundary.top && !aroundChips[6]?.boundary.right && !aroundChips[6]?.cross.topRight) adjacent += this._isAdjacent(aroundChips[6]) ? 64 : 0
         if (!aroundChips[7]?.boundary.top && !aroundChips[7]?.boundary.left && !aroundChips[7]?.cross.topLeft) adjacent += this._isAdjacent(aroundChips[7]) ? 128 : 0
 
-        result.push({x: x + x1 - offsetX1, y: y + y1 - offsetY1, chip: this.getTiledPattern(adjacent)})
+        const chip = this.getTiledPattern(adjacent)
+        tiledBuffer.put(chip, x, y)
+        result.push({x: x + x1 - offsetX1, y: y + y1 - offsetY1, chip})
       }
     }
 
