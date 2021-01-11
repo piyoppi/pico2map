@@ -5,9 +5,19 @@ tiledMap.mapChipsCollection.push(new MapChipImage("images/chip.png", 1))
 tiledMap.mapChipsCollection.push(new MapChipImage("images/auto-tile-sample.png", 2))
 Projects.add(tiledMap, 1)
 
+const rectangleRadioButton = document.getElementById('rectangle') as HTMLInputElement
+const eraseRadioButton = document.getElementById('erase') as HTMLInputElement
+const penRadioButton = document.getElementById('pen') as HTMLInputElement
+
 const mapChipSelector = document.getElementById('mapChipSelector')
 const autoTileSelector = document.getElementById('autoTileSelector')
 const mapCanvas = document.getElementById('mapCanvas')
+
+rectangleRadioButton?.addEventListener('change', () => mapCanvas?.setAttribute('brush', 'RectangleBrush'))
+penRadioButton?.addEventListener('change', () => mapCanvas?.setAttribute('brush', 'Pen'))
+eraseRadioButton?.addEventListener('change', () => mapCanvas?.setAttribute('arrangement', 'EraseArrangement'))
+
+penRadioButton.checked = true
 
 const init = () => {
   if (!mapChipSelector || !autoTileSelector || !mapCanvas) return
