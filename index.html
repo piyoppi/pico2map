@@ -8,20 +8,29 @@
 
   <body>
     <article>
-      <map-canvas-component
-        id="mapCanvas"
-        ></map-canvas-component>
-      <div class="map-chips">
-        <map-chip-selector-component
-          id="mapChipSelector"
-          chipId="1"
-          ></map-chip-selector-component>
+      <div class="tools">
+        <input type="radio" name="tools" id="pen">Pen</input>
+        <input type="radio" name="tools" id="rectangle">Rectangle</input>
+        <input type="checkbox" id="erase">Erase</input>
       </div>
-      <div class="map-chips">
-        <auto-tile-selector-component
-          id="autoTileSelector"
-          chipId="2"
-          ></auto-tile-selector-component>
+      <div class="map-editor-boundary">
+        <div class="map-editor">
+          <map-canvas-component id="mapCanvas"></map-canvas-component>
+        </div>
+        <div class="chip-selector">
+          <div class="map-chips">
+            <map-chip-selector-component
+              id="mapChipSelector"
+              chipId="1"
+              ></map-chip-selector-component>
+          </div>
+          <div class="map-chips">
+            <auto-tile-selector-component
+              id="autoTileSelector"
+              chipId="2"
+              ></auto-tile-selector-component>
+          </div>
+        </div>
       </div>
     </article>
 
