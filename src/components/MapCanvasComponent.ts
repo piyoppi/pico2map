@@ -160,12 +160,6 @@ export class MapCanvasComponent extends LitElement {
       </style>
 
       <div id="boundary">
-        <div
-          class="grid-image grid"
-          @mousemove="${(e: MouseEvent) => this.mouseMove(e)}"
-          @mousedown="${(e: MouseEvent) => this.mouseDown(e)}"
-          @mouseup ="${(e: MouseEvent) => this.mouseUp(e)}"
-        ></div>
         <canvas
           id="map-canvas"
           width="${this.width}"
@@ -176,6 +170,12 @@ export class MapCanvasComponent extends LitElement {
           width="${this.width}"
           height="${this.height}"
         ></canvas>
+        <div
+          class="grid-image grid"
+          @mousemove="${(e: MouseEvent) => this.mouseMove(e)}"
+          @mousedown="${(e: MouseEvent) => this.mouseDown(e)}"
+          @mouseup ="${(e: MouseEvent) => this.mouseUp(e)}"
+        ></div>
         <div class="cursor"></div>
       </div>
     `;
