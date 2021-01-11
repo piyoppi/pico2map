@@ -144,6 +144,10 @@ export class MultiMapChip implements MapChipComparable {
     return this._cross
   }
 
+  get length() {
+    return this._items.length
+  }
+
   private _buildIdentifyKey() {
     this._identifyKey = this._items.map(item => item.identifyKey).join('|')
   }
