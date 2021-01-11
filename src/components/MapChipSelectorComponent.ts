@@ -181,7 +181,11 @@ export class MapChipSelectorComponent extends LitElement {
       }
 
       #boundary {
-        position: relative;
+        position: absolute;
+      }
+
+      #chip-image {
+        display: block;
       }
     `
   }
