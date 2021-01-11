@@ -14,6 +14,7 @@ export class MapCanvas {
   private _isMouseDown = false
   private _brush: Brush = new Pen()
   private _arrangement: Arrangement = new DefaultArrangement()
+  private _backgroundRgba = {r: 255, g: 255, b: 255, a: 1.0}
 
   constructor(
     private _project: Project,
@@ -78,7 +79,7 @@ export class MapCanvas {
     this._brush.mouseMove(chipPosition.x, chipPosition.y).forEach(paint => {
       const defaultChip = this._project.mapChipSelector.selectedChips[0]
       const chip = paint.chip
-      this._putChipOrMultiChipToCanvas(this._secondaryCanvasCtx, chip, paint.x, paint.y)
+      this._putChipOrMultiChipToCanvas(this._secondaryCanvasCtx, chip, paint.x, paint.y, true)
     })
 
     return chipPosition
@@ -108,7 +109,7 @@ export class MapCanvas {
     this._secondaryCanvasCtx.clearRect(0, 0, this.secondaryCanvas.width, this.secondaryCanvas.height)
   }
 
-  private _putChipOrMultiChipToCanvas(ctx: CanvasRenderingContext2D, mapChip: MapChip | MultiMapChip | null, chipX: number, chipY: number) {
+  private _putChipOrMultiChipToCanvas(ctx: CanvasRenderingContext2D, mapChip: MapChip | MultiMapChip | null, chipX: number, chipY: number, isTemporaryRendering: boolean = false) {
     if (mapChip instanceof MapChip) {
       this._putChipToCanvas(ctx, mapChip, chipX, chipY)
     } else if (mapChip instanceof MultiMapChip) {
@@ -116,13 +117,19 @@ export class MapCanvas {
         this._putChipToCanvas(ctx, item, chipX, chipY)
       })
     } else {
-      this._clearChipToCanvas(ctx, chipX, chipY)
+      this._clearChipToCanvas(ctx, chipX, chipY, isTemporaryRendering)
     }
   }
 
-  private _clearChipToCanvas(ctx: CanvasRenderingContext2D, chipX: number, chipY: number) {
+  private _clearChipToCanvas(ctx: CanvasRenderingContext2D, chipX: number, chipY: number, isTemporaryRendering: boolean) {
     const position = this._project.tiledMap.convertChipPositionToPixel(chipX, chipY)
+
     ctx.clearRect(position.x, position.y, this._project.tiledMap.chipWidth, this._project.tiledMap.chipHeight)
+
+    if (isTemporaryRendering) {
+      ctx.fillStyle = `rgba(${this._backgroundRgba.r},${this._backgroundRgba.g},${this._backgroundRgba.b},${this._backgroundRgba.a})`
+      ctx.fillRect(position.x, position.y, this._project.tiledMap.chipWidth, this._project.tiledMap.chipHeight)
+    }
   }
 
   private _putChipToCanvas(ctx: CanvasRenderingContext2D, mapChip: MapChip, chipX: number, chipY: number) {
