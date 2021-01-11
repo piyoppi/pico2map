@@ -4,7 +4,7 @@ import { MapChip, MultiMapChip } from './../MapChip'
 export interface BrushPaint {
   x: number,
   y: number,
-  chip?: MapChip | MultiMapChip
+  chip: MapChip | MultiMapChip | null
 }
 
 export interface Brush {

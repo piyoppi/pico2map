@@ -27,7 +27,8 @@ export class Pen implements Brush {
 
     const paint = {
       x: chipX,
-      y: chipY
+      y: chipY,
+      chip: null
     }
 
     if (paint.x !== this._beforeCursorPosition.x || paint.y !== this._beforeCursorPosition.y) {

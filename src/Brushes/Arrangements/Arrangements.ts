@@ -1,9 +1,11 @@
 import { DefaultArrangementDescription } from './DefaultArrangement'
 import { AutoTileArrangementDescription } from './AutoTileArrangement'
+import { EraseArrangementDescription } from './EraseArrangement'
 
 const registeredArrangementDescriptions = [
   DefaultArrangementDescription,
-  AutoTileArrangementDescription 
+  AutoTileArrangementDescription,
+  EraseArrangementDescription
 ]
 
 export const Arrangements = registeredArrangementDescriptions.map( description => ({

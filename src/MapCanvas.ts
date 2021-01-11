@@ -77,8 +77,7 @@ export class MapCanvas {
     this.clearSecondaryCanvas()
     this._brush.mouseMove(chipPosition.x, chipPosition.y).forEach(paint => {
       const defaultChip = this._project.mapChipSelector.selectedChips[0]
-      const chip = paint.chip || defaultChip
-      if (!chip) return
+      const chip = paint.chip
       this._putChipOrMultiChipToCanvas(this._secondaryCanvasCtx, chip, paint.x, paint.y)
     })
 
@@ -92,8 +91,7 @@ export class MapCanvas {
 
     this._brush.mouseUp(chipPosition.x, chipPosition.y).forEach(paint => {
       const defaultChip = this._project.mapChipSelector.selectedChips[0]
-      const chip = paint.chip || defaultChip
-      if (!chip) return
+      const chip = paint.chip
       this.putChip(chip, paint.x, paint.y)
     })
 
@@ -101,7 +99,7 @@ export class MapCanvas {
     this._brush.cleanUp()
   }
 
-  public putChip(mapChip: MapChip | MultiMapChip, chipX: number, chipY: number) {
+  public putChip(mapChip: MapChip | MultiMapChip | null, chipX: number, chipY: number) {
     this._project.tiledMap.put(mapChip, chipX, chipY)
     this._putChipOrMultiChipToCanvas(this._ctx, mapChip, chipX, chipY)
   }
@@ -110,14 +108,21 @@ export class MapCanvas {
     this._secondaryCanvasCtx.clearRect(0, 0, this.secondaryCanvas.width, this.secondaryCanvas.height)
   }
 
-  private _putChipOrMultiChipToCanvas(ctx: CanvasRenderingContext2D, mapChip: MapChip | MultiMapChip, chipX: number, chipY: number) {
+  private _putChipOrMultiChipToCanvas(ctx: CanvasRenderingContext2D, mapChip: MapChip | MultiMapChip | null, chipX: number, chipY: number) {
     if (mapChip instanceof MapChip) {
       this._putChipToCanvas(ctx, mapChip, chipX, chipY)
     } else if (mapChip instanceof MultiMapChip) {
       mapChip.items.forEach(item => {
         this._putChipToCanvas(ctx, item, chipX, chipY)
       })
+    } else {
+      this._clearChipToCanvas(ctx, chipX, chipY)
     }
+  }
+
+  private _clearChipToCanvas(ctx: CanvasRenderingContext2D, chipX: number, chipY: number) {
+    const position = this._project.tiledMap.convertChipPositionToPixel(chipX, chipY)
+    ctx.clearRect(position.x, position.y, this._project.tiledMap.chipWidth, this._project.tiledMap.chipHeight)
   }
 
   private _putChipToCanvas(ctx: CanvasRenderingContext2D, mapChip: MapChip, chipX: number, chipY: number) {

@@ -42,7 +42,7 @@ export class RectangleBrush implements Brush {
 
     for(let x = startX; x <= endX; x++ ) {
       for(let y = startY; y <= endY; y++ ) {
-        paints.push({x, y})
+        paints.push({x, y, chip: null})
       }
     }
 
