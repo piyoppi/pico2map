@@ -1,9 +1,9 @@
 import { TiledMap } from "./TiledMap"
-import { MapChip, MultiMapChip } from './MapChip'
+import { MapChipFragment } from './MapChip'
 import { MapChipImage } from './MapChips'
 
 export class MapChipSelector {
-  private _selectedChips: Array<MapChip> = []
+  private _selectedChips: Array<MapChipFragment> = []
 
   constructor(
     private _tiledMap: TiledMap
@@ -16,7 +16,7 @@ export class MapChipSelector {
   }
 
   public select(chipImage: MapChipImage, x: number, y: number) {
-    this._selectedChips.push(new MapChip(x, y, chipImage.id))
+    this._selectedChips.push(new MapChipFragment(x, y, chipImage.id))
   }
 
   public clear() {

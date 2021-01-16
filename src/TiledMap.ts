@@ -1,11 +1,11 @@
-import { MapChip, MultiMapChip } from './MapChip'
+import { MapChip } from './MapChip'
 import { MapChipImage, MapChipsCollection } from './MapChips'
 
 export class TiledMapData {
   constructor(
     private _chipCountX: number,
     private _chipCountY: number,
-    private _mapData: Array<MapChip | MultiMapChip | null> = []
+    private _mapData: Array<MapChip | null> = []
   ) {
     if (this._mapData.length > 0 && this.size !== this._mapData.length) {
       throw new Error()
@@ -30,7 +30,7 @@ export class TiledMapData {
     return this._mapData
   }
 
-  set(mapData: Array<MapChip | MultiMapChip | null>) {
+  set(mapData: Array<MapChip | null>) {
     if (mapData.length !== this._mapData.length) throw new Error()
 
     this._mapData = mapData
@@ -54,7 +54,7 @@ export class TiledMapData {
     }
   }
 
-  filter(needles: Array<MapChip | MultiMapChip>): TiledMapData {
+  filter(needles: Array<MapChip>): TiledMapData {
     const filtered = this._mapData.map(chip => needles.some(needle => !!chip && needle.compare(chip)) ? chip : null)
     return new TiledMapData(
       this.width,
@@ -63,14 +63,14 @@ export class TiledMapData {
     )
   }
 
-  getMapDataFromChipPosition(x: number, y: number) {
+  getMapDataFromChipPosition(x: number, y: number): MapChip | null {
     if ((x < 0)  || (y < 0) || (x >= this._chipCountX) || (y >= this._chipCountY)) return null
 
     const mapNumber = this.convertPositionToMapNumber(x, y)
     return this._mapData[mapNumber]
   }
 
-  put(mapChip: MapChip | MultiMapChip | null, x: number, y: number) {
+  put(mapChip: MapChip | null, x: number, y: number) {
     const mapNumber = this.convertPositionToMapNumber(x, y)
     this._mapData[mapNumber] = mapChip
   }
@@ -134,7 +134,7 @@ export class TiledMap {
     }
   }
 
-  public put(mapChip: MapChip | MultiMapChip | null, chipX: number, chipY: number) {
+  public put(mapChip: MapChip | null, chipX: number, chipY: number) {
     this._data.put(mapChip, chipX, chipY)
   }
 }

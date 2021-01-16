@@ -1,4 +1,4 @@
-import { MapChip } from '../../MapChip'
+import { MapChipFragment } from '../../MapChip'
 import { Arrangement, ArrangementDescription } from './Arrangement'
 import { BrushPaint } from './../Brush'
 
@@ -8,7 +8,7 @@ export const EraseArrangementDescription: ArrangementDescription = {
 }
 
 export class EraseArrangement implements Arrangement {
-  setMapChips(_: Array<MapChip>) {
+  setMapChips(_: Array<MapChipFragment>) {
   }
 
   apply(paints: Array<BrushPaint>): Array<BrushPaint> {

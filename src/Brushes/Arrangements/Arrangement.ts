@@ -1,9 +1,9 @@
-import { MapChip } from './../../MapChip'
+import { MapChipFragment } from './../../MapChip'
 import { BrushPaint } from './../Brush'
 import { TiledMapData } from '../../TiledMap';
 
 export interface Arrangement {
-  setMapChips(mapChips: Array<MapChip>): void
+  setMapChips(mapChips: Array<MapChipFragment>): void
   apply(paints: Array<BrushPaint>): Array<BrushPaint>
 }
 

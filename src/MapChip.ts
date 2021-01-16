@@ -19,7 +19,7 @@ export type Cross = {
 
 export type MapChipRenderingArea = 1 | 2 | 3 | 4 | 5 | 8 | 10 | 12 | 15
 
-export class MapChip implements MapChipComparable {
+export class MapChipFragment implements MapChipComparable {
   private _identifyKey = ''
   private _boundary: Boundary = {
     top: false,
@@ -99,7 +99,7 @@ export class MapChip implements MapChipComparable {
   }
 
   clone() {
-    return new MapChip(this._x, this._y, this._chipId)
+    return new MapChipFragment(this._x, this._y, this._chipId)
   }
 
   compare(others: MapChipComparable) {
@@ -107,11 +107,11 @@ export class MapChip implements MapChipComparable {
   }
 }
 
-export class MultiMapChip implements MapChipComparable {
+export class MapChip implements MapChipComparable {
   private _identifyKey = ''
 
   constructor(
-    private _items: Array<MapChip> = [],
+    private _items: Array<MapChipFragment> = [],
     private _boundary: Boundary = {
       top: false,
       bottom: false,
@@ -160,7 +160,7 @@ export class MultiMapChip implements MapChipComparable {
     this._cross = cross
   }
 
-  push(mapChip: MapChip) {
+  push(mapChip: MapChipFragment) {
     this._items.push(mapChip)
     this._buildIdentifyKey()
   }
@@ -171,7 +171,7 @@ export class MultiMapChip implements MapChipComparable {
   }
 
   clone() {
-    const cloned = new MultiMapChip()
+    const cloned = new MapChip()
     cloned._items = this._items.map(mapChip => mapChip.clone())
 
     return cloned

@@ -1,5 +1,5 @@
 import { TiledMap, TiledMapData } from './TiledMap'
-import { MapChip, MultiMapChip } from './MapChip'
+import { MapChipFragment, MapChip } from './MapChip'
 import { Project } from './Projects'
 import { Pen } from './Brushes/Pen'
 import { Brushes } from './Brushes/Brushes'
@@ -100,7 +100,7 @@ export class MapCanvas {
     this._brush.cleanUp()
   }
 
-  public putChip(mapChip: MapChip | MultiMapChip | null, chipX: number, chipY: number) {
+  public putChip(mapChip: MapChip | null, chipX: number, chipY: number) {
     this._project.tiledMap.put(mapChip, chipX, chipY)
     this._putChipOrMultiChipToCanvas(this._ctx, mapChip, chipX, chipY)
   }
@@ -109,10 +109,8 @@ export class MapCanvas {
     this._secondaryCanvasCtx.clearRect(0, 0, this.secondaryCanvas.width, this.secondaryCanvas.height)
   }
 
-  private _putChipOrMultiChipToCanvas(ctx: CanvasRenderingContext2D, mapChip: MapChip | MultiMapChip | null, chipX: number, chipY: number, isTemporaryRendering: boolean = false) {
+  private _putChipOrMultiChipToCanvas(ctx: CanvasRenderingContext2D, mapChip: MapChip | null, chipX: number, chipY: number, isTemporaryRendering: boolean = false) {
     if (mapChip instanceof MapChip) {
-      this._putChipToCanvas(ctx, mapChip, chipX, chipY)
-    } else if (mapChip instanceof MultiMapChip) {
       mapChip.items.forEach(item => {
         this._putChipToCanvas(ctx, item, chipX, chipY)
       })
@@ -132,7 +130,7 @@ export class MapCanvas {
     }
   }
 
-  private _putChipToCanvas(ctx: CanvasRenderingContext2D, mapChip: MapChip, chipX: number, chipY: number) {
+  private _putChipToCanvas(ctx: CanvasRenderingContext2D, mapChip: MapChipFragment, chipX: number, chipY: number) {
     const mapChips = this._project.tiledMap.mapChipsCollection.findById(mapChip.chipId)
     const image = mapChips?.image
     if (!image) return
@@ -156,7 +154,7 @@ export class MapCanvas {
     )
   }
 
-  private _getRenderingArea(mapChip: MapChip) {
+  private _getRenderingArea(mapChip: MapChipFragment) {
     const width = this._project.tiledMap.chipWidth
     const height = this._project.tiledMap.chipHeight
     const x = mapChip.x * width

@@ -1,4 +1,4 @@
-import { MapChip, MultiMapChip } from '../../MapChip';
+import { MapChipFragment, MapChip } from '../../MapChip';
 import { Arrangement, ArrangementDescription, TiledMapDataRequired } from './Arrangement';
 import { BrushPaint } from './../Brush'
 import { TiledMapData } from '../../TiledMap';
@@ -27,11 +27,11 @@ export const AutoTileArrangementDescription: ArrangementDescription = {
  * ┗┷┿┿┿┿┿┿┿┿┛---
  */
 export class AutoTileArrangement implements Arrangement, TiledMapDataRequired {
-  private _mapChips: Array<MapChip> = []
+  private _mapChips: Array<MapChipFragment> = []
   private _tiledMapData: TiledMapData | null = null
-  private temporaryChip = new MapChip(-1, -1, -1)
+  private temporaryChip = new MapChip([new MapChipFragment(-1, -1, -1)])
 
-  setMapChips(mapChips: Array<MapChip>) {
+  setMapChips(mapChips: Array<MapChipFragment>) {
     if (mapChips.length !== 5) throw new Error('Too few map chips. AutoTileArrangement requires 5 map chips.')
     this._mapChips = mapChips 
   }
@@ -74,7 +74,7 @@ export class AutoTileArrangement implements Arrangement, TiledMapDataRequired {
       for(let x = offsetX1; x < size.width + offsetX2; x++) {
         const cursor = tiledBuffer.getMapDataFromChipPosition(x, y)
         const targetChip = tiledBuffer.getMapDataFromChipPosition(x, y)
-        const isTemporaryChip = (targetChip instanceof MapChip) ? this.temporaryChip.compare(targetChip) : false
+        const isTemporaryChip = targetChip ? this.temporaryChip.compare(targetChip) : false
         if (!cursor) continue
         if (!isTemporaryChip) continue
 
@@ -124,8 +124,8 @@ export class AutoTileArrangement implements Arrangement, TiledMapDataRequired {
     return result
   }
 
-  private getTiledPattern(adjacent: number, aroundChips: Array<MapChip | MultiMapChip | null>): MultiMapChip | null {
-    const multiMapChip = new MultiMapChip()
+  private getTiledPattern(adjacent: number, aroundChips: Array<MapChip | null>): MapChip | null {
+    const multiMapChip = new MapChip()
 
     const boundary = {
       top: false,
@@ -226,17 +226,19 @@ export class AutoTileArrangement implements Arrangement, TiledMapDataRequired {
     return multiMapChip
   }
 
-  private _isAdjacent(chip: MapChip | MultiMapChip | null): boolean {
-    const isTemporaryChip = (chip instanceof MapChip) ? this.temporaryChip.compare(chip) : false
+  private _isAdjacent(chip: MapChip | null): boolean {
+    if (chip === null) return false
+
+    const isTemporaryChip = this.temporaryChip.compare(chip)
     const isAutoTileChip = this._isAutoTileChip(chip)
 
     return isAutoTileChip || isTemporaryChip
   }
 
-  private _isAutoTileChip(chip: MapChip | MultiMapChip | null): boolean {
+  private _isAutoTileChip(chip: MapChip | null): boolean {
     if (!chip) return false
 
-    if (chip instanceof MultiMapChip) {
+    if (chip instanceof MapChip) {
       return this._mapChips.some(autoTileChip => autoTileChip.compare(chip.items[0]) || this.temporaryChip.compare(chip.items[0]))
     } else {
       return this._mapChips.some(autoTileChip => autoTileChip.compare(chip) || this.temporaryChip.compare(chip))

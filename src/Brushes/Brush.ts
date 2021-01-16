@@ -1,10 +1,10 @@
 import { Arrangement } from './Arrangements/Arrangement';
-import { MapChip, MultiMapChip } from './../MapChip'
+import { MapChip } from './../MapChip'
 
 export interface BrushPaint {
   x: number,
   y: number,
-  chip: MapChip | MultiMapChip | null
+  chip: MapChip | null
 }
 
 export interface Brush {
