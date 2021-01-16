@@ -109,6 +109,7 @@ export class MapChipFragment implements MapChipComparable {
 
 export class MapChip implements MapChipComparable {
   private _identifyKey = ''
+  private _arrangementName = ''
 
   constructor(
     private _items: Array<MapChipFragment> = [],
@@ -158,6 +159,10 @@ export class MapChip implements MapChipComparable {
 
   setCross(cross: Cross) {
     this._cross = cross
+  }
+
+  setArrangementName(name: string) {
+    this._arrangementName = name
   }
 
   push(mapChip: MapChipFragment) {
