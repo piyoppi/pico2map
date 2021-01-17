@@ -1,25 +1,37 @@
-import { TiledMap, Projects, MapChipImage } from './../../src/main'
+import { TiledMap, Projects, MapChipImage, DefaultAutoTileImportStrategy } from './../../src/main'
 
-const tiledMap = new TiledMap(30, 30, 32, 32)
-tiledMap.mapChipsCollection.push(new MapChipImage("images/chip.png", 1))
-tiledMap.mapChipsCollection.push(new MapChipImage("images/auto-tile-sample.png", 2))
-Projects.add(tiledMap, 1)
+async function initialize() {
+  const chipSize = { width: 32, height: 32 }
+  const tiledMap = new TiledMap(30, 30, chipSize.width, chipSize.height)
 
-const rectangleRadioButton = document.getElementById('rectangle') as HTMLInputElement
-const eraseRadioButton = document.getElementById('erase') as HTMLInputElement
-const penRadioButton = document.getElementById('pen') as HTMLInputElement
+  const mapChipImage = new MapChipImage("images/chip.png", 1)
+  const autoTileImage = new MapChipImage("images/auto-tile-sample.png", 2)
 
-const mapChipSelector = document.getElementById('mapChipSelector')
-const autoTileSelector = document.getElementById('autoTileSelector')
-const mapCanvas = document.getElementById('mapCanvas')
+  await mapChipImage.waitWhileLoading()
+  await autoTileImage.waitWhileLoading()
 
-rectangleRadioButton?.addEventListener('change', () => mapCanvas?.setAttribute('brush', 'RectangleBrush'))
-penRadioButton?.addEventListener('change', () => mapCanvas?.setAttribute('brush', 'Pen'))
-eraseRadioButton?.addEventListener('change', () => mapCanvas?.setAttribute('arrangement', 'EraseArrangement'))
+  tiledMap.mapChipsCollection.push(mapChipImage)
+  tiledMap.mapChipsCollection.push(autoTileImage)
 
-penRadioButton.checked = true
+  const autoTileImportStrategy = new DefaultAutoTileImportStrategy(autoTileImage, chipSize.width, chipSize.height)
+  tiledMap.autoTiles.import(autoTileImportStrategy)
 
-const init = () => {
+  Projects.add(tiledMap, 1)
+
+  const rectangleRadioButton = document.getElementById('rectangle') as HTMLInputElement
+  const eraseRadioButton = document.getElementById('erase') as HTMLInputElement
+  const penRadioButton = document.getElementById('pen') as HTMLInputElement
+
+  const mapChipSelector = document.getElementById('mapChipSelector')
+  const autoTileSelector = document.getElementById('autoTileSelector')
+  const mapCanvas = document.getElementById('mapCanvas')
+
+  rectangleRadioButton?.addEventListener('change', () => mapCanvas?.setAttribute('brush', 'RectangleBrush'))
+  penRadioButton?.addEventListener('change', () => mapCanvas?.setAttribute('brush', 'Pen'))
+  eraseRadioButton?.addEventListener('change', () => mapCanvas?.setAttribute('arrangement', 'EraseArrangement'))
+
+  penRadioButton.checked = true
+
   if (!mapChipSelector || !autoTileSelector || !mapCanvas) return
 
   mapChipSelector.setAttribute('projectId', '1')
@@ -37,4 +49,4 @@ const init = () => {
   })
 }
 
-init()
+initialize()
