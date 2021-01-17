@@ -26,6 +26,7 @@ export class DefaultAutoTileImportStrategy implements AutoTileImportStrategy {
         mapChipFragments.push(new MapChipFragment(x, y + 2, this._mapChipImage.id))
         mapChipFragments.push(new MapChipFragment(x, y + 3, this._mapChipImage.id))
         mapChipFragments.push(new MapChipFragment(x, y + 4, this._mapChipImage.id))
+        mapChipFragmentGroups.push(mapChipFragments)
       }
     }
 

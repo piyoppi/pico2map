@@ -11,14 +11,30 @@ export class AutoTile {
   get id() {
     return this._id
   }
+
+  get mapChipFragments() {
+    return this._mapChipFragments
+  }
 }
 
 export class AutoTiles {
   private _autoTiles: Map<number, AutoTile> = new Map()
   private _maxId = 0
 
+  get length() {
+    return this._autoTiles.size
+  }
+
   push(item: AutoTile) {
     this._autoTiles.set(item.id, item)
+  }
+
+  fromId(id: number): AutoTile | null {
+    return this._autoTiles.get(id) || null
+  }
+
+  values() {
+    return this._autoTiles.values()
   }
 
   import(strategy: AutoTileImportStrategy) {

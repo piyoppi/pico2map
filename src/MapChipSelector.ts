@@ -15,8 +15,8 @@ export class MapChipSelector {
     return this._selectedChips
   }
 
-  public select(chipImage: MapChipImage, x: number, y: number) {
-    this._selectedChips.push(new MapChipFragment(x, y, chipImage.id))
+  public select(item: MapChipFragment) {
+    this._selectedChips.push(item.clone())
   }
 
   public clear() {
@@ -43,7 +43,7 @@ export class MapChipSelector {
 
     for (let x = 0; x < width; x++ ) {
       for (let y = 0; y < height; y++ ) {
-        this.select(chipImage, chipPosition.x + x, chipPosition.y + y)
+        this._selectedChips.push(new MapChipFragment(chipPosition.x + x, chipPosition.y + y, chipImage.id))
       }
     }
   }

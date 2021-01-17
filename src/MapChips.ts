@@ -1,6 +1,7 @@
 export class MapChipImage {
-  private _image: HTMLImageElement | null = null
+  private _image: HTMLImageElement = new Image()
   private _hasImage = false
+
   constructor(
     private _src: string,
     private _id: number
@@ -21,7 +22,6 @@ export class MapChipImage {
   }
 
   get image() {
-    if (!this._hasImage) return null
     return this._image
   }
 
@@ -34,10 +34,26 @@ export class MapChipImage {
     }
   }
 
+  _loadImageHandler() {
+    this._hasImage = true
+  }
+
   loadImage() {
-    this._image = new Image()
-    this._image.onload = () => this._hasImage = true
+    this._image.onload = () => this._loadImageHandler()
     this._image.src = this._src
+  }
+
+  waitWhileLoading(): Promise<void> {
+    const loadingPromise = new Promise<void>(resolve => {
+      this._image.onload = () => {
+        this._loadImageHandler()
+        resolve()
+      }
+    })
+
+    if (this._hasImage) return Promise.resolve()
+
+    return loadingPromise
   }
 }
 

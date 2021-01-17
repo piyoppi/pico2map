@@ -1,5 +1,6 @@
 import { MapChip } from './MapChip'
 import { MapChipImage, MapChipsCollection } from './MapChips'
+import { AutoTiles } from './AutoTile/AutoTiles'
 
 export class TiledMapData {
   constructor(
@@ -93,6 +94,7 @@ export class TiledMapData {
 
 export class TiledMap {
   private _mapChipImages = new MapChipsCollection()
+  private _autoTiles = new AutoTiles()
   private _data = new TiledMapData(this._chipCountX, this._chipCountY)
 
   constructor(
@@ -121,6 +123,10 @@ export class TiledMap {
 
   get mapChipsCollection() {
     return this._mapChipImages
+  }
+
+  get autoTiles() {
+    return this._autoTiles
   }
 
   get data() {

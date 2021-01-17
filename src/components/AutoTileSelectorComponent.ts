@@ -2,7 +2,7 @@ import { LitElement, html, css, customElement, property } from 'lit-element'
 import { GridImageGenerator } from '../GridImageGenerator'
 import { CursorPositionCalculator } from './helpers/CursorPositionCalculator'
 import { Projects, Project } from './../Projects'
-import { MapChipImage } from './../MapChips'
+import { AutoTileSelector } from './../AutoTileSelector'
 
 @customElement('auto-tile-selector-component')
 export class AutoTileSelectorComponent extends LitElement {
@@ -10,7 +10,8 @@ export class AutoTileSelectorComponent extends LitElement {
   private gridImageGenerator = new GridImageGenerator()
   private cursorPositionCalculator = new CursorPositionCalculator()
   private _project: Project | null = null
-  private _chipImage: MapChipImage | null = null
+  private _indexImage: HTMLCanvasElement = document.createElement('canvas')
+  private _autoTileSelector: AutoTileSelector | null = null
 
   static readonly Format = {
     width: 1,
@@ -32,24 +33,12 @@ export class AutoTileSelectorComponent extends LitElement {
     this.requestUpdate('projectId', oldValue);
   }
 
-  private _chipId = -1
-  @property({type: Number})
-  get chipId(): number {
-    return this._chipId
-  }
-  set chipId(value: number) {
-    const oldValue = this._chipId
-    this._chipId = value
-
-    this.setupMapChipSelector()
-
-    this.requestUpdate('chipId', oldValue)
-  }
-
   @property({type: Number}) cursorChipX = 0
   @property({type: Number}) cursorChipY = 0
   @property({type: Number}) selectedChipY = 0
   @property({type: Number}) selectedChipX = 0
+  @property({type: Number}) width = 100
+  @property({type: String}) indexImageSrc = ''
 
   get mapChipSelector() {
     return this._project?.mapChipSelector
@@ -78,30 +67,42 @@ export class AutoTileSelectorComponent extends LitElement {
   }
 
   private setupMapChipSelector() {
-    if (!this._project || this._chipId < 0) return
+    if (!this._project) return
 
-    this._chipImage = this._project.tiledMap.mapChipsCollection.findById(this._chipId)
+    this._autoTileSelector = new AutoTileSelector(
+      this.width,
+      this._project.tiledMap.chipWidth,
+      this._project.tiledMap.chipHeight,
+      this._project.tiledMap.autoTiles,
+      this._project.tiledMap.mapChipsCollection
+    )
+    this._autoTileSelector.generateIndexImage(this._indexImage)
+    this.indexImageSrc = this._indexImage.toDataURL()
   }
 
   mouseMove(e: MouseEvent) {
-    if (!this.mapChipSelector || !this._chipImage || !this._project) return;
+    if (!this._autoTileSelector) return;
 
     const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY)
-    const chip = this.mapChipSelector.convertFromImagePositionToChipPosition(this._chipImage, mouseCursorPosition.x, mouseCursorPosition.y)
-    const chipCount = this._chipImage.getChipCount(this._project.tiledMap.chipWidth, this._project.tiledMap.chipHeight)
+    const position = this._autoTileSelector.convertFromIndexImageToChipPosition(mouseCursorPosition.x, mouseCursorPosition.y)
 
-    if (chip.x + AutoTileSelectorComponent.Format.width > chipCount.width) return
-    if (chip.y + AutoTileSelectorComponent.Format.height > chipCount.height) return
-
-    this.cursorChipX = chip.x
-    this.cursorChipY = chip.y
+    this.cursorChipX = position.x
+    this.cursorChipY = position.y
   }
 
   mouseDown(e: MouseEvent) {
-    if (!this.mapChipSelector || !this._chipImage) return
+    if (!this.mapChipSelector || !this._project || !this._autoTileSelector) return
 
     const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY)
-    this.mapChipSelector.selectAtMouseCursor(this._chipImage, mouseCursorPosition.x, mouseCursorPosition.y, AutoTileSelectorComponent.Format.width, AutoTileSelectorComponent.Format.height)
+    const selectedAutoTile = this._autoTileSelector.getAutoTileFragmentFromIndexImagePosition(mouseCursorPosition.x, mouseCursorPosition.y)
+
+    if (!selectedAutoTile) return
+
+    this.mapChipSelector.clear()
+
+    selectedAutoTile.mapChipFragments.forEach(mapChipFragment => {
+      this.mapChipSelector?.select(mapChipFragment)
+    })
 
     const selectedChip = this.mapChipSelector.selectedChips[0]
     if (!selectedChip || this.mapChipSelector.selectedChips.length !== AutoTileSelectorComponent.Format.width * AutoTileSelectorComponent.Format.height) return
@@ -129,8 +130,8 @@ export class AutoTileSelectorComponent extends LitElement {
       this._gridImageSrc = this.gridImageGenerator.generateLinePart().toDataURL()
     }
 
-    const cursorWidth = this.gridWidth * AutoTileSelectorComponent.Format.width
-    const cursorHeight = this.gridHeight * AutoTileSelectorComponent.Format.height
+    const cursorWidth = this.gridWidth
+    const cursorHeight = this.gridHeight
 
     return html`
       <style>
@@ -154,7 +155,7 @@ export class AutoTileSelectorComponent extends LitElement {
       </style>
 
       <div id="boundary">
-        <img id="chip-image" src="${this._chipImage?.src}">
+        <img id="chip-image" src="${this.indexImageSrc}">
         <div
           class="grid-image grid"
           @mousemove="${(e: MouseEvent) => this.mouseMove(e)}"
