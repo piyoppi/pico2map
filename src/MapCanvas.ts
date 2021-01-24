@@ -15,6 +15,7 @@ export class MapCanvas {
   private _brush: Brush = new Pen()
   private _arrangement: Arrangement = new DefaultArrangement()
   private _backgroundRgba = {r: 255, g: 255, b: 255, a: 1.0}
+  private _lastMapChipPosition = {x: -1, y: -1}
 
   constructor(
     private _project: Project,
@@ -74,10 +75,15 @@ export class MapCanvas {
 
     const chipPosition = this.convertFromCursorPositionToChipPosition(x, y)
     this._brush.mouseDown(chipPosition.x, chipPosition.y)
+
+    this._lastMapChipPosition = chipPosition
   }
 
   public mouseMove(x: number, y: number) {
     const chipPosition = this.convertFromCursorPositionToChipPosition(x, y)
+
+    if (!this._isMouseDown) return chipPosition
+    if (chipPosition.x === this._lastMapChipPosition.x && chipPosition.y === this._lastMapChipPosition.y) return chipPosition
 
     this.clearSecondaryCanvas()
     this._brush.mouseMove(chipPosition.x, chipPosition.y).forEach(paint => {
@@ -85,6 +91,8 @@ export class MapCanvas {
       const chip = paint.chip
       this._putChipOrMultiChipToCanvas(this._secondaryCanvasCtx, chip, paint.x, paint.y, true)
     })
+
+    this._lastMapChipPosition = chipPosition
 
     return chipPosition
   }
@@ -102,6 +110,7 @@ export class MapCanvas {
 
     this.clearSecondaryCanvas()
     this._brush.cleanUp()
+    this._lastMapChipPosition = {x: -1, y: -1}
   }
 
   public putChip(mapChip: MapChip | null, chipX: number, chipY: number) {
