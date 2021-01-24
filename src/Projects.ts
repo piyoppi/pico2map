@@ -1,8 +1,10 @@
 import { TiledMap } from './TiledMap'
 import { MapChipSelector } from './MapChipSelector'
+import { AutoTile } from './AutoTile/AutoTiles'
 
 export class Project {
   private _mapChipSelector = new MapChipSelector(this._tiledMap)
+  private _selectedAutoTile: AutoTile | null = null
 
   constructor(
     private _tiledMap: TiledMap,
@@ -21,6 +23,14 @@ export class Project {
 
   get tiledMap() {
     return this._tiledMap
+  }
+
+  get selectedAutoTile(): AutoTile | null {
+    return this._selectedAutoTile
+  }
+
+  set selectedAutoTile(val: AutoTile | null) {
+    this._selectedAutoTile = val
   }
 }
 

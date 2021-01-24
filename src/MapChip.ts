@@ -1,3 +1,5 @@
+import { AutoTile } from './AutoTile/AutoTiles'
+
 export interface MapChipComparable {
   identifyKey: string
   compare(others: MapChipComparable): boolean
@@ -21,18 +23,6 @@ export type MapChipRenderingArea = 1 | 2 | 3 | 4 | 5 | 8 | 10 | 12 | 15
 
 export class MapChipFragment implements MapChipComparable {
   private _identifyKey = ''
-  private _boundary: Boundary = {
-    top: false,
-    bottom: false,
-    left: false,
-    right: false
-  }
-  private _cross : Cross = {
-    topLeft: false,
-    topRight: false,
-    bottomLeft: false,
-    bottomRight: false
-  }
 
   constructor(
     private _x: number,
@@ -54,14 +44,6 @@ export class MapChipFragment implements MapChipComparable {
     this._identifyKey = `${_x},${_y},${_chipId}`
   }
 
-  get boundary() {
-    return this._boundary
-  }
-
-  get cross() {
-    return this._cross
-  }
-
   get x() {
     return this._x
   }
@@ -80,14 +62,6 @@ export class MapChipFragment implements MapChipComparable {
 
   get renderingArea() {
     return this._renderingArea
-  }
-
-  setBoundary(boundary: Boundary) {
-    this._boundary = boundary
-  }
-
-  setCross(cross: Cross) {
-    this._cross = cross
   }
 
   withParameter(parameters: {x?: number, y?: number, renderingArea?: MapChipRenderingArea}) {
@@ -113,18 +87,6 @@ export class MapChip implements MapChipComparable {
 
   constructor(
     private _items: Array<MapChipFragment> = [],
-    private _boundary: Boundary = {
-      top: false,
-      bottom: false,
-      left: false,
-      right: false
-    },
-    private _cross: Cross = {
-      topLeft: false,
-      topRight: false,
-      bottomLeft: false,
-      bottomRight: false
-    }
   ) {
     this._buildIdentifyKey()
   }
@@ -137,28 +99,16 @@ export class MapChip implements MapChipComparable {
     return this._identifyKey
   }
 
-  get boundary() {
-    return this._boundary
-  }
-
-  get cross() {
-    return this._cross
-  }
-
   get length() {
     return this._items.length
   }
 
+  get arrangementName() {
+    return this._arrangementName
+  }
+
   private _buildIdentifyKey() {
     this._identifyKey = this._items.map(item => item.identifyKey).join('|')
-  }
-
-  setBoundary(boundary: Boundary) {
-    this._boundary = boundary
-  }
-
-  setCross(cross: Cross) {
-    this._cross = cross
   }
 
   setArrangementName(name: string) {
@@ -185,4 +135,50 @@ export class MapChip implements MapChipComparable {
   compare(others: MapChipComparable) {
     return this.identifyKey === others.identifyKey
   }
+}
+
+export class AutoTileMapChip extends MapChip {
+  constructor(
+    private _autoTile: AutoTile,
+    items: Array<MapChipFragment> = [],
+    private _boundary: Boundary = {
+      top: false,
+      bottom: false,
+      left: false,
+      right: false
+    },
+    private _cross: Cross = {
+      topLeft: false,
+      topRight: false,
+      bottomLeft: false,
+      bottomRight: false
+    }
+  ){
+    super(items)
+  }
+
+  get boundary() {
+    return this._boundary
+  }
+
+  get cross() {
+    return this._cross
+  }
+
+  get autoTile() {
+    return this._autoTile
+  }
+
+  setBoundary(boundary: Boundary) {
+    this._boundary = boundary
+  }
+
+  setCross(cross: Cross) {
+    this._cross = cross
+  }
+}
+export function isAutoTileMapChip(obj: any): obj is AutoTileMapChip {
+  return obj &&
+         typeof obj.boundary === 'object' &&
+         typeof obj.cross === 'object'
 }

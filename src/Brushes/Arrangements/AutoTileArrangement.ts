@@ -1,7 +1,8 @@
-import { MapChipFragment, MapChip } from '../../MapChip';
-import { Arrangement, ArrangementDescription, TiledMapDataRequired } from './Arrangement';
+import { MapChipFragment, AutoTileMapChip, isAutoTileMapChip } from '../../MapChip';
+import { Arrangement, ArrangementDescription, TiledMapDataRequired, AutoTileRequired } from './Arrangement';
 import { BrushPaint } from './../Brush'
 import { TiledMapData } from '../../TiledMap';
+import { AutoTile } from '../../AutoTile/AutoTiles'
 
 export const AutoTileArrangementDescription: ArrangementDescription = {
   name: 'AutoTileArrangement',
@@ -26,14 +27,21 @@ export const AutoTileArrangementDescription: ArrangementDescription = {
  * ┠square                     ┠↓
  * ┗┷┿┿┿┿┿┿┿┿┛---
  */
-export class AutoTileArrangement implements Arrangement, TiledMapDataRequired {
-  private _mapChips: Array<MapChipFragment> = []
+export class AutoTileArrangement implements Arrangement, TiledMapDataRequired, AutoTileRequired {
+  private _autoTile: AutoTile | null = null
   private _tiledMapData: TiledMapData | null = null
-  private temporaryChip = new MapChip([new MapChipFragment(-1, -1, -1)])
+  private temporaryChip = new AutoTileMapChip(new AutoTile([], -1), [new MapChipFragment(-1, -1, -1)])
+
+  get tiledMapData(): TiledMapData | null {
+    return this._tiledMapData
+  }
 
   setMapChips(mapChips: Array<MapChipFragment>) {
-    if (mapChips.length !== 5) throw new Error('Too few map chips. AutoTileArrangement requires 5 map chips.')
-    this._mapChips = mapChips 
+  }
+
+  setAutoTile(autoTile: AutoTile) {
+    if (autoTile.mapChipFragments.length !== 5) throw new Error('Too few map chips. AutoTileArrangement requires 5 map chips.')
+    this._autoTile = autoTile
   }
 
   setTiledMapData(tiledMapData: TiledMapData) {
@@ -93,7 +101,7 @@ export class AutoTileArrangement implements Arrangement, TiledMapDataRequired {
         */
         let adjacent = 0
 
-        const aroundChips = [
+        const aroundChips: Array<AutoTileMapChip | null> = [
           tiledBuffer.getMapDataFromChipPosition(x, y - 1),
           tiledBuffer.getMapDataFromChipPosition(x - 1, y),
           tiledBuffer.getMapDataFromChipPosition(x + 1, y),
@@ -102,7 +110,7 @@ export class AutoTileArrangement implements Arrangement, TiledMapDataRequired {
           tiledBuffer.getMapDataFromChipPosition(x + 1, y - 1),
           tiledBuffer.getMapDataFromChipPosition(x - 1, y + 1),
           tiledBuffer.getMapDataFromChipPosition(x + 1, y + 1)
-        ]
+        ].map( mapChip => isAutoTileMapChip(mapChip) ? mapChip : null)
 
         if (!aroundChips[0]?.boundary.bottom) adjacent += this._isAdjacent(aroundChips[0]) ? 1 : 0
         if (!aroundChips[1]?.boundary.right) adjacent += this._isAdjacent(aroundChips[1]) ? 2 : 0
@@ -124,8 +132,11 @@ export class AutoTileArrangement implements Arrangement, TiledMapDataRequired {
     return result
   }
 
-  private getTiledPattern(adjacent: number, aroundChips: Array<MapChip | null>): MapChip | null {
-    const mapChip = new MapChip()
+  private getTiledPattern(adjacent: number, aroundChips: Array<AutoTileMapChip | null>): AutoTileMapChip | null {
+    if (!this._autoTile) return null
+
+    const mapChip = new AutoTileMapChip(this._autoTile)
+    const mapChips = this._autoTile.mapChipFragments
     mapChip.setArrangementName('AutoTileArrangement')
 
     const boundary = {
@@ -144,76 +155,76 @@ export class AutoTileArrangement implements Arrangement, TiledMapDataRequired {
 
     if ((adjacent & 19) === 19 && !aroundChips[0]?.cross.bottomLeft && !aroundChips[1]?.cross.topRight) {
       /* Square */
-      mapChip.push(this._mapChips[4].clone().withParameter({renderingArea: 1}))
+      mapChip.push(mapChips[4].clone().withParameter({renderingArea: 1}))
       boundary.top = false
       boundary.left = false
     } else if ((adjacent & 19) === 2) {
       /* Straight(sideways) */
-      mapChip.push(this._mapChips[2].clone().withParameter({renderingArea: 1}))
+      mapChip.push(mapChips[2].clone().withParameter({renderingArea: 1}))
       boundary.top = true
       boundary.left = false
     } else if ((adjacent & 19) === 1) {
       /* Straight(lengthwise) */
-      mapChip.push(this._mapChips[1].clone().withParameter({renderingArea: 1}))
+      mapChip.push(mapChips[1].clone().withParameter({renderingArea: 1}))
       boundary.top = false
       boundary.left = true
     } else if ((adjacent & 19) === 0) {
       /* Corner */
-      mapChip.push(this._mapChips[0].clone().withParameter({renderingArea: 1}))
+      mapChip.push(mapChips[0].clone().withParameter({renderingArea: 1}))
       boundary.top =  true
       boundary.left = true
     } else if ((adjacent & 19) === 3) {
       /* Cross */
-      mapChip.push(this._mapChips[3].clone().withParameter({renderingArea: 1}))
+      mapChip.push(mapChips[3].clone().withParameter({renderingArea: 1}))
       boundary.top = false
       boundary.left = false
       cross.topLeft = true
     }
 
     if ((adjacent & 37) === 37 && !aroundChips[0]?.cross.bottomRight && !aroundChips[2]?.cross.topLeft) {
-      mapChip.push(this._mapChips[4].clone().withParameter({renderingArea: 2}))
+      mapChip.push(mapChips[4].clone().withParameter({renderingArea: 2}))
     } else if ((adjacent & 5) === 4) {
-      mapChip.push(this._mapChips[2].clone().withParameter({renderingArea: 2}))
+      mapChip.push(mapChips[2].clone().withParameter({renderingArea: 2}))
     } else if ((adjacent & 5) === 1) {
-      mapChip.push(this._mapChips[1].clone().withParameter({renderingArea: 2}))
+      mapChip.push(mapChips[1].clone().withParameter({renderingArea: 2}))
     } else if ((adjacent & 5) === 0) {
-      mapChip.push(this._mapChips[0].clone().withParameter({renderingArea: 2}))
+      mapChip.push(mapChips[0].clone().withParameter({renderingArea: 2}))
     } else if ((adjacent & 37) === 5) {
-      mapChip.push(this._mapChips[3].clone().withParameter({renderingArea: 2}))
+      mapChip.push(mapChips[3].clone().withParameter({renderingArea: 2}))
       cross.topRight = true
     }
 
     if ((adjacent & 74) === 74 && !aroundChips[1]?.cross.bottomRight && !aroundChips[3]?.cross.topRight) {
-      mapChip.push(this._mapChips[4].clone().withParameter({renderingArea: 4}))
+      mapChip.push(mapChips[4].clone().withParameter({renderingArea: 4}))
     } else if ((adjacent & 10) === 2) {
-      mapChip.push(this._mapChips[2].clone().withParameter({renderingArea: 4}))
+      mapChip.push(mapChips[2].clone().withParameter({renderingArea: 4}))
     } else if ((adjacent & 10) === 8) {
-      mapChip.push(this._mapChips[1].clone().withParameter({renderingArea: 4}))
+      mapChip.push(mapChips[1].clone().withParameter({renderingArea: 4}))
     } else if ((adjacent & 10) === 0) {
-      mapChip.push(this._mapChips[0].clone().withParameter({renderingArea: 4}))
+      mapChip.push(mapChips[0].clone().withParameter({renderingArea: 4}))
     } else if ((adjacent & 74) === 10) {
-      mapChip.push(this._mapChips[3].clone().withParameter({renderingArea: 4}))
+      mapChip.push(mapChips[3].clone().withParameter({renderingArea: 4}))
       cross.bottomLeft = true
     }
 
     if ((adjacent & 140) === 140 && !aroundChips[2]?.cross.bottomLeft && !aroundChips[3]?.cross.topRight) {
-      mapChip.push(this._mapChips[4].clone().withParameter({renderingArea: 8}))
+      mapChip.push(mapChips[4].clone().withParameter({renderingArea: 8}))
       boundary.bottom = false
       boundary.right = false
     } else if ((adjacent & 12) === 4) {
-      mapChip.push(this._mapChips[2].clone().withParameter({renderingArea: 8}))
+      mapChip.push(mapChips[2].clone().withParameter({renderingArea: 8}))
       boundary.bottom = true
       boundary.right = false
     } else if ((adjacent & 12) === 8) {
-      mapChip.push(this._mapChips[1].clone().withParameter({renderingArea: 8}))
+      mapChip.push(mapChips[1].clone().withParameter({renderingArea: 8}))
       boundary.bottom = false
       boundary.right = true
     } else if ((adjacent & 12) === 0) {
-      mapChip.push(this._mapChips[0].clone().withParameter({renderingArea: 8}))
+      mapChip.push(mapChips[0].clone().withParameter({renderingArea: 8}))
       boundary.bottom = true
       boundary.right = true
     } else if ((adjacent & 140) === 12) {
-      mapChip.push(this._mapChips[3].clone().withParameter({renderingArea: 8}))
+      mapChip.push(mapChips[3].clone().withParameter({renderingArea: 8}))
       boundary.bottom = false
       boundary.right = false
       cross.bottomRight = true
@@ -227,7 +238,7 @@ export class AutoTileArrangement implements Arrangement, TiledMapDataRequired {
     return mapChip
   }
 
-  private _isAdjacent(chip: MapChip | null): boolean {
+  private _isAdjacent(chip: AutoTileMapChip | null): boolean {
     if (chip === null) return false
 
     const isTemporaryChip = this.temporaryChip.compare(chip)
@@ -236,13 +247,12 @@ export class AutoTileArrangement implements Arrangement, TiledMapDataRequired {
     return isAutoTileChip || isTemporaryChip
   }
 
-  private _isAutoTileChip(chip: MapChip | null): boolean {
+  private _isAutoTileChip(chip: AutoTileMapChip | null): boolean {
+    if (!this._autoTile) return false
     if (!chip) return false
 
-    if (chip instanceof MapChip) {
-      return this._mapChips.some(autoTileChip => autoTileChip.compare(chip.items[0]) || this.temporaryChip.compare(chip.items[0]))
-    } else {
-      return this._mapChips.some(autoTileChip => autoTileChip.compare(chip) || this.temporaryChip.compare(chip))
-    }
+    const mapChips = this._autoTile.mapChipFragments
+
+    return mapChips.some(autoTileChip => autoTileChip.compare(chip.items[0]) || this.temporaryChip.compare(chip.items[0]))
   }
 }

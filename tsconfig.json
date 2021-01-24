@@ -1,7 +1,7 @@
 {
   "include": ["src", "types"],
   "compilerOptions": {
-    "target": "es2015",
+    "target": "es2019",
     "module": "esnext",
     "rootDir": "./src",
     "strict": true,
