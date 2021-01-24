@@ -37,7 +37,7 @@ export class AutoTileSelectorComponent extends LitElement {
   @property({type: Number}) cursorChipY = 0
   @property({type: Number}) selectedChipY = 0
   @property({type: Number}) selectedChipX = 0
-  @property({type: Number}) width = 100
+  @property({type: Number}) width = 192
   @property({type: String}) indexImageSrc = ''
 
   get gridWidth() {
@@ -72,6 +72,9 @@ export class AutoTileSelectorComponent extends LitElement {
       this._project.tiledMap.autoTiles,
       this._project.tiledMap.mapChipsCollection
     )
+    const imageSize = this._autoTileSelector.getSizeOfIndexImage()
+    this._indexImage.width = imageSize.width
+    this._indexImage.height = imageSize.height
     this._autoTileSelector.generateIndexImage(this._indexImage)
     this.indexImageSrc = this._indexImage.toDataURL()
   }

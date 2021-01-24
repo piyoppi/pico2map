@@ -35,13 +35,20 @@ export class AutoTileSelector {
     }
   }
 
+  getSizeOfIndexImage() {
+    return {
+      width: this._canvasWidth,
+      height: Math.ceil(this._autoTiles.length / this._canvasWidth) * this._chipHeight
+    }
+  }
+
   generateIndexImage(canvas: HTMLCanvasElement) {
     const indexImageContext: CanvasRenderingContext2D | null = canvas.getContext('2d')
     if (!indexImageContext) return
 
     this._autoTilesMap.clear()
 
-    const xCount = Math.floor(this._autoTiles.length / this._canvasWidth)
+    const xCount = Math.floor(this._canvasWidth / this._canvasWidth)
     const values = this._autoTiles.values()
 
     let currentAutoTile: AutoTile | undefined = undefined
