@@ -24,16 +24,21 @@ export class DefaultEraseArrangement implements Arrangement, TiledMapDataRequire
   }
 
   apply(paints: Array<BrushPaint>): Array<BrushPaint> {
-    return paints.map(paint => {
+    const autoTilePaints: Array<BrushPaint> = []
+    const otherPaints: Array<BrushPaint> = []
+
+    paints.forEach(paint => {
       if (!this._tiledMapData) throw new Error('MapData is not set.')
 
       const chip = this._tiledMapData.getMapDataFromChipPosition(paint.x, paint.y)
 
       if (chip?.arrangementName === 'AutoTileArrangement') {
-        return this.autoTileEraser.apply(paints)
+        autoTilePaints.push(paint)
       } else {
-        return this.defaultEraser.apply(paints)
+        otherPaints.push(paint)
       }
-    }).flat()
+    })
+
+    return [...this.autoTileEraser.apply(autoTilePaints), ...this.defaultEraser.apply(otherPaints)]
   }
 }

@@ -22,6 +22,8 @@ export class AutoTileEraseArrangement implements Arrangement, TiledMapDataRequir
   }
 
   apply(paints: Array<BrushPaint>): Array<BrushPaint> {
+    if (paints.length === 0) return []
+
     return this.erase(paints[0])
   }
 
