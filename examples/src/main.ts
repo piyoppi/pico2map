@@ -28,7 +28,7 @@ async function initialize() {
 
   rectangleRadioButton?.addEventListener('change', () => mapCanvas?.setAttribute('brush', 'RectangleBrush'))
   penRadioButton?.addEventListener('change', () => mapCanvas?.setAttribute('brush', 'Pen'))
-  eraseRadioButton?.addEventListener('change', () => mapCanvas?.setAttribute('arrangement', 'EraseArrangement'))
+  eraseRadioButton?.addEventListener('change', () => mapCanvas?.setAttribute('arrangement', 'DefaultEraseArrangement'))
 
   penRadioButton.checked = true
 
