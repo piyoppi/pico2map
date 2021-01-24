@@ -5,7 +5,7 @@ async function initialize() {
   const tiledMap = new TiledMap(30, 30, chipSize.width, chipSize.height)
 
   const mapChipImage = new MapChipImage("images/chip.png", 1)
-  const autoTileImage = new MapChipImage("images/auto-tile-sample3.png", 2)
+  const autoTileImage = new MapChipImage("images/auto-tile-sample.png", 2)
 
   await mapChipImage.waitWhileLoading()
   await autoTileImage.waitWhileLoading()
