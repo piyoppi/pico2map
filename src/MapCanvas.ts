@@ -202,8 +202,8 @@ export class MapCanvas {
 
   public convertFromCursorPositionToChipPosition(x: number, y: number) {
     return {
-      x: Math.floor(x / this._project.tiledMap.chipWidth),
-      y: Math.floor(y / this._project.tiledMap.chipHeight)
+      x: Math.max(0, Math.min(Math.floor(x / this._project.tiledMap.chipWidth), this._project.tiledMap.chipCountX - 1)),
+      y: Math.max(0, Math.min(Math.floor(y / this._project.tiledMap.chipHeight), this._project.tiledMap.chipCountY - 1))
     }
   }
 }
