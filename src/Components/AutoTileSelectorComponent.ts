@@ -98,8 +98,8 @@ export class AutoTileSelectorComponent extends LitElement {
     if (!selectedAutoTile) return
     this._project.selectedAutoTile = selectedAutoTile
 
-    this.selectedChipX = mouseCursorPosition.x / this._project.tiledMap.chipWidth
-    this.selectedChipY = mouseCursorPosition.y / this._project.tiledMap.chipHeight
+    this.selectedChipX = Math.floor(mouseCursorPosition.x / this._project.tiledMap.chipWidth)
+    this.selectedChipY = Math.floor(mouseCursorPosition.y / this._project.tiledMap.chipHeight)
 
     this.dispatchEvent(
       new CustomEvent('selected', {

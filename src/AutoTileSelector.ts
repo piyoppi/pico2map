@@ -48,7 +48,7 @@ export class AutoTileSelector {
 
     this._autoTilesMap.clear()
 
-    const xCount = Math.floor(this._canvasWidth / this._canvasWidth)
+    const xCount = Math.floor(this._canvasWidth / this._chipWidth)
     const values = this._autoTiles.values()
 
     let currentAutoTile: AutoTile | undefined = undefined
@@ -81,6 +81,6 @@ export class AutoTileSelector {
     }
 
     this._indexImageWidth = xCount * this._chipWidth
-    this._indexImageHeight = y * this._chipHeight
+    this._indexImageHeight = (y + 1) * this._chipHeight
   }
 }
