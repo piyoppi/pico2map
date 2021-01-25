@@ -1,6 +1,6 @@
 export type MapChipImageProperties = {
   src: string,
-  id: numebr
+  id: number
 }
 
 export class MapChipImage {
