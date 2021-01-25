@@ -1,3 +1,8 @@
+export type MapChipImageProperties = {
+  src: string,
+  id: numebr
+}
+
 export class MapChipImage {
   private _image: HTMLImageElement = new Image()
   private _hasImage = false
@@ -55,16 +60,51 @@ export class MapChipImage {
 
     return loadingPromise
   }
+
+  toObject(): MapChipImageProperties {
+    return {
+      id: this._id,
+      src: this._src
+    }
+  }
+
+  static fromObject(val: MapChipImageProperties): MapChipImage {
+    return new MapChipImage(val.src, val.id)
+  }
+}
+
+export type MapChipCollectionProperties = {
+  items: Array<MapChipImageProperties>
 }
 
 export class MapChipsCollection {
   private _items: Map<number, MapChipImage> = new Map()
 
-  public push(item: MapChipImage) {
+  push(item: MapChipImage) {
     this._items.set(item.id, item)
   }
 
-  public findById(chipId: number) {
+  findById(chipId: number) {
     return this._items.get(chipId) || null
+  }
+
+  toObject(): MapChipCollectionProperties {
+    const objectedMapChipImage: Array<MapChipImageProperties> = []
+    const valuesItr = this._items.values()
+
+    for(const val of valuesItr) {
+      objectedMapChipImage.push(val.toObject())
+    }
+    return {
+      items: objectedMapChipImage
+    }
+  }
+
+  fromObject(val: MapChipCollectionProperties): void {
+    this._items.clear()
+
+    val.items.forEach(objectedVal => {
+      this.push(MapChipImage.fromObject(objectedVal))
+    })
   }
 }
