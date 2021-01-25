@@ -1,4 +1,4 @@
-import { AutoTile } from './AutoTile/AutoTiles'
+import { AutoTile, AutoTiles } from './AutoTile/AutoTiles'
 
 export interface MapChipComparable {
   identifyKey: string
@@ -20,6 +20,13 @@ export type Cross = {
 }
 
 export type MapChipRenderingArea = 1 | 2 | 3 | 4 | 5 | 8 | 10 | 12 | 15
+
+export type MapChipFragmentProperties = {
+  x: number,
+  y: number,
+  chipId: number,
+  renderingArea: MapChipRenderingArea
+}
 
 export class MapChipFragment implements MapChipComparable {
   private _identifyKey = ''
@@ -79,6 +86,23 @@ export class MapChipFragment implements MapChipComparable {
   compare(others: MapChipComparable) {
     return this.identifyKey === others.identifyKey
   }
+
+  toObject(): MapChipFragmentProperties {
+    return {
+      x: this._x,
+      y: this._y,
+      chipId: this._chipId,
+      renderingArea: this._renderingArea
+    }
+  }
+
+  static fromObject(val: MapChipFragmentProperties): MapChipFragment {
+    return new MapChipFragment(val.x, val.y, val.chipId, val.renderingArea)
+  }
+}
+
+export interface MapChipProperties {
+  items: Array<MapChipFragmentProperties>
 }
 
 export class MapChip implements MapChipComparable {
@@ -135,9 +159,27 @@ export class MapChip implements MapChipComparable {
   compare(others: MapChipComparable) {
     return this.identifyKey === others.identifyKey
   }
+
+  toObject(): MapChipProperties {
+    return {
+      items: this._items.map(item => item.toObject())
+    }
+  }
+
+  static fromObject(val: MapChipProperties): MapChip {
+    return new MapChip(val.items.map(item => MapChipFragment.fromObject(item)))
+  }
+}
+
+export interface AutoTileMapChipProperties extends MapChipProperties {
+  boundary: Boundary,
+  cross: Cross,
+  autoTileId: number
 }
 
 export class AutoTileMapChip extends MapChip {
+  private static autoTiles: AutoTiles | null = null
+
   constructor(
     private _autoTile: AutoTile,
     items: Array<MapChipFragment> = [],
@@ -175,6 +217,27 @@ export class AutoTileMapChip extends MapChip {
 
   setCross(cross: Cross) {
     this._cross = cross
+  }
+
+  toObject(): AutoTileMapChipProperties {
+    return {
+      ...super.toObject(),
+      boundary: this._boundary,
+      cross: this._cross,
+      autoTileId: this._autoTile.id
+    }
+  }
+
+  static setAutoTiles(val: AutoTiles) {
+    AutoTileMapChip.autoTiles = val
+  }
+
+  static fromObject(val: AutoTileMapChipProperties): AutoTileMapChip {
+    if (!AutoTileMapChip.autoTiles) throw new Error('AutoTiles is not set')
+    const autoTile = AutoTileMapChip.autoTiles.fromId(val.autoTileId)
+    if (!autoTile) throw new Error('AutoTile is not exists.')
+
+    return new AutoTileMapChip(autoTile, val.items.map(item => MapChipFragment.fromObject(item)), val.boundary, val.cross)
   }
 }
 export function isAutoTileMapChip(obj: any): obj is AutoTileMapChip {

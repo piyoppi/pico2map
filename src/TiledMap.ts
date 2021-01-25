@@ -1,6 +1,12 @@
-import { MapChip } from './MapChip'
+import { MapChip, MapChipProperties, AutoTileMapChipProperties } from './MapChip'
 import { MapChipImage, MapChipsCollection } from './MapChips'
 import { AutoTiles } from './AutoTile/AutoTiles'
+
+export type TiledMapDataProperties = {
+  chipCountX: number,
+  chipCountY: number,
+  mapData: Array<MapChipProperties | AutoTileMapChipProperties | null>
+}
 
 export class TiledMapData {
   constructor(
@@ -90,6 +96,21 @@ export class TiledMapData {
   private allocate() {
     this._mapData = new Array(this._chipCountY * this._chipCountX).fill(null)
   }
+
+  toObject(): TiledMapDataProperties {
+    return {
+      chipCountX: this._chipCountX,
+      chipCountY: this._chipCountY,
+      mapData: this._mapData.map(data => data?.toObject() || null)
+    }
+  }
+}
+
+export type TiledMapProperties = {
+  chipCountX: number,
+  chipCountY: number,
+  chipWidth: number,
+  chipHeight: number
 }
 
 export class TiledMap {
@@ -142,5 +163,14 @@ export class TiledMap {
 
   public put(mapChip: MapChip | null, chipX: number, chipY: number) {
     this._data.put(mapChip, chipX, chipY)
+  }
+
+  toObject(): TiledMapProperties {
+    return {
+      chipCountX: this._chipCountX,
+      chipCountY: this._chipCountY,
+      chipWidth: this._chipWidth,
+      chipHeight: this._chipHeight
+    }
   }
 }
