@@ -79,7 +79,7 @@ export class MapCanvas {
     this._lastMapChipPosition = chipPosition
   }
 
-  public mouseMove(x: number, y: number) {
+  mouseMove(x: number, y: number) {
     const chipPosition = this.convertFromCursorPositionToChipPosition(x, y)
 
     if (!this._isMouseDown) return chipPosition
@@ -89,7 +89,7 @@ export class MapCanvas {
     this._brush.mouseMove(chipPosition.x, chipPosition.y).forEach(paint => {
       const defaultChip = this._project.mapChipSelector.selectedChips[0]
       const chip = paint.chip
-      this._putChipOrMultiChipToCanvas(this._secondaryCanvasCtx, chip, paint.x, paint.y, true)
+      this._putOrClearChipToCanvas(this._secondaryCanvasCtx, chip, paint.x, paint.y, true)
     })
 
     this._lastMapChipPosition = chipPosition
@@ -113,16 +113,23 @@ export class MapCanvas {
     this._lastMapChipPosition = {x: -1, y: -1}
   }
 
-  public putChip(mapChip: MapChip | null, chipX: number, chipY: number) {
+  putChip(mapChip: MapChip | null, chipX: number, chipY: number) {
     this._project.tiledMap.put(mapChip, chipX, chipY)
-    this._putChipOrMultiChipToCanvas(this._ctx, mapChip, chipX, chipY)
+    this._putOrClearChipToCanvas(this._ctx, mapChip, chipX, chipY)
+  }
+
+  renderAll() {
+    this._project.tiledMap.data.mapData.forEach((value, index) => {
+      const position = this._project.tiledMap.data.convertMapNumberToPosition(index)
+      this._putOrClearChipToCanvas(this._ctx, value, position.x, position.y)
+    })
   }
 
   private clearSecondaryCanvas() {
     this._secondaryCanvasCtx.clearRect(0, 0, this.secondaryCanvas.width, this.secondaryCanvas.height)
   }
 
-  private _putChipOrMultiChipToCanvas(ctx: CanvasRenderingContext2D, mapChip: MapChip | null, chipX: number, chipY: number, isTemporaryRendering: boolean = false) {
+  private _putOrClearChipToCanvas(ctx: CanvasRenderingContext2D, mapChip: MapChip | null, chipX: number, chipY: number, isTemporaryRendering: boolean = false) {
     if (mapChip instanceof MapChip) {
       mapChip.items.forEach(item => {
         this._putChipToCanvas(ctx, item, chipX, chipY)
