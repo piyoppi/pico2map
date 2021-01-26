@@ -177,6 +177,12 @@ export interface AutoTileMapChipProperties extends MapChipProperties {
   autoTileId: number
 }
 
+export function isAutoTileMapChipProperties(obj: any): obj is AutoTileMapChipProperties{
+  return typeof obj.autoTileId === 'function' &&
+         obj.boundary !== undefined &&
+         obj.cross !== undefined
+}
+
 export class AutoTileMapChip extends MapChip {
   private static autoTiles: AutoTiles | null = null
 

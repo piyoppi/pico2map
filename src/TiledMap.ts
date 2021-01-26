@@ -1,6 +1,6 @@
-import { MapChip, MapChipProperties, AutoTileMapChipProperties } from './MapChip'
-import { MapChipImage, MapChipsCollection } from './MapChips'
-import { AutoTiles } from './AutoTile/AutoTiles'
+import { MapChip, MapChipProperties,  AutoTileMapChipProperties, isAutoTileMapChipProperties, AutoTileMapChip } from './MapChip'
+import { MapChipImage, MapChipsCollection, MapChipCollectionProperties, MapChipImageProperties } from './MapChips'
+import { AutoTiles, AutoTilesProperties } from './AutoTile/AutoTiles'
 
 export type TiledMapDataProperties = {
   chipCountX: number,
@@ -104,13 +104,30 @@ export class TiledMapData {
       mapData: this._mapData.map(data => data?.toObject() || null)
     }
   }
+
+  static fromObject(val: TiledMapDataProperties) {
+    const mapData = val.mapData.map(data => {
+      if (isAutoTileMapChipProperties(data)) {
+        return AutoTileMapChip.fromObject(data)
+      } else if (data) {
+        return MapChip.fromObject(data)
+      }
+
+      return null
+    })
+
+    return new TiledMapData(val.chipCountX, val.chipCountY, mapData)
+  }
 }
 
 export type TiledMapProperties = {
   chipCountX: number,
   chipCountY: number,
   chipWidth: number,
-  chipHeight: number
+  chipHeight: number,
+  mapChipImages: MapChipCollectionProperties,
+  autoTiles: AutoTilesProperties,
+  tiledMapData: TiledMapDataProperties
 }
 
 export class TiledMap {
@@ -154,14 +171,14 @@ export class TiledMap {
     return this._data
   }
 
-  public convertChipPositionToPixel(chipX: number, chipY: number) {
+  convertChipPositionToPixel(chipX: number, chipY: number) {
     return {
       x: chipX * this.chipWidth,
       y: chipY * this.chipHeight
     }
   }
 
-  public put(mapChip: MapChip | null, chipX: number, chipY: number) {
+  put(mapChip: MapChip | null, chipX: number, chipY: number) {
     this._data.put(mapChip, chipX, chipY)
   }
 
@@ -170,7 +187,23 @@ export class TiledMap {
       chipCountX: this._chipCountX,
       chipCountY: this._chipCountY,
       chipWidth: this._chipWidth,
-      chipHeight: this._chipHeight
+      chipHeight: this._chipHeight,
+      mapChipImages: this._mapChipImages.toObject(),
+      autoTiles: this._autoTiles.toObject(),
+      tiledMapData: this._data.toObject()
     }
+  }
+
+  private setSerializedProperties(val: {mapChipImages: MapChipCollectionProperties, autoTiles: AutoTilesProperties, tiledMapData: TiledMapDataProperties}) {
+    this._mapChipImages.fromObject(val.mapChipImages)
+    this._autoTiles.fromObject(val.autoTiles)
+    this._data = TiledMapData.fromObject(val.tiledMapData)
+  }
+
+  static fromObject(val: TiledMapProperties) {
+    const tiledMap = new TiledMap(val.chipCountX, val.chipCountY, val.chipWidth, val.chipHeight)
+    tiledMap.setSerializedProperties({mapChipImages: val.mapChipImages, autoTiles: val.autoTiles, tiledMapData: val.tiledMapData})
+
+    return tiledMap
   }
 }
