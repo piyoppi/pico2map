@@ -178,7 +178,8 @@ export interface AutoTileMapChipProperties extends MapChipProperties {
 }
 
 export function isAutoTileMapChipProperties(obj: any): obj is AutoTileMapChipProperties{
-  return typeof obj.autoTileId === 'function' &&
+  return obj &&
+         typeof obj.autoTileId === 'function' &&
          obj.boundary !== undefined &&
          obj.cross !== undefined
 }
