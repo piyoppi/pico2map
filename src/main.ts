@@ -2,7 +2,7 @@ import { TiledMap, Projects, MapChipImage, DefaultAutoTileImportStrategy } from 
 
 async function initialize() {
   const chipSize = { width: 32, height: 32 }
-  const tiledMap = new TiledMap(30, 30, chipSize.width, chipSize.height)
+  let tiledMap = new TiledMap(30, 30, chipSize.width, chipSize.height)
 
   const mapChipImage = new MapChipImage("images/chip.png", 1)
   const autoTileImage = new MapChipImage("images/auto-tile-sample.png", 2)
@@ -13,10 +13,25 @@ async function initialize() {
   tiledMap.mapChipsCollection.push(mapChipImage)
   tiledMap.mapChipsCollection.push(autoTileImage)
 
-  const autoTileImportStrategy = new DefaultAutoTileImportStrategy(autoTileImage, chipSize.width, chipSize.height)
-  tiledMap.autoTiles.import(autoTileImportStrategy)
+  tiledMap.autoTiles.import(new DefaultAutoTileImportStrategy(autoTileImage, chipSize.width, chipSize.height))
 
-  Projects.add(tiledMap, 1)
+  const project = Projects.add(tiledMap, 1)
+
+  const saveButton = document.getElementById('save') as HTMLInputElement
+  saveButton.onclick = () => localStorage.setItem('mapData', JSON.stringify(tiledMap.toObject()))
+
+  const loadButton = document.getElementById('load') as HTMLInputElement
+  loadButton.onclick = () => {
+    const serializedData = localStorage.getItem('mapData')
+    if (!serializedData) return
+    project.setTiledMap(TiledMap.fromObject(JSON.parse(serializedData)))
+    project.requestRenderAll()
+  }
+
+  const renderButton = document.getElementById('render') as HTMLInputElement
+  renderButton.onclick = () => {
+    project.requestRenderAll()
+  }
 
   const rectangleRadioButton = document.getElementById('rectangle') as HTMLInputElement
   const eraseRadioButton = document.getElementById('erase') as HTMLInputElement
