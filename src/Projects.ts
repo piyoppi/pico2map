@@ -5,12 +5,12 @@ import { AutoTile } from './AutoTile/AutoTiles'
 export class Project {
   private _mapChipSelector = new MapChipSelector(this._tiledMap)
   private _selectedAutoTile: AutoTile | null = null
+  private _renderAllFunction: (() => void) | null = null
 
   constructor(
     private _tiledMap: TiledMap,
     private _projectId: number
   ) {
-
   }
 
   get mapChipSelector() {
@@ -32,6 +32,18 @@ export class Project {
   set selectedAutoTile(val: AutoTile | null) {
     this._selectedAutoTile = val
   }
+
+  setTiledMap(map: TiledMap) {
+    this._tiledMap = map
+  }
+
+  requestRenderAll() {
+    if (this._renderAllFunction) this._renderAllFunction()
+  }
+
+  registerRenderAllCallback(fn: () => void) {
+    this._renderAllFunction = fn
+  }
 }
 
 export class Projects {
@@ -42,9 +54,12 @@ export class Projects {
     return Projects._items
   }
 
-  static add(tiledMap: TiledMap, projectId: number = -1) {
+  static add(tiledMap: TiledMap, projectId: number = -1): Project {
     const id = projectId > 0 ? projectId : Projects.createId()
-    Projects._items.push(new Project(tiledMap, id))
+    const project = new Project(tiledMap, id)
+    Projects._items.push(project)
+
+    return project
   }
 
   static clear() {

@@ -22,6 +22,7 @@ export class MapCanvas {
     private canvas: HTMLCanvasElement,
     private secondaryCanvas: HTMLCanvasElement,
   ) {
+    this._project.registerRenderAllCallback(() => this.renderAll())
   }
 
   public setBrushFromName(brushName: string) {
