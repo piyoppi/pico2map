@@ -17,17 +17,18 @@ async function initialize() {
 
   const project = Projects.add(tiledMap, 1)
 
-  const saveButton = document.getElementById('save') as HTMLInputElement
-  saveButton.onclick = () => localStorage.setItem('mapData', JSON.stringify(tiledMap.toObject()))
-
   const loadButton = document.getElementById('load') as HTMLInputElement
   loadButton.onclick = async () => {
     const serializedData = localStorage.getItem('mapData')
     if (!serializedData) return
-    project.setTiledMap(TiledMap.fromObject(JSON.parse(serializedData)))
+    tiledMap = TiledMap.fromObject(JSON.parse(serializedData))
+    project.setTiledMap(tiledMap)
     await project.tiledMap.mapChipsCollection.waitWhileLoading()
     project.requestRenderAll()
   }
+
+  const saveButton = document.getElementById('save') as HTMLInputElement
+  saveButton.onclick = () => localStorage.setItem('mapData', JSON.stringify(tiledMap.toObject()))
 
   const renderButton = document.getElementById('render') as HTMLInputElement
   renderButton.onclick = () => {
