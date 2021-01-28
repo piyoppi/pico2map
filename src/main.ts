@@ -21,10 +21,11 @@ async function initialize() {
   saveButton.onclick = () => localStorage.setItem('mapData', JSON.stringify(tiledMap.toObject()))
 
   const loadButton = document.getElementById('load') as HTMLInputElement
-  loadButton.onclick = () => {
+  loadButton.onclick = async () => {
     const serializedData = localStorage.getItem('mapData')
     if (!serializedData) return
     project.setTiledMap(TiledMap.fromObject(JSON.parse(serializedData)))
+    await project.tiledMap.mapChipsCollection.waitWhileLoading()
     project.requestRenderAll()
   }
 
