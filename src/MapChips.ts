@@ -88,6 +88,10 @@ export class MapChipsCollection {
     return this._items.get(chipId) || null
   }
 
+  async waitWhileLoading(): Promise<void> {
+    await Promise.all(Array.from(this._items.values()).map( item => item.waitWhileLoading()))
+  }
+
   toObject(): MapChipCollectionProperties {
     const objectedMapChipImage: Array<MapChipImageProperties> = []
     const valuesItr = this._items.values()
