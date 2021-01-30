@@ -1,7 +1,7 @@
 import { MapChipFragment } from './../../MapChip'
 import { BrushPaint } from './../Brush'
 import { TiledMapData } from '../../TiledMap'
-import { AutoTile } from '../../AutoTile/AutoTiles'
+import { AutoTile, AutoTiles } from '../../AutoTile/AutoTiles'
 
 export interface Arrangement {
   setMapChips(mapChips: Array<MapChipFragment>): void
@@ -20,6 +20,13 @@ export interface AutoTileRequired {
 }
 export function isAutoTileRequired(obj: any): obj is AutoTileRequired {
   return typeof obj.setAutoTile === 'function'
+}
+
+export interface AutoTilesRequired {
+  setAutoTiles(autoTiles: AutoTiles): void
+}
+export function isAutoTilesRequired(obj: any): obj is AutoTilesRequired {
+  return typeof obj.setAutoTiles === 'function'
 }
 
 export interface ArrangementDescription {

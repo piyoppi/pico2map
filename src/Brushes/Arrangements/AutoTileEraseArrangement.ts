@@ -1,24 +1,30 @@
 import { MapChipFragment } from '../../MapChip'
-import { Arrangement, ArrangementDescription, TiledMapDataRequired } from './Arrangement'
+import { Arrangement, ArrangementDescription, TiledMapDataRequired, AutoTilesRequired } from './Arrangement'
 import { BrushPaint } from './../Brush'
 import { TiledMapData } from '../../TiledMap';
 import { AutoTileArrangement } from './AutoTileArrangement'
 import { AutoTileMapChip } from '../../MapChip';
+import { AutoTiles } from '../../AutoTile/AutoTiles'
 
 export const AutoTileEraseArrangementDescription: ArrangementDescription = {
   name: 'AutoTileEraseArrangement',
   create: () => new AutoTileEraseArrangement()
 }
 
-export class AutoTileEraseArrangement implements Arrangement, TiledMapDataRequired {
+export class AutoTileEraseArrangement implements Arrangement, TiledMapDataRequired, AutoTilesRequired {
   private _autoTileArrangement = new AutoTileArrangement()
   private _tiledMapData: TiledMapData | null = null
+  private _autoTiles: AutoTiles | null = null
 
   setMapChips(_: Array<MapChipFragment>) {
   }
 
   setTiledMapData(tiledMapData: TiledMapData) {
     this._tiledMapData = tiledMapData 
+  }
+
+  setAutoTiles(autoTiles: AutoTiles) {
+    this._autoTiles = autoTiles
   }
 
   apply(paints: Array<BrushPaint>): Array<BrushPaint> {
@@ -29,6 +35,7 @@ export class AutoTileEraseArrangement implements Arrangement, TiledMapDataRequir
 
   erase(paints: Array<BrushPaint>): Array<BrushPaint> {
     if (!this._tiledMapData) throw new Error('MapData is not set.')
+    if (!this._autoTiles) throw new Error('AutoTiles is not set')
 
     const resultPaints: Array<BrushPaint> = []
 
@@ -68,7 +75,10 @@ export class AutoTileEraseArrangement implements Arrangement, TiledMapDataRequir
           const chip = tiledBuffer.getMapDataFromChipPosition(x, y)
 
           if (chip && chip instanceof AutoTileMapChip) {
-            this._autoTileArrangement.setAutoTile(chip.autoTile)
+            const autoTile = this._autoTiles?.fromId(chip.autoTileId)
+            if (!autoTile) continue
+
+            this._autoTileArrangement.setAutoTile(autoTile)
             const appliedPaints = this._autoTileArrangement.apply([{x, y, chip}])
             if (appliedPaints.length === 0) continue
             resultPaints.push({x: appliedPaints[0].x + bufferOffsetX, y: appliedPaints[0].y + bufferOffsetY, chip: appliedPaints[0].chip})

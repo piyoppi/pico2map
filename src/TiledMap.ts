@@ -107,13 +107,14 @@ export class TiledMapData {
 
   static fromObject(val: TiledMapDataProperties) {
     const mapData = val.mapData.map(data => {
+      if (!data) return null
+
       if (isAutoTileMapChipProperties(data)) {
         return AutoTileMapChip.fromObject(data)
-      } else if (data) {
-        return MapChip.fromObject(data)
       }
 
-      return null
+      return MapChip.fromObject(data)
+
     })
 
     return new TiledMapData(val.chipCountX, val.chipCountY, mapData)

@@ -30,7 +30,7 @@ export const AutoTileArrangementDescription: ArrangementDescription = {
 export class AutoTileArrangement implements Arrangement, TiledMapDataRequired, AutoTileRequired {
   private _autoTile: AutoTile | null = null
   private _tiledMapData: TiledMapData | null = null
-  private temporaryChip = new AutoTileMapChip(new AutoTile([], -1), [new MapChipFragment(-1, -1, -1)])
+  private temporaryChip = new AutoTileMapChip(-1, [new MapChipFragment(-1, -1, -1)])
 
   get tiledMapData(): TiledMapData | null {
     return this._tiledMapData
@@ -135,7 +135,7 @@ export class AutoTileArrangement implements Arrangement, TiledMapDataRequired, A
   private getTiledPattern(adjacent: number, aroundChips: Array<AutoTileMapChip | null>): AutoTileMapChip | null {
     if (!this._autoTile) return null
 
-    const mapChip = new AutoTileMapChip(this._autoTile)
+    const mapChip = new AutoTileMapChip(this._autoTile.id)
     const mapChips = this._autoTile.mapChipFragments
     mapChip.setArrangementName('AutoTileArrangement')
 
@@ -251,8 +251,6 @@ export class AutoTileArrangement implements Arrangement, TiledMapDataRequired, A
     if (!this._autoTile) return false
     if (!chip) return false
 
-    const mapChips = this._autoTile.mapChipFragments
-
-    return mapChips.some(autoTileChip => autoTileChip.compare(chip.items[0]) || this.temporaryChip.compare(chip.items[0]))
+    return this._autoTile.id === chip.autoTileId
   }
 }
