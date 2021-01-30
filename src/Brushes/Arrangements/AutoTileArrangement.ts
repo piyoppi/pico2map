@@ -135,9 +135,8 @@ export class AutoTileArrangement implements Arrangement, TiledMapDataRequired, A
   private getTiledPattern(adjacent: number, aroundChips: Array<AutoTileMapChip | null>): AutoTileMapChip | null {
     if (!this._autoTile) return null
 
-    const mapChip = new AutoTileMapChip(this._autoTile.id)
+    const mapChip = new AutoTileMapChip(this._autoTile.id, [], 'AutoTileArrangement')
     const mapChips = this._autoTile.mapChipFragments
-    mapChip.setArrangementName('AutoTileArrangement')
 
     const boundary = {
       top: false,

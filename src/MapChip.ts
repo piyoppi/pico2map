@@ -102,15 +102,16 @@ export class MapChipFragment implements MapChipComparable {
 }
 
 export interface MapChipProperties {
-  items: Array<MapChipFragmentProperties>
+  items: Array<MapChipFragmentProperties>,
+  arrangementName: string
 }
 
 export class MapChip implements MapChipComparable {
   private _identifyKey = ''
-  private _arrangementName = ''
 
   constructor(
     private _items: Array<MapChipFragment> = [],
+    private _arrangementName = ''
   ) {
     this._buildIdentifyKey()
   }
@@ -162,12 +163,13 @@ export class MapChip implements MapChipComparable {
 
   toObject(): MapChipProperties {
     return {
-      items: this._items.map(item => item.toObject())
+      items: this._items.map(item => item.toObject()),
+      arrangementName: this._arrangementName
     }
   }
 
   static fromObject(val: MapChipProperties): MapChip {
-    return new MapChip(val.items.map(item => MapChipFragment.fromObject(item)))
+    return new MapChip(val.items.map(item => MapChipFragment.fromObject(item)), val.arrangementName)
   }
 }
 
@@ -188,6 +190,7 @@ export class AutoTileMapChip extends MapChip {
   constructor(
     private _autoTileId: number,
     items: Array<MapChipFragment> = [],
+    _arrangementName = '',
     private _boundary: Boundary = {
       top: false,
       bottom: false,
@@ -201,7 +204,7 @@ export class AutoTileMapChip extends MapChip {
       bottomRight: false
     }
   ){
-    super(items)
+    super(items, _arrangementName)
   }
 
   get boundary() {
@@ -234,7 +237,7 @@ export class AutoTileMapChip extends MapChip {
   }
 
   static fromObject(val: AutoTileMapChipProperties): AutoTileMapChip {
-    return new AutoTileMapChip(val.autoTileId, val.items.map(item => MapChipFragment.fromObject(item)), val.boundary, val.cross)
+    return new AutoTileMapChip(val.autoTileId, val.items.map(item => MapChipFragment.fromObject(item)), val.arrangementName, val.boundary, val.cross)
   }
 }
 export function isAutoTileMapChip(obj: any): obj is AutoTileMapChip {
