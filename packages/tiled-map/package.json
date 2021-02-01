@@ -3,9 +3,6 @@
   "version": "0.0.1",
   "description": "",
   "main": "dist/main.js",
-  "directories": {
-    "example": "examples"
-  },
   "dependencies": {
     "typescript": "^4.1.3"
   },
