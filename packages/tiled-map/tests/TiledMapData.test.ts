@@ -1,11 +1,11 @@
 import { TiledMapData } from './../src/TiledMap'
-import { MapChip } from './../src/MapChip'
+import { MapChip, MapChipFragment } from './../src/MapChip'
 
 describe('#transferFromTiledMapData', () => {
   it('Transfered a source data', () => {
     const srcTiledMapData = new TiledMapData(5, 5)
-    const c1 = new MapChip(0, 0, 0)
-    const c2 = new MapChip(2, 0, 0)
+    const c1 = new MapChip([new MapChipFragment(0, 0, 0)])
+    const c2 = new MapChip([new MapChipFragment(2, 0, 0)])
     const expectMapData = [
       c1, c1, c2, c1, c1,
       c1, c2, c2, c2, c1,
@@ -25,8 +25,8 @@ describe('#transferFromTiledMapData', () => {
 
   it('With clipping', () => {
     const srcTiledMapData = new TiledMapData(5, 5)
-    const c1 = new MapChip(0, 0, 0)
-    const c2 = new MapChip(2, 0, 0)
+    const c1 = new MapChip([new MapChipFragment(0, 0, 0)])
+    const c2 = new MapChip([new MapChipFragment(2, 0, 0)])
     const source = [
       c1, c1, c2, c1, c1,
       c1, c2, c2, c2, c1,
@@ -72,8 +72,8 @@ describe('#transferFromTiledMapData', () => {
 describe('#put', () => {
   it('Put some MapChips', () => {
     const data = new TiledMapData(3, 3)
-    const c1 = new MapChip(0, 0, 0)
-    const c2 = new MapChip(2, 0, 0)
+    const c1 = new MapChip([new MapChipFragment(0, 0, 0)])
+    const c2 = new MapChip([new MapChipFragment(2, 0, 0)])
 
     data.put(c1, 0, 0)
     data.put(c2, 1, 1)
@@ -93,8 +93,8 @@ describe('#put', () => {
 describe('#getMapDataFromChipPosition', () => {
   it('return a MapChip', () => {
     const data = new TiledMapData(3, 3)
-    const c1 = new MapChip(0, 0, 0)
-    const c2 = new MapChip(2, 0, 0)
+    const c1 = new MapChip([new MapChipFragment(0, 0, 0)])
+    const c2 = new MapChip([new MapChipFragment(2, 0, 0)])
     const source = [
       c1, null,   c2,
       c2,   c2,   c1,
@@ -112,8 +112,8 @@ describe('#getMapDataFromChipPosition', () => {
 describe('#filter', () => {
   it('Return filtered map data', () => {
     const data = new TiledMapData(3, 3)
-    const c1 = new MapChip(0, 0, 0)
-    const c2 = new MapChip(2, 0, 0)
+    const c1 = new MapChip([new MapChipFragment(0, 0, 0)])
+    const c2 = new MapChip([new MapChipFragment(2, 0, 0)])
     const source = [
       c1, null,   c2,
       c2,   c2,   c1,

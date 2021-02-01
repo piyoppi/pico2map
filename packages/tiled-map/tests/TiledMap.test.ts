@@ -1,5 +1,5 @@
 import { TiledMap } from './../src/TiledMap'
-import { MapChip } from './../src/MapChip'
+import { MapChip, MapChipFragment } from './../src/MapChip'
 
 const mapSize = {
   width: 10,
@@ -18,7 +18,7 @@ describe('#convertChipPositionToPixel', () => {
 
 describe('#put', () => {
   it('Should put a map chip', () => {
-    const mapChip = new MapChip(1, 1, 1)
+    const mapChip = new MapChip([new MapChipFragment(1, 1, 1)])
 
     tiledMap.put(mapChip, 3, 2)
     expect(tiledMap.data.getMapDataFromChipPosition(3, 2)).toEqual(mapChip)
