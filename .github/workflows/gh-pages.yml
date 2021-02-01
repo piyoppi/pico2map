@@ -32,18 +32,18 @@ jobs:
         
       - name: Install dependencies for examples
         run: npm install
-        working-directory: ./examples
+        working-directory: ./packages/map-editor-examples
 
       - name: Build
         run: npm run build
-        working-directory: ./examples
+        working-directory: ./packages/map-editor-examples
       
       - name: Remove .gitignore file for publish examples
-        run: rm ./examples/.gitignore
+        working-directory: ./packages/map-editor-examples/.gitignore
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./examples
+          publish_dir: ./packages/map-editor-examples
           allow_empty_commit: true
