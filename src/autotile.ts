@@ -1,4 +1,5 @@
-import { TiledMap, Projects, MapChipImage } from './../../src/main'
+import { Projects } from '@piyoppi/map-editor'
+import { TiledMap, MapChipImage } from '@piyoppi/tiled-map'
 
 const tiledMap = new TiledMap(30, 30, 32, 32)
 const mapChipImage = new MapChipImage("images/auto-tile-sample.png", 1)

@@ -1,6 +1,7 @@
 const path = require('path');
 
 module.exports = {
+  mode: 'development',
   entry: {
     main: './src/main.ts',
     autotile: './src/autotile.ts'

@@ -1,4 +1,5 @@
-import { TiledMap, Projects, MapChipImage, DefaultAutoTileImportStrategy } from './../../src/main'
+import { Projects } from '@piyoppi/map-editor'
+import { TiledMap, MapChipImage, DefaultAutoTileImportStrategy } from '@piyoppi/tiled-map'
 
 async function initialize() {
   const chipSize = { width: 32, height: 32 }
