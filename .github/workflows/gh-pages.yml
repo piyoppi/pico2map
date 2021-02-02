@@ -17,7 +17,8 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v1
         with:
-          node-version: '12.x'
+          node-version: '15.x'
+
       - name: Cache dependencies
         uses: actions/cache@v2
         with:
@@ -30,20 +31,24 @@ jobs:
       - name: Install dependencies
         run: npm install
         
-      - name: Install dependencies for examples
-        run: npm install
-        working-directory: ./examples
-
-      - name: Build
+      - name: Build tiled-map
         run: npm run build
-        working-directory: ./examples
+        working-directory: ./packages/tiled-map
+
+      - name: Build map-editor
+        run: npm run build
+        working-directory: ./packages/map-editor
+
+      - name: Build map-editor-examples
+        run: npm run build
+        working-directory: ./packages/map-editor-examples
       
       - name: Remove .gitignore file for publish examples
-        run: rm ./examples/.gitignore
+        run: rm ./packages/map-editor-examples/.gitignore
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./examples
+          publish_dir: ./packages/map-editor-examples
           allow_empty_commit: true

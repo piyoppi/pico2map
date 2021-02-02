@@ -1,0 +1,14 @@
+{
+  "include": ["src", "types"],
+  "compilerOptions": {
+    "target": "es2019",
+    "module": "esnext",
+    "rootDir": "./src",
+    "strict": true,
+    "sourceMap": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "declaration": true,
+    "outDir": "dist"
+  }
+}
