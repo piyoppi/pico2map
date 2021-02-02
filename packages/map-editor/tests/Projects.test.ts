@@ -1,5 +1,5 @@
 import { Projects } from './../src/Projects'
-import { TiledMap } from './../src/TiledMap'
+import { TiledMap } from '@piyoppi/tiled-map'
 
 describe('#add', () => {
   it('Should add a project', () => {

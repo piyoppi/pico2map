@@ -5,6 +5,7 @@
     "module": "esnext",
     "rootDir": "./src",
     "strict": true,
+    "sourceMap": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
     "declaration": true,

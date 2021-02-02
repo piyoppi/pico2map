@@ -16,6 +16,7 @@ export class DefaultArrangement implements Arrangement {
   }
 
   apply(paints: Array<BrushPaint>): Array<BrushPaint> {
+    if (this._mapChips.length !== 1) throw new Error('Invalid count of map chips. DefaultArrangement requires a map chip.')
     return paints.map(paint => ({...paint, chip: new MapChip([this._mapChips[0]])}))
   }
 }

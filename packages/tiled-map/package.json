@@ -9,12 +9,15 @@
   "devDependencies": {
     "@types/jest": "^26.0.20",
     "jest": "^26.6.3",
-    "ts-jest": "^26.4.4"
+    "ts-jest": "^26.4.4",
+    "ts-loader": "^8.0.14",
+    "webpack": "^5.17.0",
+    "webpack-cli": "^4.4.0"
   },
   "scripts": {
     "test": "jest",
-    "build": "tsc",
-    "watch": "tsc -w"
+    "build": "webpack",
+    "watch": "webpack -w"
   },
   "author": "piyoppi",
   "license": "MIT"
