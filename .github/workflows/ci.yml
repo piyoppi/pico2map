@@ -28,6 +28,14 @@ jobs:
       - name: Install dependencies
         run: npm install
         
+      - name: Build tiled-map
+        run: npm run build
+        working-directory: ./packages/tiled-map
+
+      - name: Build map-editor
+        run: npm run build
+        working-directory: ./packages/map-editor
+
       - name: Test tiled-map
         run: npm test
         working-directory: ./packages/tiled-map
