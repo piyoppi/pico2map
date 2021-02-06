@@ -1,5 +1,5 @@
 {
-  "name": "@piyoppi/tiled-map",
+  "name": "@pico2map/tiled-map",
   "version": "0.0.1",
   "description": "",
   "main": "dist/main.js",
