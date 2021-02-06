@@ -76,7 +76,7 @@ export class MapMatrix<T> {
     }
   }
 
-  private allocate() {
+  protected allocate(defaultValue: T | null = null) {
     this._items = new Array(this._chipCountY * this._chipCountX).fill(null)
   }
 }

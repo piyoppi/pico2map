@@ -57,6 +57,10 @@ export class TiledMap {
     return this._data
   }
 
+  get coliders() {
+    return this._coliders
+  }
+
   convertChipPositionToPixel(chipX: number, chipY: number) {
     return {
       x: chipX * this.chipWidth,

@@ -1,15 +1,15 @@
 import { MapChip, MapChipProperties,  AutoTileMapChipProperties, isAutoTileMapChipProperties, AutoTileMapChip } from './../MapChip'
 import { MapMatrix } from './MapMatrix'
 
-export type ColiderValues = 'colider' | 'none'
+export type ColiderTypes = 'colider' | 'none'
 
 export type ColiderMapProperties = {
   chipCountX: number,
   chipCountY: number,
-  coliders: Array<ColiderValues>
+  coliders: Array<ColiderTypes>
 }
 
-export class ColiderMap extends MapMatrix<ColiderValues> {
+export class ColiderMap extends MapMatrix<ColiderTypes> {
   toObject(): ColiderMapProperties {
     return {
       chipCountX: this._chipCountX,
@@ -20,5 +20,9 @@ export class ColiderMap extends MapMatrix<ColiderValues> {
 
   static fromObject(val: ColiderMapProperties) {
     return new ColiderMap(val.chipCountX, val.chipCountY, val.coliders)
+  }
+
+  protected allocate() {
+    super.allocate('none')
   }
 }

@@ -13,6 +13,7 @@ export class MapCanvasComponent extends LitElement {
   private _project: Project | null = null
   private _canvas: HTMLCanvasElement | null = null
   private _secondaryCanvas: HTMLCanvasElement | null = null
+  private _coliderCanvas : HTMLCanvasElement | null = null
 
   @property({type: Number}) cursorChipX = 0
   @property({type: Number}) cursorChipY = 0
@@ -94,10 +95,10 @@ export class MapCanvasComponent extends LitElement {
   }
 
   private setupMapCanvas() {
-    if (!this._project || !this._canvas || !this._secondaryCanvas) return;
+    if (!this._project || !this._canvas || !this._secondaryCanvas || !this._coliderCanvas) return;
 
     if (!this._mapCanvas) {
-      this._mapCanvas = new MapCanvas(this._project, this._canvas, this._secondaryCanvas)
+      this._mapCanvas = new MapCanvas(this._project, this._canvas, this._secondaryCanvas, this._coliderCanvas)
     }
 
     this._mapCanvas.setBrushFromName(this._brushName)
@@ -110,6 +111,7 @@ export class MapCanvasComponent extends LitElement {
 
     this._canvas = this.shadowRoot?.getElementById('map-canvas') as HTMLCanvasElement
     this._secondaryCanvas = this.shadowRoot?.getElementById('secondary-canvas') as HTMLCanvasElement
+    this._coliderCanvas = this.shadowRoot?.getElementById('colider-canvas') as HTMLCanvasElement
     this.setupMapCanvas()
   }
 
@@ -165,6 +167,11 @@ export class MapCanvasComponent extends LitElement {
 
       <div id="boundary">
         <canvas
+          id="colider-canvas"
+          width="${this.width}"
+          height="${this.height}"
+        ></canvas>
+        <canvas
           id="map-canvas"
           width="${this.width}"
           height="${this.height}"
@@ -208,7 +215,7 @@ export class MapCanvasComponent extends LitElement {
         position: relative;
       }
 
-      #secondary-canvas {
+      #secondary-canvas, #colider-canvas {
         pointer-events: none;
         position: absolute;
         top: 0;

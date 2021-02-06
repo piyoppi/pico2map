@@ -7,15 +7,18 @@ import { Brush } from './Brushes/Brush'
 import { Arrangement, isTiledMapDataRequired, isAutoTileRequired, isAutoTilesRequired } from './Brushes/Arrangements/Arrangement'
 import { DefaultArrangement } from './Brushes/Arrangements/DefaultArrangement'
 import { MapRenderer } from './MapRenderer'
+import { ColiderRenderer } from './ColiderRenderer'
 
 export class MapCanvas {
   private _ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D
   private _secondaryCanvasCtx = this.secondaryCanvas.getContext('2d') as CanvasRenderingContext2D
+  private _coliderCtx = this.coliderCanvas.getContext('2d') as CanvasRenderingContext2D
   private _isMouseDown = false
   private _brush: Brush = new Pen()
   private _arrangement: Arrangement = new DefaultArrangement()
   private _lastMapChipPosition = {x: -1, y: -1}
   private _renderer = new MapRenderer(this._project.tiledMap)
+  private _coliderRenderer = new ColiderRenderer(this._project.tiledMap)
 
   constructor(
     private _project: Project,
@@ -23,7 +26,10 @@ export class MapCanvas {
     private secondaryCanvas: HTMLCanvasElement,
     private coliderCanvas: HTMLCanvasElement
   ) {
-    this._project.registerRenderAllCallback(() => this._renderer.renderAll(this._ctx))
+    this._project.registerRenderAllCallback(() => {
+      this._renderer.renderAll(this._ctx)
+      this._coliderRenderer.renderAll(this._coliderCtx)
+    })
   }
 
   public setBrushFromName(brushName: string) {
