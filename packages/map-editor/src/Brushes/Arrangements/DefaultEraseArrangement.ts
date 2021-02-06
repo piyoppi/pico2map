@@ -33,7 +33,7 @@ export class DefaultEraseArrangement implements Arrangement, TiledMapDataRequire
     paints.forEach(paint => {
       if (!this._tiledMapData) throw new Error('MapData is not set.')
 
-      const chip = this._tiledMapData.getMapDataFromChipPosition(paint.x, paint.y)
+      const chip = this._tiledMapData.getFromChipPosition(paint.x, paint.y)
 
       if (chip?.arrangementName === 'AutoTileArrangement') {
         autoTilePaints.push(paint)

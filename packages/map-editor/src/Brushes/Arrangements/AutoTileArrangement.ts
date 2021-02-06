@@ -78,8 +78,8 @@ export class AutoTileArrangement implements Arrangement, TiledMapDataRequired, A
 
     for(let y = offsetY1; y < size.height + offsetY2; y++) {
       for(let x = offsetX1; x < size.width + offsetX2; x++) {
-        const cursor = tiledBuffer.getMapDataFromChipPosition(x, y)
-        const targetChip = tiledBuffer.getMapDataFromChipPosition(x, y)
+        const cursor = tiledBuffer.getFromChipPosition(x, y)
+        const targetChip = tiledBuffer.getFromChipPosition(x, y)
         const isTemporaryChip = targetChip ? this.temporaryChip.compare(targetChip) : false
         if (!cursor) continue
         if (!isTemporaryChip) continue
@@ -100,14 +100,14 @@ export class AutoTileArrangement implements Arrangement, TiledMapDataRequired, A
         let adjacent = 0
 
         const aroundChips: Array<AutoTileMapChip | null> = [
-          tiledBuffer.getMapDataFromChipPosition(x, y - 1),
-          tiledBuffer.getMapDataFromChipPosition(x - 1, y),
-          tiledBuffer.getMapDataFromChipPosition(x + 1, y),
-          tiledBuffer.getMapDataFromChipPosition(x, y + 1),
-          tiledBuffer.getMapDataFromChipPosition(x - 1, y - 1),
-          tiledBuffer.getMapDataFromChipPosition(x + 1, y - 1),
-          tiledBuffer.getMapDataFromChipPosition(x - 1, y + 1),
-          tiledBuffer.getMapDataFromChipPosition(x + 1, y + 1)
+          tiledBuffer.getFromChipPosition(x, y - 1),
+          tiledBuffer.getFromChipPosition(x - 1, y),
+          tiledBuffer.getFromChipPosition(x + 1, y),
+          tiledBuffer.getFromChipPosition(x, y + 1),
+          tiledBuffer.getFromChipPosition(x - 1, y - 1),
+          tiledBuffer.getFromChipPosition(x + 1, y - 1),
+          tiledBuffer.getFromChipPosition(x - 1, y + 1),
+          tiledBuffer.getFromChipPosition(x + 1, y + 1)
         ].map( mapChip => isAutoTileMapChip(mapChip) ? mapChip : null)
 
         if (!aroundChips[0]?.boundary.bottom) adjacent += this._isAdjacent(aroundChips[0]) ? 1 : 0

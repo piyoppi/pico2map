@@ -69,7 +69,7 @@ export class AutoTileEraseArrangement implements Arrangement, TiledMapDataRequir
         for (let x = paintPositionAtBuffer.x - 1; x <= paintPositionAtBuffer.x + 1; x++) {
           if (x === paintPositionAtBuffer.x && y === paintPositionAtBuffer.y) continue
 
-          const chip = tiledBuffer.getMapDataFromChipPosition(x, y)
+          const chip = tiledBuffer.getFromChipPosition(x, y)
 
           if (chip && chip instanceof AutoTileMapChip) {
             const autoTile = this._autoTiles?.fromId(chip.autoTileId)

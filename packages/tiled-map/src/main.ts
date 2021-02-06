@@ -1,4 +1,5 @@
-export { TiledMap, TiledMapData, TiledMapDataProperties, TiledMapProperties } from './TiledMap'
+export { TiledMap, TiledMapProperties } from './TiledMap'
+export { TiledMapData, TiledMapDataProperties } from './MapData/TiledMapData'
 export { MapChipImage, MapChipImageProperties, MapChipsCollection, MapChipCollectionProperties } from './MapChips'
 export { MapChipFragment, MapChip, AutoTileMapChip, isAutoTileMapChip } from './MapChip'
 export { AutoTiles, AutoTileProperties, AutoTile, AutoTilesProperties } from './AutoTile/AutoTiles'

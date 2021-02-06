@@ -90,7 +90,6 @@ export class MapCanvas {
 
     this.clearSecondaryCanvas()
     this._brush.mouseMove(chipPosition.x, chipPosition.y).forEach(paint => {
-      const defaultChip = this._project.mapChipSelector.selectedChips[0]
       const chip = paint.chip
       this._putOrClearChipToCanvas(this._secondaryCanvasCtx, chip, paint.x, paint.y, true)
     })
@@ -106,7 +105,6 @@ export class MapCanvas {
     const chipPosition = this.convertFromCursorPositionToChipPosition(x, y)
 
     this._brush.mouseUp(chipPosition.x, chipPosition.y).forEach(paint => {
-      const defaultChip = this._project.mapChipSelector.selectedChips[0]
       const chip = paint.chip
       this.putChip(chip, paint.x, paint.y)
     })
@@ -122,7 +120,7 @@ export class MapCanvas {
   }
 
   renderAll() {
-    this._project.tiledMap.data.mapData.forEach((value, index) => {
+    this._project.tiledMap.data.items.forEach((value, index) => {
       const position = this._project.tiledMap.data.convertMapNumberToPosition(index)
       this._putOrClearChipToCanvas(this._ctx, value, position.x, position.y)
     })
