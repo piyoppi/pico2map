@@ -39,6 +39,13 @@ export function isAutoTilesRequired(obj: any): obj is AutoTilesRequired {
   return typeof obj.setAutoTiles === 'function'
 }
 
+export interface ColiderTypesRequired {
+  setColiderTypes(type: ColiderTypes): void
+}
+export function isColiderTypesRequired (obj: any): obj is ColiderTypesRequired {
+  return typeof obj.setColiderTypes === 'function'
+}
+
 export interface ArrangementDescription<T> {
   name: string
   create(): Arrangement<T>

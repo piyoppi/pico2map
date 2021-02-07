@@ -7,9 +7,9 @@ import { Brush } from './Brushes/Brush'
 import { Arrangement, isMapChipFragmentRequired, isTiledMapDataRequired, isAutoTileRequired, isAutoTilesRequired } from './Brushes/Arrangements/Arrangement'
 import { DefaultArrangement } from './Brushes/Arrangements/DefaultArrangement'
 import { MapRenderer } from './MapRenderer'
-import { ColiderRenderer } from './ColiderRenderer'
+import { EditorCanvas } from './EditorCanvas'
 
-export class MapCanvas {
+export class MapCanvas implements EditorCanvas {
   private _ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D
   private _secondaryCanvasCtx = this.secondaryCanvas.getContext('2d') as CanvasRenderingContext2D
   private _isMouseDown = false
@@ -17,13 +17,11 @@ export class MapCanvas {
   private _arrangement: Arrangement<TiledMapDataItem> = new DefaultArrangement()
   private _lastMapChipPosition = {x: -1, y: -1}
   private _renderer = new MapRenderer(this._project.tiledMap)
-  private _coliderRenderer = new ColiderRenderer(this._project.tiledMap)
 
   constructor(
     private _project: Project,
     private canvas: HTMLCanvasElement,
-    private secondaryCanvas: HTMLCanvasElement,
-    private coliderCanvas: HTMLCanvasElement
+    private secondaryCanvas: HTMLCanvasElement
   ) {
     this._project.registerRenderAllCallback(() => {
       this._renderer.renderAll(this._ctx)
@@ -90,7 +88,7 @@ export class MapCanvas {
     this._lastMapChipPosition = chipPosition
   }
 
-  mouseMove(x: number, y: number) {
+  mouseMove(x: number, y: number): {x: number, y: number} {
     const chipPosition = this.convertFromCursorPositionToChipPosition(x, y)
 
     if (!this._isMouseDown) return chipPosition

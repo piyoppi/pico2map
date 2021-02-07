@@ -3,6 +3,8 @@ import { GridImageGenerator } from '../GridImageGenerator'
 import { CursorPositionCalculator } from './helpers/CursorPositionCalculator'
 import { MapCanvas } from './../MapCanvas'
 import { Projects, Project } from './../Projects'
+import { ColiderCanvas } from '../ColiderCanvas'
+import { EditorCanvas } from '../EditorCanvas'
 
 @customElement('map-canvas-component')
 export class MapCanvasComponent extends LitElement {
@@ -10,10 +12,12 @@ export class MapCanvasComponent extends LitElement {
   private gridImageGenerator: GridImageGenerator = new GridImageGenerator()
   private cursorPositionCalculator = new CursorPositionCalculator()
   private _mapCanvas: MapCanvas | null = null
+  private _coliderCanvas: ColiderCanvas | null = null
   private _project: Project | null = null
-  private _canvas: HTMLCanvasElement | null = null
-  private _secondaryCanvas: HTMLCanvasElement | null = null
-  private _coliderCanvas : HTMLCanvasElement | null = null
+  private _canvasElement: HTMLCanvasElement | null = null
+  private _secondaryCanvasElement: HTMLCanvasElement | null = null
+  private _coliderCanvasElement : HTMLCanvasElement | null = null
+  private _mode: 'mapChip' | 'colider' = 'mapChip'
 
   @property({type: Number}) cursorChipX = 0
   @property({type: Number}) cursorChipY = 0
@@ -94,11 +98,26 @@ export class MapCanvasComponent extends LitElement {
     }
   }
 
+  get currentEditorCanvas(): EditorCanvas {
+    if (!this._coliderCanvas || !this._mapCanvas) throw new Error('EditorCanvas is not set.')
+
+    switch (this._mode) {
+      case 'colider':
+        return this._coliderCanvas
+      default:
+        return this._mapCanvas
+    }
+  }
+
   private setupMapCanvas() {
-    if (!this._project || !this._canvas || !this._secondaryCanvas || !this._coliderCanvas) return;
+    if (!this._project || !this._canvasElement || !this._secondaryCanvasElement || !this._coliderCanvasElement) return;
 
     if (!this._mapCanvas) {
-      this._mapCanvas = new MapCanvas(this._project, this._canvas, this._secondaryCanvas, this._coliderCanvas)
+      this._mapCanvas = new MapCanvas(this._project, this._canvasElement, this._secondaryCanvasElement)
+    }
+
+    if (!this._coliderCanvas) {
+      this._coliderCanvas = new ColiderCanvas(this._project, this._coliderCanvasElement, this._secondaryCanvasElement)
     }
 
     this._mapCanvas.setBrushFromName(this._brushName)
@@ -109,33 +128,27 @@ export class MapCanvasComponent extends LitElement {
     const element = this.shadowRoot?.getElementById('boundary')
     if (element) this.cursorPositionCalculator.setElement(element)
 
-    this._canvas = this.shadowRoot?.getElementById('map-canvas') as HTMLCanvasElement
-    this._secondaryCanvas = this.shadowRoot?.getElementById('secondary-canvas') as HTMLCanvasElement
-    this._coliderCanvas = this.shadowRoot?.getElementById('colider-canvas') as HTMLCanvasElement
+    this._canvasElement = this.shadowRoot?.getElementById('map-canvas') as HTMLCanvasElement
+    this._secondaryCanvasElement = this.shadowRoot?.getElementById('secondary-canvas') as HTMLCanvasElement
+    this._coliderCanvasElement = this.shadowRoot?.getElementById('colider-canvas') as HTMLCanvasElement
     this.setupMapCanvas()
   }
 
   mouseMove(e: MouseEvent) {
-    if (!this._mapCanvas) return
-
     const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY)
-    const cursor = this._mapCanvas.mouseMove(mouseCursorPosition.x, mouseCursorPosition.y)
+    const cursor = this.currentEditorCanvas.mouseMove(mouseCursorPosition.x, mouseCursorPosition.y)
     this.cursorChipX = cursor.x
     this.cursorChipY = cursor.y
   }
 
   mouseDown(e: MouseEvent) {
-    if (!this._mapCanvas || !this._project) return
-
     const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY)
-    this._mapCanvas.mouseDown(mouseCursorPosition.x, mouseCursorPosition.y)
+    this.currentEditorCanvas.mouseDown(mouseCursorPosition.x, mouseCursorPosition.y)
   }
 
   mouseUp(e: MouseEvent) {
-    if (!this._mapCanvas || !this._project) return
-
     const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY)
-    this._mapCanvas.mouseUp(mouseCursorPosition.x, mouseCursorPosition.y)
+    this.currentEditorCanvas.mouseUp(mouseCursorPosition.x, mouseCursorPosition.y)
   }
 
   render() {
