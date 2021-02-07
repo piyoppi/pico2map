@@ -31,9 +31,9 @@ describe('#apply', () => {
     )
 
     expect(arranagement.apply([
-      {x: 0, y: 0, chip: null}
+      {x: 0, y: 0}
     ])).toEqual([
-      {x: 0, y: 0, chip: expectedChip}
+      {x: 0, y: 0, item: expectedChip}
     ])
   })
 
@@ -156,13 +156,13 @@ describe('#apply', () => {
     ]
 
     expect(arranagement.apply([
-      {x: 0, y: 1, chip: null},
-      {x: 1, y: 1, chip: null},
-      {x: 2, y: 1, chip: null}
+      {x: 0, y: 1},
+      {x: 1, y: 1},
+      {x: 2, y: 1}
     ])).toEqual([
-      {x: 0, y: 1, chip: expectedChips[0]},
-      {x: 1, y: 1, chip: expectedChips[1]},
-      {x: 2, y: 1, chip: expectedChips[2]},
+      {x: 0, y: 1, item: expectedChips[0]},
+      {x: 1, y: 1, item: expectedChips[1]},
+      {x: 2, y: 1, item: expectedChips[2]},
     ])
   })
 
@@ -285,13 +285,13 @@ describe('#apply', () => {
     ]
 
     expect(arranagement.apply([
-      {x: 0, y: 0, chip: null},
-      {x: 0, y: 1, chip: null},
-      {x: 0, y: 2, chip: null}
+      {x: 0, y: 0},
+      {x: 0, y: 1},
+      {x: 0, y: 2}
     ])).toEqual([
-      {x: 0, y: 0, chip: expectedChips[0]},
-      {x: 0, y: 1, chip: expectedChips[1]},
-      {x: 0, y: 2, chip: expectedChips[2]},
+      {x: 0, y: 0, item: expectedChips[0]},
+      {x: 0, y: 1, item: expectedChips[1]},
+      {x: 0, y: 2, item: expectedChips[2]},
     ])
   })
 })
