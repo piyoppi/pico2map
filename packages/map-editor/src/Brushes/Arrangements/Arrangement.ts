@@ -1,4 +1,4 @@
-import { MapChipFragment, TiledMapData, AutoTile, AutoTiles } from '@piyoppi/tiled-map'
+import { MapChipFragment, TiledMapData, AutoTile, AutoTiles, ColiderTypes } from '@piyoppi/tiled-map'
 import { BrushPaint } from './../Brush'
 
 export interface ArrangementPaint<T> {
@@ -8,8 +8,14 @@ export interface ArrangementPaint<T> {
 }
 
 export interface Arrangement<T> {
-  setMapChips(mapChips: Array<MapChipFragment>): void
   apply(paints: Array<BrushPaint>): Array<ArrangementPaint<T>>
+}
+
+export interface MapChipFragmentRequired {
+  setMapChips(mapChips: Array<MapChipFragment>): void
+}
+export function isMapChipFragmentRequired(obj: any): obj is MapChipFragmentRequired {
+  return typeof obj.setMapChips === 'function'
 }
 
 export interface TiledMapDataRequired {

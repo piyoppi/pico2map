@@ -8,9 +8,6 @@ export const EraseArrangementDescription: ArrangementDescription<TiledMapDataIte
 }
 
 export class EraseArrangement implements Arrangement<TiledMapDataItem> {
-  setMapChips(_: Array<MapChipFragment>) {
-  }
-
   apply(paints: Array<BrushPaint>): Array<ArrangementPaint<TiledMapDataItem>> {
     return paints.map(paint => ({...paint, item: null}))
   }

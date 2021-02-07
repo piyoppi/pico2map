@@ -4,7 +4,7 @@ import { Pen } from './Brushes/Pen'
 import { Brushes } from './Brushes/Brushes'
 import { Arrangements } from './Brushes/Arrangements/Arrangements'
 import { Brush } from './Brushes/Brush'
-import { Arrangement, isTiledMapDataRequired, isAutoTileRequired, isAutoTilesRequired } from './Brushes/Arrangements/Arrangement'
+import { Arrangement, isMapChipFragmentRequired, isTiledMapDataRequired, isAutoTileRequired, isAutoTilesRequired } from './Brushes/Arrangements/Arrangement'
 import { DefaultArrangement } from './Brushes/Arrangements/DefaultArrangement'
 import { MapRenderer } from './MapRenderer'
 import { ColiderRenderer } from './ColiderRenderer'
@@ -73,7 +73,9 @@ export class MapCanvas {
   mouseDown(x: number, y: number) {
     this._isMouseDown = true
 
+    if (isMapChipFragmentRequired(this._arrangement)) {
     this._arrangement.setMapChips(this._project.mapChipSelector.selectedChips)
+    }
 
     if (isAutoTileRequired(this._arrangement) && this._project.selectedAutoTile) {
       this._arrangement.setAutoTile(this._project.selectedAutoTile)

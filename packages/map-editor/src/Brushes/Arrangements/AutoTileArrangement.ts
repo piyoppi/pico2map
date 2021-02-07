@@ -1,4 +1,4 @@
-import { Arrangement, ArrangementPaint, ArrangementDescription, TiledMapDataRequired, AutoTileRequired } from './Arrangement';
+import { Arrangement, ArrangementPaint, ArrangementDescription, TiledMapDataRequired, AutoTileRequired, MapChipFragmentRequired } from './Arrangement';
 import { BrushPaint } from './../Brush'
 import { MapChipFragment, AutoTileMapChip, isAutoTileMapChip, TiledMapData, TiledMapDataItem, AutoTile } from '@piyoppi/tiled-map'
 
@@ -25,7 +25,7 @@ export const AutoTileArrangementDescription: ArrangementDescription<TiledMapData
  * ┠square                     ┠↓
  * ┗┷┿┿┿┿┿┿┿┿┛---
  */
-export class AutoTileArrangement implements Arrangement<TiledMapDataItem>, TiledMapDataRequired, AutoTileRequired {
+export class AutoTileArrangement implements Arrangement<TiledMapDataItem>, MapChipFragmentRequired, TiledMapDataRequired, AutoTileRequired {
   private _autoTile: AutoTile | null = null
   private _tiledMapData: TiledMapData | null = null
   private temporaryChip = new AutoTileMapChip(-1, [new MapChipFragment(-1, -1, -1)])

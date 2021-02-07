@@ -1,5 +1,5 @@
 import { MapChipFragment, MapChip, TiledMapDataItem } from '@piyoppi/tiled-map'
-import { Arrangement, ArrangementPaint, ArrangementDescription } from './Arrangement'
+import { Arrangement, ArrangementPaint, ArrangementDescription, MapChipFragmentRequired } from './Arrangement'
 import { BrushPaint } from './../Brush'
 
 export const DefaultArrangementDescription: ArrangementDescription<TiledMapDataItem> = {
@@ -7,7 +7,7 @@ export const DefaultArrangementDescription: ArrangementDescription<TiledMapDataI
   create: () => new DefaultArrangement()
 }
 
-export class DefaultArrangement implements Arrangement<TiledMapDataItem> {
+export class DefaultArrangement implements Arrangement<TiledMapDataItem>, MapChipFragmentRequired {
   private _mapChips: Array<MapChipFragment> = []
   
   setMapChips(mapChips: Array<MapChipFragment>) {

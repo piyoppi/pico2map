@@ -13,9 +13,6 @@ export class AutoTileEraseArrangement implements Arrangement<TiledMapDataItem>, 
   private _tiledMapData: TiledMapData | null = null
   private _autoTiles: AutoTiles | null = null
 
-  setMapChips(_: Array<MapChipFragment>) {
-  }
-
   setTiledMapData(tiledMapData: TiledMapData) {
     this._tiledMapData = tiledMapData 
   }

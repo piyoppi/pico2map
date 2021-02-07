@@ -23,9 +23,6 @@ export class DefaultEraseArrangement implements Arrangement<TiledMapDataItem>, T
     this.autoTileEraser.setAutoTiles(autoTiles)
   }
 
-  setMapChips(_: Array<MapChipFragment>) {
-  }
-
   apply(paints: Array<BrushPaint>): Array<ArrangementPaint<TiledMapDataItem>> {
     const autoTilePaints: Array<BrushPaint> = []
     const otherPaints: Array<BrushPaint> = []
