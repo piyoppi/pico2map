@@ -1,13 +1,15 @@
 import { MapChip, MapChipProperties,  AutoTileMapChipProperties, isAutoTileMapChipProperties, AutoTileMapChip } from './../MapChip'
 import { MapMatrix } from './MapMatrix'
 
+export type TiledMapDataItem = MapChip | null
+
 export type TiledMapDataProperties = {
   chipCountX: number,
   chipCountY: number,
   mapData: Array<MapChipProperties | AutoTileMapChipProperties | null>
 }
 
-export class TiledMapData extends MapMatrix<MapChip | null> {
+export class TiledMapData extends MapMatrix<TiledMapDataItem> {
   filter(needles: Array<MapChip>): TiledMapData {
     const filtered = this._items.map(chip => needles.some(needle => !!chip && needle.compare(chip)) ? chip : null)
     return new TiledMapData(

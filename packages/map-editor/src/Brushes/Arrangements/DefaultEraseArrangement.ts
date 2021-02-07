@@ -1,15 +1,15 @@
-import { Arrangement, ArrangementDescription, TiledMapDataRequired, AutoTilesRequired } from './Arrangement'
+import { Arrangement, ArrangementPaint, ArrangementDescription, TiledMapDataRequired, AutoTilesRequired } from './Arrangement'
 import { EraseArrangement } from './EraseArrangement'
 import { AutoTileEraseArrangement } from './AutoTileEraseArrangement'
 import { BrushPaint } from './../Brush'
-import { MapChipFragment, TiledMapData, AutoTiles } from '@piyoppi/tiled-map'
+import { MapChipFragment, TiledMapData, TiledMapDataItem, AutoTiles } from '@piyoppi/tiled-map'
 
-export const DefaultEraseArrangementDescription: ArrangementDescription = {
+export const DefaultEraseArrangementDescription: ArrangementDescription<TiledMapDataItem> = {
   name: 'DefaultEraseArrangement',
   create: () => new DefaultEraseArrangement()
 }
 
-export class DefaultEraseArrangement implements Arrangement, TiledMapDataRequired, AutoTilesRequired {
+export class DefaultEraseArrangement implements Arrangement<TiledMapDataItem>, TiledMapDataRequired, AutoTilesRequired {
   private defaultEraser = new EraseArrangement()
   private autoTileEraser = new AutoTileEraseArrangement()
   private _tiledMapData: TiledMapData | null = null
@@ -26,7 +26,7 @@ export class DefaultEraseArrangement implements Arrangement, TiledMapDataRequire
   setMapChips(_: Array<MapChipFragment>) {
   }
 
-  apply(paints: Array<BrushPaint>): Array<BrushPaint> {
+  apply(paints: Array<BrushPaint>): Array<ArrangementPaint<TiledMapDataItem>> {
     const autoTilePaints: Array<BrushPaint> = []
     const otherPaints: Array<BrushPaint> = []
 

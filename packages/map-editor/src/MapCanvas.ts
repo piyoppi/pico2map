@@ -1,4 +1,4 @@
-import { TiledMap, TiledMapData, MapChipFragment, MapChip } from '@piyoppi/tiled-map'
+import { TiledMap, TiledMapData, TiledMapDataItem, MapChipFragment, MapChip } from '@piyoppi/tiled-map'
 import { Project } from './Projects'
 import { Pen } from './Brushes/Pen'
 import { Brushes } from './Brushes/Brushes'
@@ -12,10 +12,9 @@ import { ColiderRenderer } from './ColiderRenderer'
 export class MapCanvas {
   private _ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D
   private _secondaryCanvasCtx = this.secondaryCanvas.getContext('2d') as CanvasRenderingContext2D
-  private _coliderCtx = this.coliderCanvas.getContext('2d') as CanvasRenderingContext2D
   private _isMouseDown = false
-  private _brush: Brush = new Pen()
-  private _arrangement: Arrangement = new DefaultArrangement()
+  private _brush: Brush<TiledMapDataItem> = new Pen()
+  private _arrangement: Arrangement<TiledMapDataItem> = new DefaultArrangement()
   private _lastMapChipPosition = {x: -1, y: -1}
   private _renderer = new MapRenderer(this._project.tiledMap)
   private _coliderRenderer = new ColiderRenderer(this._project.tiledMap)
@@ -28,21 +27,20 @@ export class MapCanvas {
   ) {
     this._project.registerRenderAllCallback(() => {
       this._renderer.renderAll(this._ctx)
-      this._coliderRenderer.renderAll(this._coliderCtx)
     })
   }
 
-  public setBrushFromName(brushName: string) {
+  setBrushFromName(brushName: string) {
     const registeredBrush = Brushes.find(registeredBrush => registeredBrush.name === brushName)
 
     if (!registeredBrush) {
       this.setBrush(new Pen())
     } else {
-      this.setBrush(registeredBrush.create())
+      this.setBrush(registeredBrush.create<TiledMapDataItem>())
     }
   }
 
-  public setArrangementFromName(arrangementName: string) {
+  setArrangementFromName(arrangementName: string) {
     const registeredArrangement = Arrangements.find(registered => registered.name === arrangementName)
 
     if (!registeredArrangement) {
@@ -62,17 +60,17 @@ export class MapCanvas {
     }
   }
 
-  public setArrangement(arrangement: Arrangement) {
+  setArrangement(arrangement: Arrangement<TiledMapDataItem>) {
     this._arrangement = arrangement
     this._setupBrush()
   }
 
-  public setBrush(brush: Brush) {
+  setBrush(brush: Brush<TiledMapDataItem>) {
     this._brush = brush
     this._setupBrush()
   }
 
-  public mouseDown(x: number, y: number) {
+  mouseDown(x: number, y: number) {
     this._isMouseDown = true
 
     this._arrangement.setMapChips(this._project.mapChipSelector.selectedChips)
@@ -98,7 +96,7 @@ export class MapCanvas {
 
     this.clearSecondaryCanvas()
     this._brush.mouseMove(chipPosition.x, chipPosition.y).forEach(paint => {
-      const chip = paint.chip
+      const chip = paint.item
       this._renderer.putOrClearChipToCanvas(this._secondaryCanvasCtx, chip, paint.x, paint.y, true)
     })
 
@@ -107,13 +105,13 @@ export class MapCanvas {
     return chipPosition
   }
 
-  public mouseUp(x: number, y: number) {
+  mouseUp(x: number, y: number) {
     this._isMouseDown = false
 
     const chipPosition = this.convertFromCursorPositionToChipPosition(x, y)
 
     this._brush.mouseUp(chipPosition.x, chipPosition.y).forEach(paint => {
-      const chip = paint.chip
+      const chip = paint.item
       this.putChip(chip, paint.x, paint.y)
     })
 

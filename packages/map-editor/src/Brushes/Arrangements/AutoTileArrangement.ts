@@ -1,8 +1,8 @@
-import { Arrangement, ArrangementDescription, TiledMapDataRequired, AutoTileRequired } from './Arrangement';
+import { Arrangement, ArrangementPaint, ArrangementDescription, TiledMapDataRequired, AutoTileRequired } from './Arrangement';
 import { BrushPaint } from './../Brush'
-import { MapChipFragment, AutoTileMapChip, isAutoTileMapChip, TiledMapData, AutoTile } from '@piyoppi/tiled-map'
+import { MapChipFragment, AutoTileMapChip, isAutoTileMapChip, TiledMapData, TiledMapDataItem, AutoTile } from '@piyoppi/tiled-map'
 
-export const AutoTileArrangementDescription: ArrangementDescription = {
+export const AutoTileArrangementDescription: ArrangementDescription<TiledMapDataItem> = {
   name: 'AutoTileArrangement',
   create: () => new AutoTileArrangement()
 }
@@ -25,7 +25,7 @@ export const AutoTileArrangementDescription: ArrangementDescription = {
  * ┠square                     ┠↓
  * ┗┷┿┿┿┿┿┿┿┿┛---
  */
-export class AutoTileArrangement implements Arrangement, TiledMapDataRequired, AutoTileRequired {
+export class AutoTileArrangement implements Arrangement<TiledMapDataItem>, TiledMapDataRequired, AutoTileRequired {
   private _autoTile: AutoTile | null = null
   private _tiledMapData: TiledMapData | null = null
   private temporaryChip = new AutoTileMapChip(-1, [new MapChipFragment(-1, -1, -1)])
@@ -46,10 +46,10 @@ export class AutoTileArrangement implements Arrangement, TiledMapDataRequired, A
     this._tiledMapData = tiledMapData 
   }
 
-  apply(paints: Array<BrushPaint>): Array<BrushPaint> {
+  apply(paints: Array<BrushPaint>): Array<ArrangementPaint<TiledMapDataItem>> {
     if (!this._tiledMapData) throw new Error('MapData is not set.')
 
-    const result: Array<BrushPaint> = []
+    const result: Array<ArrangementPaint<TiledMapDataItem>> = []
     const x1 = paints.reduce((acc, val) => Math.min(acc, val.x), this._tiledMapData.width)
     const y1 = paints.reduce((acc, val) => Math.min(acc, val.y), this._tiledMapData.height)
     const x2 = paints.reduce((acc, val) => Math.max(acc, val.x), 0)
@@ -119,10 +119,10 @@ export class AutoTileArrangement implements Arrangement, TiledMapDataRequired, A
         if (!aroundChips[6]?.boundary.top && !aroundChips[6]?.boundary.right && !aroundChips[6]?.cross.topRight) adjacent += this._isAdjacent(aroundChips[6]) ? 64 : 0
         if (!aroundChips[7]?.boundary.top && !aroundChips[7]?.boundary.left && !aroundChips[7]?.cross.topLeft) adjacent += this._isAdjacent(aroundChips[7]) ? 128 : 0
 
-        const chip = this.getTiledPattern(adjacent, aroundChips)
-        if (chip) {
-          tiledBuffer.put(chip, x, y)
-          result.push({x: x + x1 - offsetX1, y: y + y1 - offsetY1, chip})
+        const item = this.getTiledPattern(adjacent, aroundChips)
+        if (item) {
+          tiledBuffer.put(item, x, y)
+          result.push({x: x + x1 - offsetX1, y: y + y1 - offsetY1, item})
         }
       }
     }

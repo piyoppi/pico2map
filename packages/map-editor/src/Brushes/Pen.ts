@@ -1,19 +1,20 @@
 import { Brush, BrushPaint, BrushDescription } from './Brush'
-import { Arrangement } from './Arrangements/Arrangement'
+import { Arrangement, ArrangementPaint } from './Arrangements/Arrangement'
 import { DefaultArrangement } from './Arrangements/DefaultArrangement'
+import { TiledMapDataItem } from '@piyoppi/tiled-map'
 
 export const PenDescription: BrushDescription = {
   name: 'Pen',
-  create: () => new Pen()
+  create: <T>() => new Pen<T>()
 }
 
-export class Pen implements Brush {
+export class Pen<T> implements Brush<T> {
   private _isMouseDown = false
   private painting: Array<BrushPaint> = []
   private _beforeCursorPosition = {x: -1, y: -1}
-  private _arrangement: Arrangement = new DefaultArrangement()
+  private _arrangement: Arrangement<T> | null = null
 
-  setArrangement(arrangement: Arrangement) {
+  setArrangement(arrangement: Arrangement<T>) {
     this._arrangement = arrangement
   }
 
@@ -22,13 +23,14 @@ export class Pen implements Brush {
     this.painting = []
   }
 
-  mouseMove(chipX: number, chipY: number): Array<BrushPaint> {
+  mouseMove(chipX: number, chipY: number): Array<ArrangementPaint<T>> {
+    if (!this._arrangement) throw new Error('Arrangement is not set.')
     if (!this._isMouseDown) return []
 
     const paint = {
       x: chipX,
       y: chipY,
-      chip: null
+      item: null
     }
 
     if (paint.x !== this._beforeCursorPosition.x || paint.y !== this._beforeCursorPosition.y) {
@@ -39,7 +41,9 @@ export class Pen implements Brush {
     return this._arrangement.apply(this.painting)
   }
 
-  mouseUp(chipX: number, chipY: number): Array<BrushPaint> {
+  mouseUp(chipX: number, chipY: number): Array<ArrangementPaint<T>> {
+    if (!this._arrangement) throw new Error('Arrangement is not set.')
+
     this._isMouseDown = false
     return this._arrangement.apply(this.painting)
   }

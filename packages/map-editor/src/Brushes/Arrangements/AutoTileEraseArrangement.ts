@@ -1,14 +1,14 @@
-import { Arrangement, ArrangementDescription, TiledMapDataRequired, AutoTilesRequired } from './Arrangement'
+import { Arrangement, ArrangementPaint, ArrangementDescription, TiledMapDataRequired, AutoTilesRequired } from './Arrangement'
 import { BrushPaint } from './../Brush'
 import { AutoTileArrangement } from './AutoTileArrangement'
-import { MapChipFragment, TiledMapData, AutoTileMapChip, AutoTiles } from '@piyoppi/tiled-map'
+import { MapChipFragment, TiledMapData, TiledMapDataItem, AutoTileMapChip, AutoTiles } from '@piyoppi/tiled-map'
 
-export const AutoTileEraseArrangementDescription: ArrangementDescription = {
+export const AutoTileEraseArrangementDescription: ArrangementDescription<TiledMapDataItem> = {
   name: 'AutoTileEraseArrangement',
   create: () => new AutoTileEraseArrangement()
 }
 
-export class AutoTileEraseArrangement implements Arrangement, TiledMapDataRequired, AutoTilesRequired {
+export class AutoTileEraseArrangement implements Arrangement<TiledMapDataItem>, TiledMapDataRequired, AutoTilesRequired {
   private _autoTileArrangement = new AutoTileArrangement()
   private _tiledMapData: TiledMapData | null = null
   private _autoTiles: AutoTiles | null = null
@@ -24,17 +24,17 @@ export class AutoTileEraseArrangement implements Arrangement, TiledMapDataRequir
     this._autoTiles = autoTiles
   }
 
-  apply(paints: Array<BrushPaint>): Array<BrushPaint> {
+  apply(paints: Array<BrushPaint>): Array<ArrangementPaint<TiledMapDataItem>> {
     if (paints.length === 0) return []
 
     return this.erase(paints)
   }
 
-  erase(paints: Array<BrushPaint>): Array<BrushPaint> {
+  erase(paints: Array<BrushPaint>): Array<ArrangementPaint<TiledMapDataItem>> {
     if (!this._tiledMapData) throw new Error('MapData is not set.')
     if (!this._autoTiles) throw new Error('AutoTiles is not set')
 
-    const resultPaints: Array<BrushPaint> = []
+    const resultPaints: Array<ArrangementPaint<TiledMapDataItem>> = []
 
     const paintX1 = paints.reduce((acc, val) => Math.min(acc, val.x), this._tiledMapData.width)
     const paintY1 = paints.reduce((acc, val) => Math.min(acc, val.y), this._tiledMapData.height)
@@ -61,7 +61,7 @@ export class AutoTileEraseArrangement implements Arrangement, TiledMapDataRequir
       const paintPositionAtBuffer = {x: paint.x - bufferOffsetX, y: paint.y - bufferOffsetY}
 
       tiledBuffer.put(null, paintPositionAtBuffer.x, paintPositionAtBuffer.y)
-      resultPaints.push({x: paint.x, y: paint.y, chip: null})
+      resultPaints.push({x: paint.x, y: paint.y, item: null})
 
       this._autoTileArrangement.setTiledMapData(tiledBuffer)
 
@@ -69,16 +69,16 @@ export class AutoTileEraseArrangement implements Arrangement, TiledMapDataRequir
         for (let x = paintPositionAtBuffer.x - 1; x <= paintPositionAtBuffer.x + 1; x++) {
           if (x === paintPositionAtBuffer.x && y === paintPositionAtBuffer.y) continue
 
-          const chip = tiledBuffer.getFromChipPosition(x, y)
+          const item = tiledBuffer.getFromChipPosition(x, y)
 
-          if (chip && chip instanceof AutoTileMapChip) {
-            const autoTile = this._autoTiles?.fromId(chip.autoTileId)
+          if (item && item instanceof AutoTileMapChip) {
+            const autoTile = this._autoTiles?.fromId(item.autoTileId)
             if (!autoTile) continue
 
             this._autoTileArrangement.setAutoTile(autoTile)
-            const appliedPaints = this._autoTileArrangement.apply([{x, y, chip}])
+            const appliedPaints = this._autoTileArrangement.apply([{x, y}])
             if (appliedPaints.length === 0) continue
-            resultPaints.push({x: appliedPaints[0].x + bufferOffsetX, y: appliedPaints[0].y + bufferOffsetY, chip: appliedPaints[0].chip})
+            resultPaints.push({x: appliedPaints[0].x + bufferOffsetX, y: appliedPaints[0].y + bufferOffsetY, item: appliedPaints[0].item})
           }
         }
       }

@@ -1,21 +1,20 @@
-import { Arrangement } from './Arrangements/Arrangement';
+import { Arrangement, ArrangementPaint } from './Arrangements/Arrangement';
 import { MapChip } from '@piyoppi/tiled-map'
 
 export interface BrushPaint {
   x: number,
-  y: number,
-  chip: MapChip | null
+  y: number
 }
 
-export interface Brush {
-  setArrangement(arrangement: Arrangement): void
+export interface Brush<T> {
+  setArrangement(arrangement: Arrangement<T>): void
   mouseDown(chipX: number, chipY: number): void
-  mouseMove(chipX: number, chipY: number): Array<BrushPaint>
-  mouseUp(chipX: number, chipY: number): Array<BrushPaint>
+  mouseMove(chipX: number, chipY: number): Array<ArrangementPaint<T>>
+  mouseUp(chipX: number, chipY: number): Array<ArrangementPaint<T>>
   cleanUp(): void
 }
 
 export interface BrushDescription {
   name: string
-  create(): Brush
+  create<T>(): Brush<T>
 }

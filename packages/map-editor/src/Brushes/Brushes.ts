@@ -9,5 +9,5 @@ const registeredBrushDescriptions = [
 
 export const Brushes = registeredBrushDescriptions.map( description => ({
   name: description.name,
-  create: () => description.create()
+  create: <T>() => description.create<T>()
 }))
