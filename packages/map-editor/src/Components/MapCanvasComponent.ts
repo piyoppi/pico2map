@@ -6,6 +6,8 @@ import { Projects, Project } from './../Projects'
 import { ColiderCanvas } from '../ColiderCanvas'
 import { EditorCanvas } from '../EditorCanvas'
 
+type EditMode = 'mapChip' | 'colider'
+
 @customElement('map-canvas-component')
 export class MapCanvasComponent extends LitElement {
   private gridImageSrc = ''
@@ -17,7 +19,7 @@ export class MapCanvasComponent extends LitElement {
   private _canvasElement: HTMLCanvasElement | null = null
   private _secondaryCanvasElement: HTMLCanvasElement | null = null
   private _coliderCanvasElement : HTMLCanvasElement | null = null
-  private _mode: 'mapChip' | 'colider' = 'mapChip'
+  private _mode: EditMode = 'mapChip'
 
   @property({type: Number}) cursorChipX = 0
   @property({type: Number}) cursorChipY = 0
@@ -66,6 +68,16 @@ export class MapCanvasComponent extends LitElement {
     this.requestUpdate('arrangement', oldValue);
   }
 
+  @property({type: String})
+  get mode() {
+    return this._mode
+  }
+  set mode(value: EditMode) {
+    const oldValue = this._mode
+    this._mode = value
+
+    this.requestUpdate('mode', oldValue);
+  }
 
   private get width() {
     return this.xCount * this.gridWidth

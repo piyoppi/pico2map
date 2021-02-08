@@ -39,16 +39,20 @@ async function initialize() {
   const rectangleRadioButton = document.getElementById('rectangle') as HTMLInputElement
   const eraseRadioButton = document.getElementById('erase') as HTMLInputElement
   const penRadioButton = document.getElementById('pen') as HTMLInputElement
-
-  const mapChipSelector = document.getElementById('mapChipSelector')
-  const autoTileSelector = document.getElementById('autoTileSelector')
+  const mapChipModeRadioButton = document.getElementById('mapChipMode') as HTMLInputElement
+  const coliderModeRadioButton = document.getElementById('coliderMode') as HTMLInputElement
   const mapCanvas = document.getElementById('mapCanvas')
 
   rectangleRadioButton?.addEventListener('change', () => mapCanvas?.setAttribute('brush', 'RectangleBrush'))
   penRadioButton?.addEventListener('change', () => mapCanvas?.setAttribute('brush', 'Pen'))
   eraseRadioButton?.addEventListener('change', () => mapCanvas?.setAttribute('arrangement', 'DefaultEraseArrangement'))
+  mapChipModeRadioButton?.addEventListener('change', () => mapCanvas?.setAttribute('mode', 'mapChip'))
+  coliderModeRadioButton?.addEventListener('change', () => mapCanvas?.setAttribute('mode', 'colider'))
 
   penRadioButton.checked = true
+
+  const mapChipSelector = document.getElementById('mapChipSelector')
+  const autoTileSelector = document.getElementById('autoTileSelector')
 
   if (!mapChipSelector || !autoTileSelector || !mapCanvas) return
 
