@@ -100,13 +100,14 @@ export class MapCanvasComponent extends LitElement {
   get mapChipFragmentProperties() {
     return this._mapCanvas?.selectedMapChipFragment?.toObject() || null
   }
-  set mapChipFragmentProperties(value: MapChipFragmentProperties) {
+  set mapChipFragmentProperties(value: MapChipFragmentProperties | null) {
     const oldValue = value
-    const mapChipFragment = MapChipFragment.fromObject(value)
-
-    this._mapCanvas?.setMapChipFragment(mapChipFragment)
-
     this.requestUpdate('mapChipFragmentProperties', oldValue);
+
+    if (!value) return
+
+    const mapChipFragment = MapChipFragment.fromObject(value)
+    this._mapCanvas?.setMapChipFragment(mapChipFragment)
   }
 
   private get width() {
