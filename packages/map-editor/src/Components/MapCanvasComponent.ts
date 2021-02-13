@@ -86,7 +86,6 @@ export class MapCanvasComponent extends LitElement {
   }
   set autoTileId(value: number) {
     const oldValue = value
-    console.log(value)
     const autoTile = this._project?.tiledMap.autoTiles.fromId(value)
 
     if (autoTile) {
@@ -119,7 +118,6 @@ export class MapCanvasComponent extends LitElement {
     this.requestUpdate('mapChipFragmentProperties', oldValue);
 
     if (!value) return
-    console.log(value)
     this._coliderCanvas.setColiderType(value)
   }
 
