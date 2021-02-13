@@ -2,4 +2,4 @@
 
 Map editor for game development that runs in a browser.
 
-example: https://garakuta-toolbox.com/map-editor
+example: https://garakuta-toolbox.com/pico2map
