@@ -14,8 +14,8 @@ export class MapCanvasComponent extends LitElement {
   private gridImageSrc = ''
   private gridImageGenerator: GridImageGenerator = new GridImageGenerator()
   private cursorPositionCalculator = new CursorPositionCalculator()
-  private _mapCanvas: MapCanvas | null = null
-  private _coliderCanvas: ColiderCanvas | null = null
+  private _mapCanvas = new MapCanvas()
+  private _coliderCanvas = new ColiderCanvas()
   private _project: Project | null = null
   private _canvasElement: HTMLCanvasElement | null = null
   private _secondaryCanvasElement: HTMLCanvasElement | null = null
@@ -82,7 +82,7 @@ export class MapCanvasComponent extends LitElement {
 
   @property({type: Number})
   get autoTileId() {
-    return this._mapCanvas?.selectedAutoTile?.id || -1
+    return this._mapCanvas.selectedAutoTile?.id || -1
   }
   set autoTileId(value: number) {
     const oldValue = value
@@ -90,7 +90,7 @@ export class MapCanvasComponent extends LitElement {
     const autoTile = this._project?.tiledMap.autoTiles.fromId(value)
 
     if (autoTile) {
-      this._mapCanvas?.setAutoTile(autoTile)
+      this._mapCanvas.setAutoTile(autoTile)
     }
 
     this.requestUpdate('autoTileId', oldValue);
@@ -98,7 +98,7 @@ export class MapCanvasComponent extends LitElement {
 
   @property({type: Object})
   get mapChipFragmentProperties() {
-    return this._mapCanvas?.selectedMapChipFragment?.toObject() || null
+    return this._mapCanvas.selectedMapChipFragment?.toObject() || null
   }
   set mapChipFragmentProperties(value: MapChipFragmentProperties | null) {
     const oldValue = value
@@ -107,19 +107,20 @@ export class MapCanvasComponent extends LitElement {
     if (!value) return
 
     const mapChipFragment = MapChipFragment.fromObject(value)
-    this._mapCanvas?.setMapChipFragment(mapChipFragment)
+    this._mapCanvas.setMapChipFragment(mapChipFragment)
   }
 
   @property({type: String})
   get coliderType() {
-    return this._coliderCanvas?.selectedColiderType || ''
+    return this._coliderCanvas.selectedColiderType || ''
   }
   set coliderType(value: ColiderTypes | '') {
     const oldValue = value
     this.requestUpdate('mapChipFragmentProperties', oldValue);
 
     if (!value) return
-    this._coliderCanvas?.setColiderType(value)
+    console.log(value)
+    this._coliderCanvas.setColiderType(value)
   }
 
   private get width() {
@@ -154,8 +155,6 @@ export class MapCanvasComponent extends LitElement {
   }
 
   get currentEditorCanvas(): EditorCanvas {
-    if (!this._coliderCanvas || !this._mapCanvas) throw new Error('EditorCanvas is not set.')
-
     switch (this._mode) {
       case 'colider':
         return this._coliderCanvas
@@ -167,14 +166,11 @@ export class MapCanvasComponent extends LitElement {
   private setupMapCanvas() {
     if (!this._project || !this._canvasElement || !this._secondaryCanvasElement || !this._coliderCanvasElement) return;
 
-    if (!this._mapCanvas) {
-      this._mapCanvas = new MapCanvas(this._project)
-      this._mapCanvas.setCanvas(this._canvasElement, this._secondaryCanvasElement)
-    }
+    this._mapCanvas.setProject(this._project)
+    this._mapCanvas.setCanvas(this._canvasElement, this._secondaryCanvasElement)
 
-    if (!this._coliderCanvas) {
-      this._coliderCanvas = new ColiderCanvas(this._project, this._coliderCanvasElement, this._secondaryCanvasElement)
-    }
+    this._coliderCanvas.setProject(this._project)
+    this._coliderCanvas.setCanvas(this._coliderCanvasElement, this._secondaryCanvasElement)
 
     this._mapCanvas.setBrushFromName(this._brushName)
     this._mapCanvas.setArrangementFromName(this._arrangementName)

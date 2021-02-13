@@ -16,20 +16,15 @@ export class MapCanvas implements EditorCanvas {
   private _brush: Brush<TiledMapDataItem> = new Pen()
   private _arrangement: Arrangement<TiledMapDataItem> = new DefaultArrangement()
   private _lastMapChipPosition = {x: -1, y: -1}
-  private _renderer = new MapRenderer(this._project.tiledMap)
+  private _renderer: MapRenderer | null = null
   private canvas: HTMLCanvasElement | null = null
   private secondaryCanvas: HTMLCanvasElement | null = null
-
+  private _project: Project | null = null
   private _selectedAutoTile: AutoTile | null = null
   private _selectedMapChipFragment: MapChipFragment | null = null
 
   constructor(
-    private _project: Project,
   ) {
-    this._project.registerRenderAllCallback(() => {
-      if (!this._ctx) return
-      this._renderer.renderAll(this._ctx)
-    })
   }
 
   get selectedAutoTile() {
@@ -38,6 +33,26 @@ export class MapCanvas implements EditorCanvas {
 
   get selectedMapChipFragment() {
     return this._selectedMapChipFragment
+  }
+
+  get project() {
+    if (!this._project) throw new Error('Project is not set')
+    return this._project
+  }
+
+  get renderer() {
+    if (!this._renderer) throw new Error('Project is not set')
+    return this._renderer
+  }
+
+  setProject(project: Project) {
+    this._project = project
+    this._renderer = new MapRenderer(this._project.tiledMap)
+
+    this._project.registerRenderAllCallback(() => {
+      if (!this._ctx || !this._renderer) return
+      this._renderer.renderAll(this._ctx)
+    })
   }
 
   setCanvas(canvas: HTMLCanvasElement, secondaryCanvas: HTMLCanvasElement) {
@@ -76,7 +91,7 @@ export class MapCanvas implements EditorCanvas {
   }
 
   private _setupBrush() {
-    if (!this._arrangement) return
+    if (!this._project || !this._arrangement) return
 
     this._brush.setArrangement(this._arrangement)
 
@@ -105,8 +120,9 @@ export class MapCanvas implements EditorCanvas {
     if (isAutoTileRequired(this._arrangement) && this._selectedAutoTile) {
       this._arrangement.setAutoTile(this._selectedAutoTile)
     }
+
     if (isAutoTilesRequired(this._arrangement)) {
-      this._arrangement.setAutoTiles(this._project.tiledMap.autoTiles)
+      this._arrangement.setAutoTiles(this.project.tiledMap.autoTiles)
     }
 
     const chipPosition = this.convertFromCursorPositionToChipPosition(x, y)
@@ -126,7 +142,7 @@ export class MapCanvas implements EditorCanvas {
       if (!this._secondaryCanvasCtx) return
 
       const chip = paint.item
-      this._renderer.putOrClearChipToCanvas(this._secondaryCanvasCtx, chip, paint.x, paint.y, true)
+      this.renderer.putOrClearChipToCanvas(this._secondaryCanvasCtx, chip, paint.x, paint.y, true)
     })
 
     this._lastMapChipPosition = chipPosition
@@ -152,8 +168,8 @@ export class MapCanvas implements EditorCanvas {
   putChip(mapChip: MapChip | null, chipX: number, chipY: number) {
     if (!this._ctx) return
 
-    this._project.tiledMap.put(mapChip, chipX, chipY)
-    this._renderer.putOrClearChipToCanvas(this._ctx, mapChip, chipX, chipY)
+    this.project.tiledMap.put(mapChip, chipX, chipY)
+    this.renderer.putOrClearChipToCanvas(this._ctx, mapChip, chipX, chipY)
   }
 
   private clearSecondaryCanvas() {
@@ -164,8 +180,8 @@ export class MapCanvas implements EditorCanvas {
 
   public convertFromCursorPositionToChipPosition(x: number, y: number) {
     return {
-      x: Math.max(0, Math.min(Math.floor(x / this._project.tiledMap.chipWidth), this._project.tiledMap.chipCountX - 1)),
-      y: Math.max(0, Math.min(Math.floor(y / this._project.tiledMap.chipHeight), this._project.tiledMap.chipCountY - 1))
+      x: Math.max(0, Math.min(Math.floor(x / this.project.tiledMap.chipWidth), this.project.tiledMap.chipCountX - 1)),
+      y: Math.max(0, Math.min(Math.floor(y / this.project.tiledMap.chipHeight), this.project.tiledMap.chipCountY - 1))
     }
   }
 }

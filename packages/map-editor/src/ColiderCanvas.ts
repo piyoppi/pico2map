@@ -8,30 +8,70 @@ import { ColiderArrangement } from './Brushes/Arrangements/ColiderArrangement'
 import { EditorCanvas } from './EditorCanvas'
 
 export class ColiderCanvas implements EditorCanvas {
-  private _coliderCtx = this.coliderCanvas.getContext('2d') as CanvasRenderingContext2D
-  private _secondaryCanvasCtx = this.secondaryCanvas.getContext('2d') as CanvasRenderingContext2D
-  private _coliderRenderer = new ColiderRenderer(this._project.tiledMap)
+  private _coliderCtx: CanvasRenderingContext2D | null = null
+  private _secondaryCanvasCtx: CanvasRenderingContext2D | null = null
+  private _secondaryCanvas: HTMLCanvasElement | null = null
+  private _project: Project | null = null
+  private _coliderRenderer: ColiderRenderer | null = null
   private _brush: Brush<ColiderTypes>
   private _arrangement: Arrangement<ColiderTypes> = new ColiderArrangement()
   private _isMouseDown = false
   private _lastMapChipPosition = {x: -1, y: -1}
   private _selectedColiderType: ColiderTypes = 'none'
 
-  constructor(
-    private _project: Project,
-    private coliderCanvas: HTMLCanvasElement,
-    private secondaryCanvas: HTMLCanvasElement
-  ) {
-    this._project.registerRenderAllCallback(() => {
-      this._coliderRenderer.renderAll(this._coliderCtx)
-    })
-
+  constructor() {
     this._brush = new Pen()
     this._setupBrush()
   }
 
   get selectedColiderType() {
     return this._selectedColiderType
+  }
+
+  get project() {
+    if (!this._project) throw new Error('The project is not set')
+
+    return this._project
+  }
+
+  get coliderCtx() {
+    if (!this._coliderCtx) throw new Error('A canvas is not set')
+
+    return this._coliderCtx
+  }
+
+  get secondaryCanvasCtx() {
+    if (!this._secondaryCanvasCtx) throw new Error('A canvas is not set')
+
+    return this._secondaryCanvasCtx
+  }
+
+  get coliderRenderer() {
+    if (!this._coliderRenderer) throw new Error('The project is not set')
+
+    return this._coliderRenderer
+  }
+
+  get secondaryCanvas() {
+    if (!this._secondaryCanvas) throw new Error('A canvas is not set')
+
+    return this._secondaryCanvas
+  }
+
+  setProject(project: Project) {
+    this._project = project
+    this._coliderRenderer = new ColiderRenderer(this._project.tiledMap)
+
+    this._project.registerRenderAllCallback(() => {
+      if (!this._coliderCtx) return
+      this.coliderRenderer.renderAll(this._coliderCtx)
+    })
+  }
+
+  setCanvas(canvas: HTMLCanvasElement, secondaryCanvas: HTMLCanvasElement) {
+    this._coliderCtx = canvas.getContext('2d') as CanvasRenderingContext2D
+    this._secondaryCanvasCtx = secondaryCanvas.getContext('2d') as CanvasRenderingContext2D
+    this._secondaryCanvas = secondaryCanvas
   }
 
   setBrush(brush: Brush<ColiderTypes>) {
@@ -41,11 +81,10 @@ export class ColiderCanvas implements EditorCanvas {
 
   setColiderType(value: ColiderTypes) {
     this._selectedColiderType = value
+    this._setupBrush()
   }
 
   private _setupBrush() {
-    if (!this._arrangement) return
-
     this._brush.setArrangement(this._arrangement)
 
     if (isColiderTypesRequired(this._arrangement)) {
@@ -71,7 +110,7 @@ export class ColiderCanvas implements EditorCanvas {
     this.clearSecondaryCanvas()
     this._brush.mouseMove(chipPosition.x, chipPosition.y).forEach(paint => {
       const chip = paint.item
-      this._coliderRenderer.putOrClearChipToCanvas(this._secondaryCanvasCtx, chip, paint.x, paint.y, true)
+      this.coliderRenderer.putOrClearChipToCanvas(this.secondaryCanvasCtx, chip, paint.x, paint.y, true)
     })
 
     this._lastMapChipPosition = chipPosition
@@ -95,18 +134,18 @@ export class ColiderCanvas implements EditorCanvas {
   }
 
   putChip(coliderType: ColiderTypes, chipX: number, chipY: number) {
-    this._project.tiledMap.coliders.put(coliderType, chipX, chipY)
-    this._coliderRenderer.putOrClearChipToCanvas(this._coliderCtx, coliderType, chipX, chipY)
+    this.project.tiledMap.coliders.put(coliderType, chipX, chipY)
+    this.coliderRenderer.putOrClearChipToCanvas(this.coliderCtx, coliderType, chipX, chipY)
   }
 
   private clearSecondaryCanvas() {
-    this._secondaryCanvasCtx.clearRect(0, 0, this.secondaryCanvas.width, this.secondaryCanvas.height)
+    this.secondaryCanvasCtx.clearRect(0, 0, this.secondaryCanvas.width, this.secondaryCanvas.height)
   }
 
   public convertFromCursorPositionToChipPosition(x: number, y: number) {
     return {
-      x: Math.max(0, Math.min(Math.floor(x / this._project.tiledMap.chipWidth), this._project.tiledMap.chipCountX - 1)),
-      y: Math.max(0, Math.min(Math.floor(y / this._project.tiledMap.chipHeight), this._project.tiledMap.chipCountY - 1))
+      x: Math.max(0, Math.min(Math.floor(x / this.project.tiledMap.chipWidth), this.project.tiledMap.chipCountX - 1)),
+      y: Math.max(0, Math.min(Math.floor(y / this.project.tiledMap.chipHeight), this.project.tiledMap.chipCountY - 1))
     }
   }
 }
