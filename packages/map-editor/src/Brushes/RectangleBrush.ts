@@ -1,18 +1,19 @@
 import { Brush, BrushPaint, BrushDescription } from './Brush'
-import { Arrangement } from './Arrangements/Arrangement'
+import { Arrangement, ArrangementPaint } from './Arrangements/Arrangement'
 import { DefaultArrangement } from './Arrangements/DefaultArrangement'
+import { TiledMapDataItem } from '@piyoppi/tiled-map'
 
 export const RectangleBrushDescription: BrushDescription = {
   name: 'RectangleBrush',
-  create: () => new RectangleBrush()
+  create: <T>() => new RectangleBrush<T>()
 }
 
-export class RectangleBrush implements Brush {
+export class RectangleBrush<T> implements Brush<T> {
   private _isMouseDown = false
   private _startPosition = {x: 0, y: 0}
-  private _arrangement: Arrangement = new DefaultArrangement()
+  private _arrangement: Arrangement<T> | null = null
 
-  setArrangement(arrangement: Arrangement) {
+  setArrangement(arrangement: Arrangement<T>) {
     this._arrangement = arrangement
   }
 
@@ -21,19 +22,21 @@ export class RectangleBrush implements Brush {
     this._startPosition = {x: chipX, y: chipY}
   }
 
-  mouseMove(chipX: number, chipY: number): Array<BrushPaint> {
+  mouseMove(chipX: number, chipY: number): Array<ArrangementPaint<T>> {
     if (!this._isMouseDown) return []
 
     return this._build(chipX, chipY)
   }
 
-  mouseUp(chipX: number, chipY: number): Array<BrushPaint> {
+  mouseUp(chipX: number, chipY: number): Array<ArrangementPaint<T>> {
     this._isMouseDown = false
 
     return this._build(chipX, chipY)
   }
 
   private _build(chipX: number, chipY: number) {
+    if (!this._arrangement) throw new Error('Arrangement is not set.')
+
     const paints: Array<BrushPaint> = []
     const startX = Math.min(this._startPosition.x, chipX)
     const startY = Math.min(this._startPosition.y, chipY)
@@ -42,7 +45,7 @@ export class RectangleBrush implements Brush {
 
     for(let x = startX; x <= endX; x++ ) {
       for(let y = startY; y <= endY; y++ ) {
-        paints.push({x, y, chip: null})
+        paints.push({x, y})
       }
     }
 

@@ -4,6 +4,16 @@ import { CursorPositionCalculator } from './helpers/CursorPositionCalculator'
 import { Projects, Project } from './../Projects'
 import { AutoTileSelector } from './../AutoTileSelector'
 
+interface AutoTileSelectedDetail {
+  id: number
+}
+
+export class AutoTileSelectedEvent extends CustomEvent<AutoTileSelectedDetail> {
+  constructor(detail: AutoTileSelectedDetail) {
+    super('autotile-selected', { detail });
+  }
+}
+
 @customElement('auto-tile-selector-component')
 export class AutoTileSelectorComponent extends LitElement {
   private _gridImageSrc = ''
@@ -96,14 +106,13 @@ export class AutoTileSelectorComponent extends LitElement {
     const selectedAutoTile = this._autoTileSelector.getAutoTileFragmentFromIndexImagePosition(mouseCursorPosition.x, mouseCursorPosition.y)
 
     if (!selectedAutoTile) return
-    this._project.selectedAutoTile = selectedAutoTile
 
     this.selectedChipX = Math.floor(mouseCursorPosition.x / this._project.tiledMap.chipWidth)
     this.selectedChipY = Math.floor(mouseCursorPosition.y / this._project.tiledMap.chipHeight)
 
     this.dispatchEvent(
-      new CustomEvent('selected', {
-        detail: {},
+      new CustomEvent('autotile-selected', {
+        detail: {id: selectedAutoTile.id},
         bubbles: true,
         composed: true
       })

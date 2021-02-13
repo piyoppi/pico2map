@@ -1,4 +1,4 @@
-import { TiledMapData } from './../src/TiledMap'
+import { TiledMapData } from './../src/MapData/TiledMapData'
 import { MapChip, MapChipFragment } from './../src/MapChip'
 
 describe('#transferFromTiledMapData', () => {
@@ -20,7 +20,7 @@ describe('#transferFromTiledMapData', () => {
 
     destTiledMapData.transferFromTiledMapData(srcTiledMapData, 0, 0, 5, 5, 0, 0)
 
-    expect(destTiledMapData.mapData).toEqual(expectMapData)
+    expect(destTiledMapData.items).toEqual(expectMapData)
   })
 
   it('With clipping', () => {
@@ -39,7 +39,7 @@ describe('#transferFromTiledMapData', () => {
 
     const destTiledMapData = new TiledMapData(5, 5)
     destTiledMapData.transferFromTiledMapData(srcTiledMapData, 1, 1, 3, 3, 2, 1)
-    expect(destTiledMapData.mapData).toEqual([
+    expect(destTiledMapData.items).toEqual([
       null, null, null, null, null,
       null, null,   c2,   c2,   c2,
       null, null,   c2,   c1,   c2,
@@ -49,7 +49,7 @@ describe('#transferFromTiledMapData', () => {
 
     const destTiledMapData2 = new TiledMapData(5, 5)
     destTiledMapData2.transferFromTiledMapData(srcTiledMapData, 1, 1, 3, 4, 3, 4)
-    expect(destTiledMapData2.mapData).toEqual([
+    expect(destTiledMapData2.items).toEqual([
       null, null, null, null, null,
       null, null, null, null, null,
       null, null, null, null, null,
@@ -59,7 +59,7 @@ describe('#transferFromTiledMapData', () => {
 
     const destTiledMapData3 = new TiledMapData(5, 5)
     destTiledMapData3.transferFromTiledMapData(srcTiledMapData, 1, 1, 3, 3, -1, -1)
-    expect(destTiledMapData3.mapData).toEqual([
+    expect(destTiledMapData3.items).toEqual([
         c1,   c2, null, null, null,
         c2,   c2, null, null, null,
       null, null, null, null, null,
@@ -82,7 +82,7 @@ describe('#put', () => {
     data.put(c1, 0, 2)
     data.put(c2, 2, 0)
     data.put(c1, 2, 1)
-    expect(data.mapData).toEqual([
+    expect(data.items).toEqual([
       c1, null,   c2,
       c2,   c2,   c1,
       c1, null,   c1,
@@ -102,10 +102,10 @@ describe('#getMapDataFromChipPosition', () => {
     ]
     data.set(source)
 
-    expect(data.getMapDataFromChipPosition(0, 0)).toEqual(c1)
-    expect(data.getMapDataFromChipPosition(1, 0)).toEqual(null)
-    expect(data.getMapDataFromChipPosition(1, 1)).toEqual(c2)
-    expect(data.getMapDataFromChipPosition(1, 2)).toEqual(null)
+    expect(data.getFromChipPosition(0, 0)).toEqual(c1)
+    expect(data.getFromChipPosition(1, 0)).toEqual(null)
+    expect(data.getFromChipPosition(1, 1)).toEqual(c2)
+    expect(data.getFromChipPosition(1, 2)).toEqual(null)
   })
 })
 
@@ -122,7 +122,7 @@ describe('#filter', () => {
     data.set(source)
 
     const filtered = data.filter([c1])
-    expect(filtered.mapData).toEqual([
+    expect(filtered.items).toEqual([
         c1, null, null,
       null, null,   c1,
         c1, null,   c1,

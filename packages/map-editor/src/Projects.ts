@@ -1,9 +1,8 @@
-import { TiledMap, AutoTile } from '@piyoppi/tiled-map'
+import { TiledMap, AutoTile, ColiderTypes } from '@piyoppi/tiled-map'
 import { MapChipSelector } from './MapChipSelector'
 
 export class Project {
   private _mapChipSelector = new MapChipSelector(this._tiledMap)
-  private _selectedAutoTile: AutoTile | null = null
   private _renderAllFunction: (() => void) | null = null
 
   constructor(
@@ -22,14 +21,6 @@ export class Project {
 
   get tiledMap() {
     return this._tiledMap
-  }
-
-  get selectedAutoTile(): AutoTile | null {
-    return this._selectedAutoTile
-  }
-
-  set selectedAutoTile(val: AutoTile | null) {
-    this._selectedAutoTile = val
   }
 
   setTiledMap(map: TiledMap) {

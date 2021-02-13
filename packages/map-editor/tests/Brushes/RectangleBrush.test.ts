@@ -1,9 +1,9 @@
-import { MapChip, MapChipFragment } from '@piyoppi/tiled-map';
+import { MapChip, MapChipFragment, TiledMapDataItem } from '@piyoppi/tiled-map';
 import { RectangleBrush } from './../../src/Brushes/RectangleBrush'
 import { DefaultArrangement } from './../../src/Brushes/Arrangements/DefaultArrangement'
 
-function buildBrush(mapChipFragment: MapChipFragment): RectangleBrush {
-  const brush = new RectangleBrush()
+function buildBrush(mapChipFragment: MapChipFragment): RectangleBrush<TiledMapDataItem> {
+  const brush = new RectangleBrush<TiledMapDataItem>()
   const arrangement = new DefaultArrangement()
   arrangement.setMapChips([mapChipFragment])
   brush.setArrangement(arrangement)
@@ -22,7 +22,7 @@ describe('#mouseMove', () => {
   it('Return a BrushPaint list', () => {
     const mapChipFragment = new MapChipFragment(0, 0, 1)
     const expectedMapChip = new MapChip([mapChipFragment])
-    const expectedBrushPaintTemplate = {chip: expectedMapChip}
+    const expectedBrushPaintTemplate = {item: expectedMapChip}
     const brush = buildBrush(mapChipFragment)
 
     brush.mouseDown(0, 0)
@@ -39,7 +39,7 @@ describe('#mouseUp', () => {
   it('Return a BrushPaint list', () => {
     const mapChipFragment = new MapChipFragment(0, 0, 1)
     const expectedMapChip = new MapChip([mapChipFragment])
-    const expectedBrushPaintTemplate = {chip: expectedMapChip}
+    const expectedBrushPaintTemplate = {item: expectedMapChip}
     const brush = buildBrush(mapChipFragment)
     brush.mouseDown(0, 0)
 

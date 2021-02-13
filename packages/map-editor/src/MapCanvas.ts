@@ -1,40 +1,86 @@
-import { TiledMap, TiledMapData, MapChipFragment, MapChip } from '@piyoppi/tiled-map'
+import { TiledMapDataItem, MapChipFragment, MapChip, AutoTile } from '@piyoppi/tiled-map'
 import { Project } from './Projects'
 import { Pen } from './Brushes/Pen'
 import { Brushes } from './Brushes/Brushes'
 import { Arrangements } from './Brushes/Arrangements/Arrangements'
 import { Brush } from './Brushes/Brush'
-import { Arrangement, isTiledMapDataRequired, isAutoTileRequired, isAutoTilesRequired } from './Brushes/Arrangements/Arrangement'
+import { Arrangement, isMapChipFragmentRequired, isTiledMapDataRequired, isAutoTileRequired, isAutoTilesRequired } from './Brushes/Arrangements/Arrangement'
 import { DefaultArrangement } from './Brushes/Arrangements/DefaultArrangement'
+import { MapRenderer } from './MapRenderer'
+import { EditorCanvas } from './EditorCanvas'
 
-export class MapCanvas {
-  private _ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D
-  private _secondaryCanvasCtx = this.secondaryCanvas.getContext('2d') as CanvasRenderingContext2D
+export class MapCanvas implements EditorCanvas {
+  private _ctx: CanvasRenderingContext2D | null = null
+  private _secondaryCanvasCtx: CanvasRenderingContext2D | null = null
   private _isMouseDown = false
-  private _brush: Brush = new Pen()
-  private _arrangement: Arrangement = new DefaultArrangement()
-  private _backgroundRgba = {r: 255, g: 255, b: 255, a: 1.0}
+  private _brush: Brush<TiledMapDataItem> = new Pen()
+  private _arrangement: Arrangement<TiledMapDataItem> = new DefaultArrangement()
   private _lastMapChipPosition = {x: -1, y: -1}
+  private _renderer: MapRenderer | null = null
+  private canvas: HTMLCanvasElement | null = null
+  private secondaryCanvas: HTMLCanvasElement | null = null
+  private _project: Project | null = null
+  private _selectedAutoTile: AutoTile | null = null
+  private _selectedMapChipFragment: MapChipFragment | null = null
 
   constructor(
-    private _project: Project,
-    private canvas: HTMLCanvasElement,
-    private secondaryCanvas: HTMLCanvasElement,
   ) {
-    this._project.registerRenderAllCallback(() => this.renderAll())
   }
 
-  public setBrushFromName(brushName: string) {
+  get selectedAutoTile() {
+    return this._selectedAutoTile
+  }
+
+  get selectedMapChipFragment() {
+    return this._selectedMapChipFragment
+  }
+
+  get project() {
+    if (!this._project) throw new Error('Project is not set')
+    return this._project
+  }
+
+  get renderer() {
+    if (!this._renderer) throw new Error('Project is not set')
+    return this._renderer
+  }
+
+  setProject(project: Project) {
+    this._project = project
+    this._renderer = new MapRenderer(this._project.tiledMap)
+
+    this._project.registerRenderAllCallback(() => {
+      if (!this._ctx || !this._renderer) return
+      this._renderer.renderAll(this._ctx)
+    })
+  }
+
+  setCanvas(canvas: HTMLCanvasElement, secondaryCanvas: HTMLCanvasElement) {
+    this.canvas = canvas
+    this.secondaryCanvas = secondaryCanvas
+    this._ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D
+    this._secondaryCanvasCtx = this.secondaryCanvas.getContext('2d') as CanvasRenderingContext2D
+  }
+
+  setAutoTile(value: AutoTile) {
+    this._selectedAutoTile = value
+  }
+
+  setMapChipFragment(value: MapChipFragment) {
+    this._selectedMapChipFragment = value
+  }
+
+  setBrushFromName(brushName: string) {
     const registeredBrush = Brushes.find(registeredBrush => registeredBrush.name === brushName)
 
     if (!registeredBrush) {
       this.setBrush(new Pen())
     } else {
-      this.setBrush(registeredBrush.create())
+      this.setBrush(registeredBrush.create<TiledMapDataItem>())
     }
   }
 
-  public setArrangementFromName(arrangementName: string) {
+  setArrangementFromName(arrangementName: string) {
     const registeredArrangement = Arrangements.find(registered => registered.name === arrangementName)
 
     if (!registeredArrangement) {
@@ -45,7 +91,7 @@ export class MapCanvas {
   }
 
   private _setupBrush() {
-    if (!this._arrangement) return
+    if (!this._project || !this._arrangement) return
 
     this._brush.setArrangement(this._arrangement)
 
@@ -54,26 +100,29 @@ export class MapCanvas {
     }
   }
 
-  public setArrangement(arrangement: Arrangement) {
+  setArrangement(arrangement: Arrangement<TiledMapDataItem>) {
     this._arrangement = arrangement
     this._setupBrush()
   }
 
-  public setBrush(brush: Brush) {
+  setBrush(brush: Brush<TiledMapDataItem>) {
     this._brush = brush
     this._setupBrush()
   }
 
-  public mouseDown(x: number, y: number) {
+  mouseDown(x: number, y: number) {
     this._isMouseDown = true
 
-    this._arrangement.setMapChips(this._project.mapChipSelector.selectedChips)
-
-    if (isAutoTileRequired(this._arrangement) && this._project.selectedAutoTile) {
-      this._arrangement.setAutoTile(this._project.selectedAutoTile)
+    if (isMapChipFragmentRequired(this._arrangement) && this._selectedMapChipFragment) {
+      this._arrangement.setMapChips([this._selectedMapChipFragment])
     }
+
+    if (isAutoTileRequired(this._arrangement) && this._selectedAutoTile) {
+      this._arrangement.setAutoTile(this._selectedAutoTile)
+    }
+
     if (isAutoTilesRequired(this._arrangement)) {
-      this._arrangement.setAutoTiles(this._project.tiledMap.autoTiles)
+      this._arrangement.setAutoTiles(this.project.tiledMap.autoTiles)
     }
 
     const chipPosition = this.convertFromCursorPositionToChipPosition(x, y)
@@ -82,7 +131,7 @@ export class MapCanvas {
     this._lastMapChipPosition = chipPosition
   }
 
-  mouseMove(x: number, y: number) {
+  mouseMove(x: number, y: number): {x: number, y: number} {
     const chipPosition = this.convertFromCursorPositionToChipPosition(x, y)
 
     if (!this._isMouseDown) return chipPosition
@@ -90,9 +139,10 @@ export class MapCanvas {
 
     this.clearSecondaryCanvas()
     this._brush.mouseMove(chipPosition.x, chipPosition.y).forEach(paint => {
-      const defaultChip = this._project.mapChipSelector.selectedChips[0]
-      const chip = paint.chip
-      this._putOrClearChipToCanvas(this._secondaryCanvasCtx, chip, paint.x, paint.y, true)
+      if (!this._secondaryCanvasCtx) return
+
+      const chip = paint.item
+      this.renderer.putOrClearChipToCanvas(this._secondaryCanvasCtx, chip, paint.x, paint.y, true)
     })
 
     this._lastMapChipPosition = chipPosition
@@ -100,14 +150,13 @@ export class MapCanvas {
     return chipPosition
   }
 
-  public mouseUp(x: number, y: number) {
+  mouseUp(x: number, y: number) {
     this._isMouseDown = false
 
     const chipPosition = this.convertFromCursorPositionToChipPosition(x, y)
 
     this._brush.mouseUp(chipPosition.x, chipPosition.y).forEach(paint => {
-      const defaultChip = this._project.mapChipSelector.selectedChips[0]
-      const chip = paint.chip
+      const chip = paint.item
       this.putChip(chip, paint.x, paint.y)
     })
 
@@ -117,103 +166,22 @@ export class MapCanvas {
   }
 
   putChip(mapChip: MapChip | null, chipX: number, chipY: number) {
-    this._project.tiledMap.put(mapChip, chipX, chipY)
-    this._putOrClearChipToCanvas(this._ctx, mapChip, chipX, chipY)
-  }
+    if (!this._ctx) return
 
-  renderAll() {
-    this._project.tiledMap.data.mapData.forEach((value, index) => {
-      const position = this._project.tiledMap.data.convertMapNumberToPosition(index)
-      this._putOrClearChipToCanvas(this._ctx, value, position.x, position.y)
-    })
+    this.project.tiledMap.put(mapChip, chipX, chipY)
+    this.renderer.putOrClearChipToCanvas(this._ctx, mapChip, chipX, chipY)
   }
 
   private clearSecondaryCanvas() {
+    if (!this.secondaryCanvas || !this._secondaryCanvasCtx) return
+
     this._secondaryCanvasCtx.clearRect(0, 0, this.secondaryCanvas.width, this.secondaryCanvas.height)
-  }
-
-  private _putOrClearChipToCanvas(ctx: CanvasRenderingContext2D, mapChip: MapChip | null, chipX: number, chipY: number, isTemporaryRendering: boolean = false) {
-    if (mapChip instanceof MapChip) {
-      mapChip.items.forEach(item => {
-        this._putChipToCanvas(ctx, item, chipX, chipY)
-      })
-    } else {
-      this._clearChipToCanvas(ctx, chipX, chipY, isTemporaryRendering)
-    }
-  }
-
-  private _clearChipToCanvas(ctx: CanvasRenderingContext2D, chipX: number, chipY: number, isTemporaryRendering: boolean) {
-    const position = this._project.tiledMap.convertChipPositionToPixel(chipX, chipY)
-
-    ctx.clearRect(position.x, position.y, this._project.tiledMap.chipWidth, this._project.tiledMap.chipHeight)
-
-    if (isTemporaryRendering) {
-      ctx.fillStyle = `rgba(${this._backgroundRgba.r},${this._backgroundRgba.g},${this._backgroundRgba.b},${this._backgroundRgba.a})`
-      ctx.fillRect(position.x, position.y, this._project.tiledMap.chipWidth, this._project.tiledMap.chipHeight)
-    }
-  }
-
-  private _putChipToCanvas(ctx: CanvasRenderingContext2D, mapChip: MapChipFragment, chipX: number, chipY: number) {
-    const mapChips = this._project.tiledMap.mapChipsCollection.findById(mapChip.chipId)
-    const image = mapChips?.image
-    if (!image) return
-
-    const renderingArea = this._getRenderingArea(mapChip)
-    const position = this._project.tiledMap.convertChipPositionToPixel(chipX, chipY)
-    position.x += renderingArea.destOffsetX
-    position.y += renderingArea.destOffsetY
-
-    ctx.clearRect(position.x, position.y, renderingArea.width, renderingArea.height)
-    ctx.drawImage(
-      image,
-      renderingArea.x,
-      renderingArea.y,
-      renderingArea.width,
-      renderingArea.height,
-      position.x,
-      position.y,
-      renderingArea.width,
-      renderingArea.height
-    )
-  }
-
-  private _getRenderingArea(mapChip: MapChipFragment) {
-    const width = this._project.tiledMap.chipWidth
-    const height = this._project.tiledMap.chipHeight
-    const x = mapChip.x * width
-    const y = mapChip.y * height
-
-    if (mapChip.renderingArea === 15) {
-      return {x, y, width, height, destOffsetX: 0, destOffsetY: 0}
-    }
-
-    const halfWidth = Math.round(width / 2)
-    const halfHeight = Math.round(height / 2)
-
-    switch(mapChip.renderingArea) {
-      case 1:
-        return {x, y, width: halfWidth, height: halfHeight, destOffsetX: 0, destOffsetY: 0}
-      case 2:
-        return {x: x + halfWidth, y, width: halfWidth, height: halfHeight, destOffsetX: halfWidth, destOffsetY: 0}
-      case 3:
-        return {x, y, width, height: halfHeight, destOffsetX: 0, destOffsetY: 0}
-      case 4:
-        return {x, y: y + halfHeight, width: halfWidth, height: halfHeight, destOffsetX: 0, destOffsetY: halfHeight}
-      case 5:
-        return {x, y, width: halfWidth, height, destOffsetX: 0, destOffsetY: 0}
-      case 8:
-        return {x: x + halfWidth, y: y + halfHeight, width: halfWidth, height: halfHeight, destOffsetX: halfWidth, destOffsetY: halfHeight}
-      case 10:
-        return {x: x + halfWidth, y, width: halfWidth, height, destOffsetX: halfWidth, destOffsetY: 0}
-      case 12:
-        return {x, y: y + halfHeight, width, height: halfHeight, destOffsetX: 0, destOffsetY: halfHeight}
-    }
   }
 
   public convertFromCursorPositionToChipPosition(x: number, y: number) {
     return {
-      x: Math.max(0, Math.min(Math.floor(x / this._project.tiledMap.chipWidth), this._project.tiledMap.chipCountX - 1)),
-      y: Math.max(0, Math.min(Math.floor(y / this._project.tiledMap.chipHeight), this._project.tiledMap.chipCountY - 1))
+      x: Math.max(0, Math.min(Math.floor(x / this.project.tiledMap.chipWidth), this.project.tiledMap.chipCountX - 1)),
+      y: Math.max(0, Math.min(Math.floor(y / this.project.tiledMap.chipHeight), this.project.tiledMap.chipCountY - 1))
     }
   }
 }

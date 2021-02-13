@@ -1,22 +1,29 @@
-import { MapChip, MapChipFragment } from '@piyoppi/tiled-map';
+import { MapChip, MapChipFragment, TiledMapDataItem } from '@piyoppi/tiled-map';
 import { Pen } from './../../src/Brushes/Pen'
 import { DefaultArrangement } from './../../src/Brushes/Arrangements/DefaultArrangement'
 
+function buildBrush(mapChipFragment: MapChipFragment): Pen<TiledMapDataItem> {
+  const brush = new Pen<TiledMapDataItem>()
+  const arrangement = new DefaultArrangement()
+  arrangement.setMapChips([mapChipFragment])
+  brush.setArrangement(arrangement)
+
+  return brush
+}
+
 describe('#mouseMove', () => {
   it('Return a empty list when mouseDown is not called', () => {
-    const pen = new Pen()
+    const mapChipFragment = new MapChipFragment(0, 0, 1)
+    const pen = buildBrush(mapChipFragment)
 
     expect(pen.mouseMove(0, 0)).toEqual([])
   })
 
   it('Return a BrushPaint list', () => {
-    const pen = new Pen()
     const mapChipFragment = new MapChipFragment(0, 0, 1)
+    const pen = buildBrush(mapChipFragment)
     const expectedMapChip = new MapChip([mapChipFragment])
-    const expectedBrushPaintTemplate = {chip: expectedMapChip}
-    const arrangement = new DefaultArrangement()
-    arrangement.setMapChips([mapChipFragment])
-    pen.setArrangement(arrangement)
+    const expectedBrushPaintTemplate = {item: expectedMapChip}
 
     pen.mouseDown(0, 0)
     expect(pen.mouseMove(0, 0)).toEqual([{x: 0, y: 0, ...expectedBrushPaintTemplate}])

@@ -21,7 +21,7 @@ describe('#put', () => {
     const mapChip = new MapChip([new MapChipFragment(1, 1, 1)])
 
     tiledMap.put(mapChip, 3, 2)
-    expect(tiledMap.data.getMapDataFromChipPosition(3, 2)).toEqual(mapChip)
+    expect(tiledMap.data.getFromChipPosition(3, 2)).toEqual(mapChip)
   })
 })
 
