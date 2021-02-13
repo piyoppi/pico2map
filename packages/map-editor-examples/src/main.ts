@@ -42,12 +42,25 @@ async function initialize() {
   const mapChipModeRadioButton = document.getElementById('mapChipMode') as HTMLInputElement
   const coliderModeRadioButton = document.getElementById('coliderMode') as HTMLInputElement
   const mapCanvas = document.getElementById('mapCanvas')
+  const coliderGroup = document.getElementById('coliderGroup') as HTMLDivElement
+  const coliderTypeNoneRadioButton = document.getElementById('coliderTypeNone') as HTMLInputElement
+  const coliderTypeColiderRadioButton = document.getElementById('coliderTypeColider') as HTMLInputElement
 
   rectangleRadioButton?.addEventListener('change', () => mapCanvas?.setAttribute('brush', 'RectangleBrush'))
   penRadioButton?.addEventListener('change', () => mapCanvas?.setAttribute('brush', 'Pen'))
   eraseRadioButton?.addEventListener('change', () => mapCanvas?.setAttribute('arrangement', 'DefaultEraseArrangement'))
-  mapChipModeRadioButton?.addEventListener('change', () => mapCanvas?.setAttribute('mode', 'mapChip'))
-  coliderModeRadioButton?.addEventListener('change', () => mapCanvas?.setAttribute('mode', 'colider'))
+  mapChipModeRadioButton?.addEventListener('change', e => {
+    mapCanvas?.setAttribute('mode', 'mapChip')
+
+    coliderGroup.style.display = coliderModeRadioButton.checked ? 'block' : 'none'
+  })
+  coliderModeRadioButton?.addEventListener('change', e => {
+    mapCanvas?.setAttribute('mode', 'colider')
+
+    coliderGroup.style.display = coliderModeRadioButton.checked ? 'block' : 'none'
+  })
+  coliderTypeNoneRadioButton.addEventListener('change', () => mapCanvas?.setAttribute('coliderType', 'none'))
+  coliderTypeColiderRadioButton.addEventListener('change', () => mapCanvas?.setAttribute('coliderType', 'colider'))
 
   penRadioButton.checked = true
 
