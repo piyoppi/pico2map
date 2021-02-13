@@ -1,4 +1,4 @@
-import { Projects } from '@piyoppi/map-editor'
+import { Projects, MapChipSelectedEvent, AutoTileSelectedEvent } from '@piyoppi/map-editor'
 import { TiledMap, MapChipImage, DefaultAutoTileImportStrategy } from '@piyoppi/tiled-map'
 
 async function initialize() {
@@ -39,16 +39,33 @@ async function initialize() {
   const rectangleRadioButton = document.getElementById('rectangle') as HTMLInputElement
   const eraseRadioButton = document.getElementById('erase') as HTMLInputElement
   const penRadioButton = document.getElementById('pen') as HTMLInputElement
-
-  const mapChipSelector = document.getElementById('mapChipSelector')
-  const autoTileSelector = document.getElementById('autoTileSelector')
+  const mapChipModeRadioButton = document.getElementById('mapChipMode') as HTMLInputElement
+  const coliderModeRadioButton = document.getElementById('coliderMode') as HTMLInputElement
   const mapCanvas = document.getElementById('mapCanvas')
+  const coliderGroup = document.getElementById('coliderGroup') as HTMLDivElement
+  const coliderTypeNoneRadioButton = document.getElementById('coliderTypeNone') as HTMLInputElement
+  const coliderTypeColiderRadioButton = document.getElementById('coliderTypeColider') as HTMLInputElement
 
   rectangleRadioButton?.addEventListener('change', () => mapCanvas?.setAttribute('brush', 'RectangleBrush'))
   penRadioButton?.addEventListener('change', () => mapCanvas?.setAttribute('brush', 'Pen'))
   eraseRadioButton?.addEventListener('change', () => mapCanvas?.setAttribute('arrangement', 'DefaultEraseArrangement'))
+  mapChipModeRadioButton?.addEventListener('change', e => {
+    mapCanvas?.setAttribute('mode', 'mapChip')
+
+    coliderGroup.style.display = coliderModeRadioButton.checked ? 'block' : 'none'
+  })
+  coliderModeRadioButton?.addEventListener('change', e => {
+    mapCanvas?.setAttribute('mode', 'colider')
+
+    coliderGroup.style.display = coliderModeRadioButton.checked ? 'block' : 'none'
+  })
+  coliderTypeNoneRadioButton.addEventListener('change', () => mapCanvas?.setAttribute('coliderType', 'none'))
+  coliderTypeColiderRadioButton.addEventListener('change', () => mapCanvas?.setAttribute('coliderType', 'colider'))
 
   penRadioButton.checked = true
+
+  const mapChipSelector = document.getElementById('mapChipSelector')
+  const autoTileSelector = document.getElementById('autoTileSelector')
 
   if (!mapChipSelector || !autoTileSelector || !mapCanvas) return
 
@@ -56,14 +73,16 @@ async function initialize() {
   autoTileSelector.setAttribute('projectId', '1')
   mapCanvas.setAttribute('projectId', '1')
 
-  autoTileSelector.addEventListener('selected', () => {
+  autoTileSelector.addEventListener<any>('autotile-selected', (e: AutoTileSelectedEvent) => {
     mapCanvas.setAttribute('brush', 'RectangleBrush')
     mapCanvas.setAttribute('arrangement', 'AutoTileArrangement')
+    mapCanvas.setAttribute('autoTileId', e.detail.id.toString())
     rectangleRadioButton.checked = true
   })
 
-  mapChipSelector.addEventListener('selected', () => {
+  mapChipSelector.addEventListener<any>('mapchip-selected', (e: MapChipSelectedEvent) => {
     mapCanvas.setAttribute('arrangement', 'DefaultArrangement')
+    mapCanvas.setAttribute('mapChipFragmentProperties', JSON.stringify(e.detail.selectedMapChipProperties))
   })
 }
 

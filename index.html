@@ -15,10 +15,17 @@
         <button id="save">Save</button>
         <button id="load">Load</button>
         <button id="render">Render</button>
+
+        <input type="radio" name="mode" id="mapChipMode">MapChip</input>
+        <input type="radio" name="mode" id="coliderMode">Colider</input>
+        <div id="coliderGroup" style="display: none;">
+          <input type="radio" name="coliderType" id="coliderTypeNone">None</input>
+          <input type="radio" name="coliderType" id="coliderTypeColider">Colider</input>
+        </div>
       </div>
       <div class="map-editor-boundary">
         <div class="map-editor">
-          <map-canvas-component id="mapCanvas"></map-canvas-component>
+          <map-canvas-component id="mapCanvas" coliderType="colider"></map-canvas-component>
         </div>
         <div class="chip-selector">
           <div class="map-chips">
