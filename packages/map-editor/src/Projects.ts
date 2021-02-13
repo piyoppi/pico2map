@@ -3,8 +3,6 @@ import { MapChipSelector } from './MapChipSelector'
 
 export class Project {
   private _mapChipSelector = new MapChipSelector(this._tiledMap)
-  private _selectedAutoTile: AutoTile | null = null
-  private _selectedColiderType: ColiderTypes = 'none'
   private _renderAllFunction: (() => void) | null = null
 
   constructor(
@@ -23,18 +21,6 @@ export class Project {
 
   get tiledMap() {
     return this._tiledMap
-  }
-
-  get selectedColiderType() {
-    return this._selectedColiderType
-  }
-
-  get selectedAutoTile(): AutoTile | null {
-    return this._selectedAutoTile
-  }
-
-  set selectedAutoTile(val: AutoTile | null) {
-    this._selectedAutoTile = val
   }
 
   setTiledMap(map: TiledMap) {

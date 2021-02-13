@@ -1,4 +1,4 @@
-import { TiledMap, TiledMapData, TiledMapDataItem, MapChipFragment, MapChip } from '@piyoppi/tiled-map'
+import { TiledMapDataItem, MapChipFragment, MapChip, AutoTile } from '@piyoppi/tiled-map'
 import { Project } from './Projects'
 import { Pen } from './Brushes/Pen'
 import { Brushes } from './Brushes/Brushes'
@@ -10,22 +10,49 @@ import { MapRenderer } from './MapRenderer'
 import { EditorCanvas } from './EditorCanvas'
 
 export class MapCanvas implements EditorCanvas {
-  private _ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D
-  private _secondaryCanvasCtx = this.secondaryCanvas.getContext('2d') as CanvasRenderingContext2D
+  private _ctx: CanvasRenderingContext2D | null = null
+  private _secondaryCanvasCtx: CanvasRenderingContext2D | null = null
   private _isMouseDown = false
   private _brush: Brush<TiledMapDataItem> = new Pen()
   private _arrangement: Arrangement<TiledMapDataItem> = new DefaultArrangement()
   private _lastMapChipPosition = {x: -1, y: -1}
   private _renderer = new MapRenderer(this._project.tiledMap)
+  private canvas: HTMLCanvasElement | null = null
+  private secondaryCanvas: HTMLCanvasElement | null = null
+
+  private _selectedAutoTile: AutoTile | null = null
+  private _selectedMapChipFragment: MapChipFragment | null = null
 
   constructor(
     private _project: Project,
-    private canvas: HTMLCanvasElement,
-    private secondaryCanvas: HTMLCanvasElement
   ) {
     this._project.registerRenderAllCallback(() => {
+      if (!this._ctx) return
       this._renderer.renderAll(this._ctx)
     })
+  }
+
+  get selectedAutoTile() {
+    return this._selectedAutoTile
+  }
+
+  get selectedMapChipFragment() {
+    return this._selectedMapChipFragment
+  }
+
+  setCanvas(canvas: HTMLCanvasElement, secondaryCanvas: HTMLCanvasElement) {
+    this.canvas = canvas
+    this.secondaryCanvas = secondaryCanvas
+    this._ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D
+    this._secondaryCanvasCtx = this.secondaryCanvas.getContext('2d') as CanvasRenderingContext2D
+  }
+
+  setAutoTile(value: AutoTile) {
+    this._selectedAutoTile = value
+  }
+
+  setMapChipFragment(value: MapChipFragment) {
+    this._selectedMapChipFragment = value
   }
 
   setBrushFromName(brushName: string) {
@@ -71,12 +98,12 @@ export class MapCanvas implements EditorCanvas {
   mouseDown(x: number, y: number) {
     this._isMouseDown = true
 
-    if (isMapChipFragmentRequired(this._arrangement)) {
-    this._arrangement.setMapChips(this._project.mapChipSelector.selectedChips)
+    if (isMapChipFragmentRequired(this._arrangement) && this._selectedMapChipFragment) {
+      this._arrangement.setMapChips([this._selectedMapChipFragment])
     }
 
-    if (isAutoTileRequired(this._arrangement) && this._project.selectedAutoTile) {
-      this._arrangement.setAutoTile(this._project.selectedAutoTile)
+    if (isAutoTileRequired(this._arrangement) && this._selectedAutoTile) {
+      this._arrangement.setAutoTile(this._selectedAutoTile)
     }
     if (isAutoTilesRequired(this._arrangement)) {
       this._arrangement.setAutoTiles(this._project.tiledMap.autoTiles)
@@ -96,6 +123,8 @@ export class MapCanvas implements EditorCanvas {
 
     this.clearSecondaryCanvas()
     this._brush.mouseMove(chipPosition.x, chipPosition.y).forEach(paint => {
+      if (!this._secondaryCanvasCtx) return
+
       const chip = paint.item
       this._renderer.putOrClearChipToCanvas(this._secondaryCanvasCtx, chip, paint.x, paint.y, true)
     })
@@ -121,11 +150,15 @@ export class MapCanvas implements EditorCanvas {
   }
 
   putChip(mapChip: MapChip | null, chipX: number, chipY: number) {
+    if (!this._ctx) return
+
     this._project.tiledMap.put(mapChip, chipX, chipY)
     this._renderer.putOrClearChipToCanvas(this._ctx, mapChip, chipX, chipY)
   }
 
   private clearSecondaryCanvas() {
+    if (!this.secondaryCanvas || !this._secondaryCanvasCtx) return
+
     this._secondaryCanvasCtx.clearRect(0, 0, this.secondaryCanvas.width, this.secondaryCanvas.height)
   }
 

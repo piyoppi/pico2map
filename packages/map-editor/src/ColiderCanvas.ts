@@ -15,6 +15,7 @@ export class ColiderCanvas implements EditorCanvas {
   private _arrangement: Arrangement<ColiderTypes> = new ColiderArrangement()
   private _isMouseDown = false
   private _lastMapChipPosition = {x: -1, y: -1}
+  private _selectedColiderType: ColiderTypes = 'none'
 
   constructor(
     private _project: Project,
@@ -29,9 +30,17 @@ export class ColiderCanvas implements EditorCanvas {
     this._setupBrush()
   }
 
+  get selectedColiderType() {
+    return this._selectedColiderType
+  }
+
   setBrush(brush: Brush<ColiderTypes>) {
     this._brush = brush
     this._setupBrush()
+  }
+
+  setColiderType(value: ColiderTypes) {
+    this._selectedColiderType = value
   }
 
   private _setupBrush() {
@@ -40,7 +49,7 @@ export class ColiderCanvas implements EditorCanvas {
     this._brush.setArrangement(this._arrangement)
 
     if (isColiderTypesRequired(this._arrangement)) {
-      this._arrangement.setColiderTypes(this._project.selectedColiderType)
+      this._arrangement.setColiderTypes(this._selectedColiderType)
     }
   }
 

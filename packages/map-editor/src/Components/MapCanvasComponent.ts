@@ -5,6 +5,7 @@ import { MapCanvas } from './../MapCanvas'
 import { Projects, Project } from './../Projects'
 import { ColiderCanvas } from '../ColiderCanvas'
 import { EditorCanvas } from '../EditorCanvas'
+import { MapChip, MapChipFragment, MapChipFragmentProperties } from '@piyoppi/tiled-map'
 
 type EditMode = 'mapChip' | 'colider'
 
@@ -79,6 +80,35 @@ export class MapCanvasComponent extends LitElement {
     this.requestUpdate('mode', oldValue);
   }
 
+  @property({type: Number})
+  get autoTileId() {
+    return this._mapCanvas?.selectedAutoTile?.id || -1
+  }
+  set autoTileId(value: number) {
+    const oldValue = value
+    console.log(value)
+    const autoTile = this._project?.tiledMap.autoTiles.fromId(value)
+
+    if (autoTile) {
+      this._mapCanvas?.setAutoTile(autoTile)
+    }
+
+    this.requestUpdate('autoTileId', oldValue);
+  }
+
+  @property({type: Object})
+  get mapChipFragmentProperties() {
+    return this._mapCanvas?.selectedMapChipFragment?.toObject() || null
+  }
+  set mapChipFragmentProperties(value: MapChipFragmentProperties) {
+    const oldValue = value
+    const mapChipFragment = MapChipFragment.fromObject(value)
+
+    this._mapCanvas?.setMapChipFragment(mapChipFragment)
+
+    this.requestUpdate('mapChipFragmentProperties', oldValue);
+  }
+
   private get width() {
     return this.xCount * this.gridWidth
   }
@@ -125,7 +155,8 @@ export class MapCanvasComponent extends LitElement {
     if (!this._project || !this._canvasElement || !this._secondaryCanvasElement || !this._coliderCanvasElement) return;
 
     if (!this._mapCanvas) {
-      this._mapCanvas = new MapCanvas(this._project, this._canvasElement, this._secondaryCanvasElement)
+      this._mapCanvas = new MapCanvas(this._project)
+      this._mapCanvas.setCanvas(this._canvasElement, this._secondaryCanvasElement)
     }
 
     if (!this._coliderCanvas) {

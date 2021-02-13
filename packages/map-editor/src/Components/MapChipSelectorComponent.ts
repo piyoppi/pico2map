@@ -2,7 +2,17 @@ import { LitElement, html, css, customElement, property } from 'lit-element'
 import { GridImageGenerator } from '../GridImageGenerator'
 import { CursorPositionCalculator } from './helpers/CursorPositionCalculator'
 import { Projects, Project } from './../Projects'
-import { MapChipImage } from '@piyoppi/tiled-map'
+import { MapChipImage, MapChipFragmentProperties } from '@piyoppi/tiled-map'
+
+interface MapChipSelectedDetail {
+  selectedMapChipProperties: MapChipFragmentProperties
+}
+
+export class MapChipSelectedEvent extends CustomEvent<MapChipSelectedDetail> {
+  constructor(detail: MapChipSelectedDetail) {
+    super('mapchip-selected', { detail });
+  }
+}
 
 @customElement('map-chip-selector-component')
 export class MapChipSelectorComponent extends LitElement {
@@ -100,8 +110,8 @@ export class MapChipSelectorComponent extends LitElement {
     this.selectedChipY = selectedChip.y
 
     this.dispatchEvent(
-      new CustomEvent('selected', {
-        detail: {},
+      new CustomEvent('mapchip-selected', {
+        detail: {selectedMapChipProperties: selectedChip.toObject()},
         bubbles: true,
         composed: true
       })

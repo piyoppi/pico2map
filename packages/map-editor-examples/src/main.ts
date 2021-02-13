@@ -1,4 +1,4 @@
-import { Projects } from '@piyoppi/map-editor'
+import { Projects, MapChipSelectedEvent, AutoTileSelectedEvent } from '@piyoppi/map-editor'
 import { TiledMap, MapChipImage, DefaultAutoTileImportStrategy } from '@piyoppi/tiled-map'
 
 async function initialize() {
@@ -60,14 +60,16 @@ async function initialize() {
   autoTileSelector.setAttribute('projectId', '1')
   mapCanvas.setAttribute('projectId', '1')
 
-  autoTileSelector.addEventListener('selected', () => {
+  autoTileSelector.addEventListener<any>('autotile-selected', (e: AutoTileSelectedEvent) => {
     mapCanvas.setAttribute('brush', 'RectangleBrush')
     mapCanvas.setAttribute('arrangement', 'AutoTileArrangement')
+    mapCanvas.setAttribute('autoTileId', e.detail.id.toString())
     rectangleRadioButton.checked = true
   })
 
-  mapChipSelector.addEventListener('selected', () => {
+  mapChipSelector.addEventListener<any>('mapchip-selected', (e: MapChipSelectedEvent) => {
     mapCanvas.setAttribute('arrangement', 'DefaultArrangement')
+    mapCanvas.setAttribute('mapChipFragmentProperties', JSON.stringify(e.detail.selectedMapChipProperties))
   })
 }
 
