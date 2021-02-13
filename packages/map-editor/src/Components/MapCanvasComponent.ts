@@ -5,7 +5,7 @@ import { MapCanvas } from './../MapCanvas'
 import { Projects, Project } from './../Projects'
 import { ColiderCanvas } from '../ColiderCanvas'
 import { EditorCanvas } from '../EditorCanvas'
-import { MapChip, MapChipFragment, MapChipFragmentProperties } from '@piyoppi/tiled-map'
+import { MapChipFragment, MapChipFragmentProperties, ColiderTypes } from '@piyoppi/tiled-map'
 
 type EditMode = 'mapChip' | 'colider'
 
@@ -108,6 +108,18 @@ export class MapCanvasComponent extends LitElement {
 
     const mapChipFragment = MapChipFragment.fromObject(value)
     this._mapCanvas?.setMapChipFragment(mapChipFragment)
+  }
+
+  @property({type: String})
+  get coliderType() {
+    return this._coliderCanvas?.selectedColiderType || ''
+  }
+  set coliderType(value: ColiderTypes | '') {
+    const oldValue = value
+    this.requestUpdate('mapChipFragmentProperties', oldValue);
+
+    if (!value) return
+    this._coliderCanvas?.setColiderType(value)
   }
 
   private get width() {
