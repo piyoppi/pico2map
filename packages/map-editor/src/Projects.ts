@@ -17,10 +17,6 @@ export class Project {
     return this._tiledMap
   }
 
-  setTiledMap(map: TiledMap) {
-    this._tiledMap = map
-  }
-
   requestRenderAll() {
     this._renderAllFunction.forEach(fn => fn())
   }
@@ -55,6 +51,6 @@ export class Projects {
   }
 
   private static createId() {
-    return Projects._idCounter++
+    return ++Projects._idCounter
   }
 }

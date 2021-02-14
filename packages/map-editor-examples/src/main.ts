@@ -1,10 +1,17 @@
 import { Projects, MapChipSelectedEvent, AutoTileSelectedEvent } from '@piyoppi/map-editor'
 import { TiledMap, MapChipImage, DefaultAutoTileImportStrategy } from '@piyoppi/tiled-map'
 
-async function initialize() {
-  const chipSize = { width: 32, height: 32 }
-  let tiledMap = new TiledMap(30, 30, chipSize.width, chipSize.height)
+const mapCanvas = document.getElementById('mapCanvas') as HTMLInputElement
+const mapChipSelector = document.getElementById('mapChipSelector') as HTMLInputElement
+const autoTileSelector = document.getElementById('autoTileSelector') as HTMLInputElement
 
+function setProjectId(id: number) {
+  mapChipSelector.setAttribute('projectId', id.toString())
+  autoTileSelector.setAttribute('projectId', id.toString())
+  mapCanvas.setAttribute('projectId', id.toString())
+}
+
+async function setMapChip(tiledMap: TiledMap, chipSize: {width: number, height: number}) {
   const mapChipImage = new MapChipImage("images/chip.png", 1)
   const autoTileImage = new MapChipImage("images/auto-tile-sample.png", 2)
 
@@ -15,15 +22,24 @@ async function initialize() {
   tiledMap.mapChipsCollection.push(autoTileImage)
 
   tiledMap.autoTiles.import(new DefaultAutoTileImportStrategy(autoTileImage, chipSize.width, chipSize.height))
+}
 
-  const project = Projects.add(tiledMap, 1)
+async function initialize() {
+  const chipSize = { width: 32, height: 32 }
+  let tiledMap = new TiledMap(30, 30, chipSize.width, chipSize.height)
+
+  await setMapChip(tiledMap, chipSize)
+
+  const project = Projects.add(tiledMap)
 
   const loadButton = document.getElementById('load') as HTMLInputElement
   loadButton.onclick = async () => {
     const serializedData = localStorage.getItem('mapData')
     if (!serializedData) return
     tiledMap = TiledMap.fromObject(JSON.parse(serializedData))
-    project.setTiledMap(tiledMap)
+
+    const project = Projects.add(tiledMap)
+    setProjectId(project.projectId)
     await project.tiledMap.mapChipsCollection.waitWhileLoading()
     project.requestRenderAll()
   }
@@ -41,7 +57,6 @@ async function initialize() {
   const penRadioButton = document.getElementById('pen') as HTMLInputElement
   const mapChipModeRadioButton = document.getElementById('mapChipMode') as HTMLInputElement
   const coliderModeRadioButton = document.getElementById('coliderMode') as HTMLInputElement
-  const mapCanvas = document.getElementById('mapCanvas')
   const coliderGroup = document.getElementById('coliderGroup') as HTMLDivElement
   const coliderTypeNoneRadioButton = document.getElementById('coliderTypeNone') as HTMLInputElement
   const coliderTypeColiderRadioButton = document.getElementById('coliderTypeColider') as HTMLInputElement
@@ -64,14 +79,7 @@ async function initialize() {
 
   penRadioButton.checked = true
 
-  const mapChipSelector = document.getElementById('mapChipSelector')
-  const autoTileSelector = document.getElementById('autoTileSelector')
-
-  if (!mapChipSelector || !autoTileSelector || !mapCanvas) return
-
-  mapChipSelector.setAttribute('projectId', '1')
-  autoTileSelector.setAttribute('projectId', '1')
-  mapCanvas.setAttribute('projectId', '1')
+  setProjectId(project.projectId)
 
   autoTileSelector.addEventListener<any>('autotile-selected', (e: AutoTileSelectedEvent) => {
     mapCanvas.setAttribute('brush', 'RectangleBrush')
