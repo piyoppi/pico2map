@@ -7,10 +7,10 @@ describe('#add', () => {
     Projects.add(tiledMap)
 
     expect(Projects.items[0].tiledMap).toEqual(tiledMap)
-    expect(Projects.items[0].projectId).toEqual(0)
+    expect(Projects.items[0].projectId).toEqual(1)
 
     Projects.add(tiledMap)
-    expect(Projects.items[1].projectId).toEqual(1)
+    expect(Projects.items[1].projectId).toEqual(2)
 
     Projects.add(tiledMap, 100)
     expect(Projects.items[2].projectId).toEqual(100)
