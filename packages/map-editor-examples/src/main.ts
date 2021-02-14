@@ -1,5 +1,5 @@
 import { Projects, MapChipSelectedEvent, AutoTileSelectedEvent } from '@piyoppi/map-editor'
-import { TiledMap, MapChipImage, DefaultAutoTileImportStrategy } from '@piyoppi/tiled-map'
+import { TiledMap, MapChipImage, DefaultAutoTileImportStrategy, MapChip } from '@piyoppi/tiled-map'
 
 const mapCanvas = document.getElementById('mapCanvas') as HTMLInputElement
 const mapChipSelector = document.getElementById('mapChipSelector') as HTMLInputElement
@@ -31,26 +31,21 @@ async function initialize() {
   await setMapChip(tiledMap, chipSize)
 
   const project = Projects.add(tiledMap)
+  setProjectId(project.projectId)
 
   const loadButton = document.getElementById('load') as HTMLInputElement
   loadButton.onclick = async () => {
     const serializedData = localStorage.getItem('mapData')
     if (!serializedData) return
     tiledMap = TiledMap.fromObject(JSON.parse(serializedData))
-
-    const project = Projects.add(tiledMap)
-    setProjectId(project.projectId)
-    await project.tiledMap.mapChipsCollection.waitWhileLoading()
-    project.requestRenderAll()
+    const newProject = Projects.add(tiledMap)
+    setProjectId(newProject.projectId)
+    await newProject.tiledMap.mapChipsCollection.waitWhileLoading()
+    newProject.requestRenderAll()
   }
 
   const saveButton = document.getElementById('save') as HTMLInputElement
   saveButton.onclick = () => localStorage.setItem('mapData', JSON.stringify(tiledMap.toObject()))
-
-  const renderButton = document.getElementById('render') as HTMLInputElement
-  renderButton.onclick = () => {
-    project.requestRenderAll()
-  }
 
   const rectangleRadioButton = document.getElementById('rectangle') as HTMLInputElement
   const eraseRadioButton = document.getElementById('erase') as HTMLInputElement
@@ -78,8 +73,6 @@ async function initialize() {
   coliderTypeColiderRadioButton.addEventListener('change', () => mapCanvas?.setAttribute('coliderType', 'colider'))
 
   penRadioButton.checked = true
-
-  setProjectId(project.projectId)
 
   autoTileSelector.addEventListener<any>('autotile-selected', (e: AutoTileSelectedEvent) => {
     mapCanvas.setAttribute('brush', 'RectangleBrush')

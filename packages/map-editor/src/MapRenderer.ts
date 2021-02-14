@@ -20,12 +20,12 @@ export class MapRenderer {
   }
 
   putOrClearChipToCanvas(ctx: CanvasRenderingContext2D, mapChip: MapChip | null, chipX: number, chipY: number, isTemporaryRendering: boolean = false) {
-    if (mapChip instanceof MapChip) {
+    if (!mapChip) {
+      this._clearChipToCanvas(ctx, chipX, chipY, isTemporaryRendering)
+    } else {
       mapChip.items.forEach(item => {
         this._putChipToCanvas(ctx, item, chipX, chipY)
       })
-    } else {
-      this._clearChipToCanvas(ctx, chipX, chipY, isTemporaryRendering)
     }
   }
 
