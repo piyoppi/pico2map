@@ -3,6 +3,7 @@ import { GridImageGenerator } from '../GridImageGenerator'
 import { CursorPositionCalculator } from './helpers/CursorPositionCalculator'
 import { Projects, Project } from './../Projects'
 import { MapChipImage, MapChipFragmentProperties } from '@piyoppi/tiled-map'
+import { MapChipSelector } from '../MapChipSelector'
 
 interface MapChipSelectedDetail {
   selectedMapChipProperties: MapChipFragmentProperties
@@ -21,6 +22,7 @@ export class MapChipSelectorComponent extends LitElement {
   private cursorPositionCalculator = new CursorPositionCalculator()
   private _project: Project | null = null
   private _chipImage: MapChipImage | null = null
+  private _mapChipSelector : MapChipSelector | null = null
 
   private _projectId = -1
   @property({type: Number})
@@ -57,7 +59,9 @@ export class MapChipSelectorComponent extends LitElement {
   @property({type: Number}) selectedChipX = 0
 
   get mapChipSelector() {
-    return this._project?.mapChipSelector
+    if (!this._mapChipSelector) throw new Error('The project is not set')
+
+    return this._mapChipSelector
   }
 
   get gridWidth() {
@@ -86,10 +90,11 @@ export class MapChipSelectorComponent extends LitElement {
     if (!this._project || this._chipId < 0) return
 
     this._chipImage = this._project.tiledMap.mapChipsCollection.findById(this._chipId)
+    this._mapChipSelector = new MapChipSelector(this._project.tiledMap)
   }
 
   mouseMove(e: MouseEvent) {
-    if (!this.mapChipSelector || !this._chipImage) return;
+    if (!this._chipImage) return;
 
     const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY)
     const chip = this.mapChipSelector.convertFromImagePositionToChipPosition(this._chipImage, mouseCursorPosition.x, mouseCursorPosition.y)
@@ -98,7 +103,7 @@ export class MapChipSelectorComponent extends LitElement {
   }
 
   mouseDown(e: MouseEvent) {
-    if (!this.mapChipSelector || !this._chipImage) return
+    if (!this._chipImage) return
 
     const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY)
     this.mapChipSelector.selectAtMouseCursor(this._chipImage, mouseCursorPosition.x, mouseCursorPosition.y)

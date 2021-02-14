@@ -1,18 +1,12 @@
-import { TiledMap, AutoTile, ColiderTypes } from '@piyoppi/tiled-map'
-import { MapChipSelector } from './MapChipSelector'
+import { TiledMap } from '@piyoppi/tiled-map'
 
 export class Project {
-  private _mapChipSelector = new MapChipSelector(this._tiledMap)
-  private _renderAllFunction: (() => void) | null = null
+  private _renderAllFunction: Array<(() => void)> = []
 
   constructor(
     private _tiledMap: TiledMap,
     private _projectId: number
   ) {
-  }
-
-  get mapChipSelector() {
-    return this._mapChipSelector
   }
 
   get projectId() {
@@ -28,11 +22,11 @@ export class Project {
   }
 
   requestRenderAll() {
-    if (this._renderAllFunction) this._renderAllFunction()
+    this._renderAllFunction.forEach(fn => fn())
   }
 
   registerRenderAllCallback(fn: () => void) {
-    this._renderAllFunction = fn
+    this._renderAllFunction.push(fn)
   }
 }
 

@@ -8,6 +8,10 @@ export class MapRenderer {
   ) {
   }
 
+  setTiledMap(tiledMap: TiledMap) {
+    this._tiledMap = tiledMap
+  }
+
   renderAll(ctx: CanvasRenderingContext2D) {
     this._tiledMap.data.items.forEach((value, index) => {
       const position = this._tiledMap.data.convertMapNumberToPosition(index)
