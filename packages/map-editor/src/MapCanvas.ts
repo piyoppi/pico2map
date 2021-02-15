@@ -45,6 +45,10 @@ export class MapCanvas implements EditorCanvas {
     return this._renderer
   }
 
+  hasActiveAutoTile() {
+    return !!this._selectedAutoTile
+  }
+
   setProject(project: Project) {
     this._project = project
     this._renderer = new MapRenderer(this._project.tiledMap)

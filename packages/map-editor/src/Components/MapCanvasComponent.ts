@@ -21,6 +21,7 @@ export class MapCanvasComponent extends LitElement {
   private _secondaryCanvasElement: HTMLCanvasElement | null = null
   private _coliderCanvasElement : HTMLCanvasElement | null = null
   private _mode: EditMode = 'mapChip'
+  private _autoTileIdAttributeValue: number = -1
 
   @property({type: Number}) cursorChipX = 0
   @property({type: Number}) cursorChipY = 0
@@ -37,6 +38,7 @@ export class MapCanvasComponent extends LitElement {
     this._project = Projects.fromProjectId(value)
 
     this.setupMapCanvas()
+    this.setActiveAutoTile()
 
     this.requestUpdate('projectId', oldValue);
   }
@@ -88,9 +90,8 @@ export class MapCanvasComponent extends LitElement {
     const oldValue = value
     const autoTile = this._project?.tiledMap.autoTiles.fromId(value)
 
-    if (autoTile) {
-      this._mapCanvas.setAutoTile(autoTile)
-    }
+    this._autoTileIdAttributeValue = value
+    this.setActiveAutoTile(true)
 
     this.requestUpdate('autoTileId', oldValue);
   }
@@ -158,6 +159,17 @@ export class MapCanvasComponent extends LitElement {
         return this._coliderCanvas
       default:
         return this._mapCanvas
+    }
+  }
+
+  private setActiveAutoTile(forced: boolean = false) {
+    if (!this._project || this._autoTileIdAttributeValue < 0) return
+
+    if (!this._mapCanvas.hasActiveAutoTile() || forced) {
+      const autoTile = this._project.tiledMap.autoTiles.fromId(this._autoTileIdAttributeValue)
+      console.log(autoTile)
+      if (!autoTile) throw new Error(`AutoTile (id: ${this._autoTileIdAttributeValue}) is not found.`)
+      this._mapCanvas.setAutoTile(autoTile)
     }
   }
 
