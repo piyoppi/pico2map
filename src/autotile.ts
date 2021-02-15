@@ -11,11 +11,6 @@ const init = async () => {
   tiledMap.mapChipsCollection.push(mapChipImage)
   tiledMap.autoTiles.import(new DefaultAutoTileImportStrategy(mapChipImage, 32, 32))
   Projects.add(tiledMap, 1)
-
-  const project = Projects.fromProjectId(1)
-  if (!project) return
-
-  mapCanvas.setAttribute('projectId', '1')
 }
 
 init()
