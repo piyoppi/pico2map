@@ -6,7 +6,7 @@ Minimum map-editor example
 
 The `mapChipFragmentProperties` attribute must be set on the `<map-canvas-component>` in order to put the mapchip.
 
-[The sample is here](https://garakuta-toolbox.com/pico2map/simple_map_editor/minimum_example)
+[The sample is here](https://garakuta-toolbox.com/pico2map/minimum_example)
 
 ```html
 <!--
