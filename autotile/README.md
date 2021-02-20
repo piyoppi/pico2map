@@ -6,7 +6,7 @@ AutoTile makes it easy to build RPG-like fields.
 
 The `autoTileId` attribute must be set on the `<map-canvas-component>` in order to put the AutoTile.
 
-[The sample is here](./index.html)
+[The sample is here](https://garakuta-toolbox.com/pico2map/simple_map_editor/autotile)
 
 ## AutoTile image format
 
