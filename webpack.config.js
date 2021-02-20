@@ -3,8 +3,9 @@ const path = require('path');
 module.exports = {
   mode: 'development',
   entry: {
-    main: './src/main.ts',
-    autotile: './src/autotile.ts'
+    autotile: './autotile/src/autotile.ts',
+    minimum_example: './minimum_example/src/minimum_example.ts',
+    simple_map_editor: './simple_map_editor/src/simple_map_editor.ts'
   },
   output: {
     filename: '[name].bundle.js',
