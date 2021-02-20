@@ -1,4 +1,4 @@
-import { TiledMap, MapChipFragment, MapChip } from '@piyoppi/tiled-map'
+import { TiledMap, MapChipFragment, MapChip } from '@pico2map/tiled-map'
 
 export class MapRenderer {
   private _backgroundRgba = {r: 255, g: 255, b: 255, a: 1.0}

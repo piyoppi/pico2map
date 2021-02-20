@@ -1,5 +1,5 @@
-import { Projects, MapChipSelectedEvent, AutoTileSelectedEvent } from '@piyoppi/map-editor'
-import { TiledMap, MapChipImage, DefaultAutoTileImportStrategy } from '@piyoppi/tiled-map'
+import { Projects, MapChipSelectedEvent, AutoTileSelectedEvent } from '@pico2map/map-editor'
+import { TiledMap, MapChipImage, DefaultAutoTileImportStrategy } from '@pico2map/tiled-map'
 
 // Get some elements
 const mapCanvas = document.getElementById('mapCanvas') as HTMLInputElement

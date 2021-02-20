@@ -1,4 +1,4 @@
-import { ColiderTypes } from '@piyoppi/tiled-map'
+import { ColiderTypes } from '@pico2map/tiled-map'
 import { Arrangement, ArrangementPaint, ArrangementDescription, ColiderTypesRequired } from './Arrangement'
 import { BrushPaint } from './../Brush'
 

@@ -5,7 +5,7 @@ import { MapCanvas } from './../MapCanvas'
 import { Projects, Project } from './../Projects'
 import { ColiderCanvas } from '../ColiderCanvas'
 import { EditorCanvas } from '../EditorCanvas'
-import { TiledMap, MapChipFragment, MapChipFragmentProperties, ColiderTypes } from '@piyoppi/tiled-map'
+import { TiledMap, MapChipFragment, MapChipFragmentProperties, ColiderTypes } from '@pico2map/tiled-map'
 
 type EditMode = 'mapChip' | 'colider'
 
