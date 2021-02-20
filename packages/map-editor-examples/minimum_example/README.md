@@ -4,7 +4,7 @@ Minimum map-editor example
 
 `<map-canvas-component>` is used to draw and edit a tiled map.
 
-The `mapChipFragmentProperties` attribute must be set on the element in order to put the mapchip.
+The `mapChipFragmentProperties` attribute must be set on the `<map-canvas-component>` in order to put the mapchip.
 
 [The sample is here](./index.html)
 
