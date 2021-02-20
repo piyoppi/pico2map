@@ -8,8 +8,8 @@
   },
   "dependencies": {
     "typescript": "^4.1.3",
-    "@piyoppi/map-editor": "0.0.1",
-    "@piyoppi/tiled-map": "0.0.1"
+    "@pico2map/map-editor": "0.0.1",
+    "@pico2map/tiled-map": "0.0.1"
   },
   "devDependencies": {
     "ts-loader": "^8.0.12",

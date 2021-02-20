@@ -1,5 +1,5 @@
-import { Projects } from '@piyoppi/map-editor'
-import { TiledMap, MapChipImage } from '@piyoppi/tiled-map'
+import { Projects } from '@pico2map/map-editor'
+import { TiledMap, MapChipImage } from '@pico2map/tiled-map'
 
 // Map size is 15 x 10, MapChip size is 32 x 32px
 const tiledMap = new TiledMap(15, 10, 32, 32)
