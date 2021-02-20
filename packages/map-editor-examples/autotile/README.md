@@ -1,10 +1,20 @@
 # AutoTile Example
 
+![autotile](./images/autotile.gif)
+
 AutoTile makes it easy to build RPG-like fields.
 
 The `autoTileId` attribute must be set on the `<map-canvas-component>` in order to put the AutoTile.
 
 [The sample is here](./index.html)
+
+## AutoTile image format
+
+The AutoTile format is shown below.
+
+![A example image](./images/autotile-pattern.png)
+
+## Source code
 
 ```html
 <map-canvas-component
