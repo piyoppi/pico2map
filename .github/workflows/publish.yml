@@ -64,12 +64,12 @@ jobs:
         shell: bash
         working-directory: ./packages/map-editor
 
-      - run: npm publish tiled-map
+      - run: npm publish
         working-directory: ./packages/tiled-map
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-      - run: npm publish map-editor
+      - run: npm publish
         working-directory: ./packages/map-editor
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
