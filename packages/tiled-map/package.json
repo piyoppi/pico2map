@@ -19,6 +19,9 @@
     "build": "webpack",
     "watch": "webpack -w"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "author": "piyoppi",
   "license": "MIT"
 }
