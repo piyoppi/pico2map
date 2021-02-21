@@ -1,0 +1,73 @@
+name: Node.js Package
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build and test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '15.x'
+      - run: npm install
+
+      - name: Build tiled-map
+        run: npm run build
+        working-directory: ./packages/tiled-map
+
+      - name: Build map-editor
+        run: npm run build
+        working-directory: ./packages/map-editor
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: built-tiled-map
+          path: ./packages/tiled-map/dist/
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: built-map-editor
+          path: ./packages/map-editor/dist/
+
+  publish-gpr:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2
+        with:
+         node-version: '15.x'
+         registry-url: https://npm.pkg.github.com/
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: built-tiled-map
+          path: ./packages/tiled-map/dist/
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: built-map-editor
+          path: ./packages/map-editor/dist/
+
+      - name: update version tiled-map
+        run: npm version $GITHUB_REF
+        working-directory: ./packages/tiled-map
+
+      - name: update version map-editor
+        run: npm version $GITHUB_REF
+        working-directory: ./packages/map-editor
+
+      - run: npm publish tiled-map
+        working-directory: ./packages/tiled-map
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+      - run: npm publish map-editor
+        working-directory: ./packages/map-editor
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
