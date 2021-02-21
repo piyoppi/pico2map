@@ -20,7 +20,8 @@
     "watch": "webpack -w"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://npm.pkg.github.com/"
   },
   "author": "piyoppi",
   "license": "MIT"
