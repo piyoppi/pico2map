@@ -1,4 +1,4 @@
-import { MapChipFragment, MapChip, TiledMapDataItem } from '@pico2map/tiled-map'
+import { MapChipFragment, MapChip, TiledMapDataItem } from '@piyoppi/tiled-map'
 import { Arrangement, ArrangementPaint, ArrangementDescription } from './Arrangement'
 import { BrushPaint } from './../Brush'
 

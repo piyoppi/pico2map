@@ -1,4 +1,4 @@
-import { MapChipFragment, TiledMapData, AutoTile, AutoTiles, ColiderTypes } from '@pico2map/tiled-map'
+import { MapChipFragment, TiledMapData, AutoTile, AutoTiles, ColiderTypes } from '@piyoppi/tiled-map'
 import { BrushPaint } from './../Brush'
 
 export interface ArrangementPaint<T> {

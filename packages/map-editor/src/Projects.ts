@@ -1,4 +1,4 @@
-import { TiledMap } from '@pico2map/tiled-map'
+import { TiledMap } from '@piyoppi/tiled-map'
 
 export class Project {
   private _renderAllFunction: Array<(() => void)> = []

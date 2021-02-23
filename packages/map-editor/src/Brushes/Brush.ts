@@ -1,5 +1,5 @@
 import { Arrangement, ArrangementPaint } from './Arrangements/Arrangement';
-import { MapChip } from '@pico2map/tiled-map'
+import { MapChip } from '@piyoppi/tiled-map'
 
 export interface BrushPaint {
   x: number,

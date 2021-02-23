@@ -1,7 +1,7 @@
 import { Brush, BrushPaint, BrushDescription } from './Brush'
 import { Arrangement, ArrangementPaint } from './Arrangements/Arrangement'
 import { DefaultArrangement } from './Arrangements/DefaultArrangement'
-import { TiledMapDataItem } from '@pico2map/tiled-map'
+import { TiledMapDataItem } from '@piyoppi/tiled-map'
 
 export const PenDescription: BrushDescription = {
   name: 'Pen',
