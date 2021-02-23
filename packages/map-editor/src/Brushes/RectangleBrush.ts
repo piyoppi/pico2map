@@ -1,7 +1,7 @@
 import { Brush, BrushPaint, BrushDescription } from './Brush'
 import { Arrangement, ArrangementPaint } from './Arrangements/Arrangement'
 import { DefaultArrangement } from './Arrangements/DefaultArrangement'
-import { TiledMapDataItem } from '@piyoppi/tiled-map'
+import { TiledMapDataItem } from '@piyoppi/pico2map-tiled'
 
 export const RectangleBrushDescription: BrushDescription = {
   name: 'RectangleBrush',

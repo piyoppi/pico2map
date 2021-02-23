@@ -2,7 +2,7 @@ import { Arrangement, ArrangementPaint, ArrangementDescription, TiledMapDataRequ
 import { EraseArrangement } from './EraseArrangement'
 import { AutoTileEraseArrangement } from './AutoTileEraseArrangement'
 import { BrushPaint } from './../Brush'
-import { MapChipFragment, TiledMapData, TiledMapDataItem, AutoTiles } from '@piyoppi/tiled-map'
+import { MapChipFragment, TiledMapData, TiledMapDataItem, AutoTiles } from '@piyoppi/pico2map-tiled'
 
 export const DefaultEraseArrangementDescription: ArrangementDescription<TiledMapDataItem> = {
   name: 'DefaultEraseArrangement',
