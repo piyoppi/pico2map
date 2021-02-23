@@ -1,6 +1,6 @@
 {
   "name": "@piyoppi/pico2map-editor",
-  "version": "0.0.1",
+  "version": "0.0.14",
   "description": "",
   "main": "dist/main.js",
   "repository": {
