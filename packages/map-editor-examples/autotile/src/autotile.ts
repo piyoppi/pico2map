@@ -1,5 +1,5 @@
-import { Projects } from '@pico2map/map-editor'
-import { TiledMap, MapChipImage, DefaultAutoTileImportStrategy } from '@pico2map/tiled-map'
+import { Projects } from '@piyoppi/pico2map-editor'
+import { TiledMap, MapChipImage, DefaultAutoTileImportStrategy } from '@piyoppi/pico2map-tiled'
 
 // Map size is 30 x 30, MapChip size is 32 x 32px
 const tiledMap = new TiledMap(30, 30, 32, 32)

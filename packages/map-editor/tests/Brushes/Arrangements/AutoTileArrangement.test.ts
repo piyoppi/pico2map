@@ -1,5 +1,5 @@
 import { AutoTileArrangement } from './../../../src/Brushes/Arrangements/AutoTileArrangement'
-import { AutoTile, TiledMapData, MapChip, MapChipFragment, AutoTileMapChip } from '@pico2map/tiled-map'
+import { AutoTile, TiledMapData, MapChip, MapChipFragment, AutoTileMapChip } from '@piyoppi/pico2map-tiled'
 
 const tiledMapData = new TiledMapData(3, 3)
 const chipId = 2

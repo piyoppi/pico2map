@@ -1,6 +1,6 @@
 import { Project } from './Projects'
 import { ColiderRenderer } from './ColiderRenderer'
-import { ColiderTypes } from '@pico2map/tiled-map'
+import { ColiderTypes } from '@piyoppi/pico2map-tiled'
 import { Pen } from './Brushes/Pen'
 import { Brush } from './Brushes/Brush'
 import { Arrangement, isColiderTypesRequired } from './Brushes/Arrangements/Arrangement'

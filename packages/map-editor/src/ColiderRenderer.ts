@@ -1,4 +1,4 @@
-import { TiledMap, MapChipFragment, MapChip, ColiderTypes } from '@pico2map/tiled-map'
+import { TiledMap, MapChipFragment, MapChip, ColiderTypes } from '@piyoppi/pico2map-tiled'
 
 export class ColiderRenderer {
   private _backgroundRgba = {r: 255, g: 255, b: 255, a: 1.0}

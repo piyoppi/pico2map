@@ -1,4 +1,4 @@
-import { TiledMap, MapChipFragment, MapChipImage } from '@pico2map/tiled-map'
+import { TiledMap, MapChipFragment, MapChipImage } from '@piyoppi/pico2map-tiled'
 
 export class MapChipSelector {
   private _selectedChips: Array<MapChipFragment> = []

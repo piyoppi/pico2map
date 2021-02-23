@@ -1,4 +1,4 @@
-import { AutoTile, AutoTiles, MapChipsCollection } from '@pico2map/tiled-map'
+import { AutoTile, AutoTiles, MapChipsCollection } from '@piyoppi/pico2map-tiled'
 
 export class AutoTileSelector {
   private _indexImageWidth = 0

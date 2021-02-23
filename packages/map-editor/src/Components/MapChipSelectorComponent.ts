@@ -2,7 +2,7 @@ import { LitElement, html, css, customElement, property } from 'lit-element'
 import { GridImageGenerator } from '../GridImageGenerator'
 import { CursorPositionCalculator } from './helpers/CursorPositionCalculator'
 import { Projects, Project } from './../Projects'
-import { MapChipImage, MapChipFragmentProperties } from '@pico2map/tiled-map'
+import { MapChipImage, MapChipFragmentProperties } from '@piyoppi/pico2map-tiled'
 import { MapChipSelector } from '../MapChipSelector'
 
 interface MapChipSelectedDetail {

@@ -1,5 +1,5 @@
 {
-  "name": "@pico2map/map-editor",
+  "name": "@piyoppi/pico2map-editor",
   "version": "0.0.1",
   "description": "",
   "main": "dist/main.js",
@@ -18,7 +18,7 @@
     "ts-loader": "^8.0.14",
     "webpack": "^5.17.0",
     "webpack-cli": "^4.4.0",
-    "@pico2map/tiled-map": "0.0.1"
+    "@piyoppi/pico2map-tiled": "0.0.1"
   },
   "scripts": {
     "test": "jest",
