@@ -54,16 +54,6 @@ jobs:
           name: built-map-editor
           path: ./packages/map-editor/dist/
 
-      - name: update version tiled-map
-        run: npm version ${GITHUB_REF##*/}
-        shell: bash
-        working-directory: ./packages/tiled-map
-
-      - name: update version map-editor
-        run: npm version ${GITHUB_REF##*/}
-        shell: bash
-        working-directory: ./packages/map-editor
-
       - run: npm publish
         working-directory: ./packages/tiled-map
         env:
