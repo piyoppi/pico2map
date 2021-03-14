@@ -1,32 +1,15 @@
 import { LitElement, html, css, customElement, property } from 'lit-element'
-import { GridImageGenerator } from '../GridImageGenerator'
-import { CursorPositionCalculator } from './helpers/CursorPositionCalculator'
-import { Projects, Project } from './../Projects'
-import { AutoTileSelector } from './../AutoTileSelector'
+import { GridImageGenerator, MapChipSelector, Projects, Project } from '@piyoppi/pico2map-editor'
+import { MapChipImage } from '@piyoppi/pico2map-tiled'
+import { CursorPositionCalculator } from './Helpers/CursorPositionCalculator'
 
-interface AutoTileSelectedDetail {
-  id: number
-}
-
-export class AutoTileSelectedEvent extends CustomEvent<AutoTileSelectedDetail> {
-  constructor(detail: AutoTileSelectedDetail) {
-    super('autotile-selected', { detail });
-  }
-}
-
-@customElement('auto-tile-selector-component')
-export class AutoTileSelectorComponent extends LitElement {
+export class MapChipSelectorComponent extends LitElement {
   private _gridImageSrc = ''
   private gridImageGenerator = new GridImageGenerator()
   private cursorPositionCalculator = new CursorPositionCalculator()
   private _project: Project | null = null
-  private _indexImage: HTMLCanvasElement = document.createElement('canvas')
-  private _autoTileSelector: AutoTileSelector | null = null
-
-  static readonly Format = {
-    width: 1,
-    height: 5
-  }
+  private _chipImage: MapChipImage | null = null
+  private _mapChipSelector : MapChipSelector | null = null
 
   private _projectId = -1
   @property({type: Number})
@@ -43,12 +26,30 @@ export class AutoTileSelectorComponent extends LitElement {
     this.requestUpdate('projectId', oldValue);
   }
 
+  private _chipId = -1
+  @property({type: Number})
+  get chipId(): number {
+    return this._chipId
+  }
+  set chipId(value: number) {
+    const oldValue = this._chipId
+    this._chipId = value
+
+    this.setupMapChipSelector()
+
+    this.requestUpdate('chipId', oldValue)
+  }
+
   @property({type: Number}) cursorChipX = 0
   @property({type: Number}) cursorChipY = 0
   @property({type: Number}) selectedChipY = 0
   @property({type: Number}) selectedChipX = 0
-  @property({type: Number}) width = 192
-  @property({type: String}) indexImageSrc = ''
+
+  get mapChipSelector() {
+    if (!this._mapChipSelector) throw new Error('The project is not set')
+
+    return this._mapChipSelector
+  }
 
   get gridWidth() {
     return this._project?.tiledMap.chipWidth || 0 
@@ -73,46 +74,36 @@ export class AutoTileSelectorComponent extends LitElement {
   }
 
   private setupMapChipSelector() {
-    if (!this._project) return
+    if (!this._project || this._chipId < 0) return
 
-    this._autoTileSelector = new AutoTileSelector(
-      this.width,
-      this._project.tiledMap.chipWidth,
-      this._project.tiledMap.chipHeight,
-      this._project.tiledMap.autoTiles,
-      this._project.tiledMap.mapChipsCollection
-    )
-    const imageSize = this._autoTileSelector.getSizeOfIndexImage()
-    this._indexImage.width = imageSize.width
-    this._indexImage.height = imageSize.height
-    this._autoTileSelector.generateIndexImage(this._indexImage)
-    this.indexImageSrc = this._indexImage.toDataURL()
+    this._chipImage = this._project.tiledMap.mapChipsCollection.findById(this._chipId)
+    this._mapChipSelector = new MapChipSelector(this._project.tiledMap)
   }
 
   mouseMove(e: MouseEvent) {
-    if (!this._autoTileSelector) return;
+    if (!this._chipImage) return;
 
     const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY)
-    const position = this._autoTileSelector.convertFromIndexImageToChipPosition(mouseCursorPosition.x, mouseCursorPosition.y)
-
-    this.cursorChipX = position.x
-    this.cursorChipY = position.y
+    const chip = this.mapChipSelector.convertFromImagePositionToChipPosition(this._chipImage, mouseCursorPosition.x, mouseCursorPosition.y)
+    this.cursorChipX = chip.x
+    this.cursorChipY = chip.y
   }
 
   mouseDown(e: MouseEvent) {
-    if (!this._project || !this._autoTileSelector) return
+    if (!this._chipImage) return
 
     const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY)
-    const selectedAutoTile = this._autoTileSelector.getAutoTileFragmentFromIndexImagePosition(mouseCursorPosition.x, mouseCursorPosition.y)
+    this.mapChipSelector.selectAtMouseCursor(this._chipImage, mouseCursorPosition.x, mouseCursorPosition.y)
 
-    if (!selectedAutoTile) return
+    const selectedChip = this.mapChipSelector.selectedChips[0]
+    if (!selectedChip) return
 
-    this.selectedChipX = Math.floor(mouseCursorPosition.x / this._project.tiledMap.chipWidth)
-    this.selectedChipY = Math.floor(mouseCursorPosition.y / this._project.tiledMap.chipHeight)
+    this.selectedChipX = selectedChip.x
+    this.selectedChipY = selectedChip.y
 
     this.dispatchEvent(
-      new CustomEvent('autotile-selected', {
-        detail: {id: selectedAutoTile.id},
+      new CustomEvent('mapchip-selected', {
+        detail: {selectedMapChipProperties: selectedChip.toObject()},
         bubbles: true,
         composed: true
       })
@@ -130,9 +121,6 @@ export class AutoTileSelectorComponent extends LitElement {
       this._gridImageSrc = this.gridImageGenerator.generateLinePart().toDataURL()
     }
 
-    const cursorWidth = this.gridWidth
-    const cursorHeight = this.gridHeight
-
     return html`
       <style>
         .grid {
@@ -140,22 +128,22 @@ export class AutoTileSelectorComponent extends LitElement {
         }
 
         .cursor {
-          width: ${cursorWidth}px;
-          height: ${cursorHeight}px;
+          width: ${this.gridWidth}px;
+          height: ${this.gridHeight}px;
           left: ${this.cursorPosition.x}px;
           top: ${this.cursorPosition.y}px;
         }
 
         .selected {
-          width: ${cursorWidth}px;
-          height: ${cursorHeight}px;
+          width: ${this.gridWidth}px;
+          height: ${this.gridHeight}px;
           left: ${this.selectedPosition.x}px;
           top: ${this.selectedPosition.y}px;
         }
       </style>
 
       <div id="boundary">
-        <img id="chip-image" src="${this.indexImageSrc}">
+        <img id="chip-image" src="${this._chipImage?.src}">
         <div
           class="grid-image grid"
           @mousemove="${(e: MouseEvent) => this.mouseMove(e)}"
