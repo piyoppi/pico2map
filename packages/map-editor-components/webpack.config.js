@@ -2,14 +2,13 @@ const path = require('path');
 
 module.exports = {
   mode: 'none',
-  devtool: "source-map",
   entry: {
-    main: './src/main.ts',
+    main: './src/main.ts'
   },
   output: {
     filename: '[name].js',
     path: path.resolve(__dirname, 'dist'),
-    library: 'TiledMap',
+    library: 'MapEditor',
     libraryTarget: 'umd'
   },
   resolve: {

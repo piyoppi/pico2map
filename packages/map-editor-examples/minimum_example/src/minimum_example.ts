@@ -1,5 +1,8 @@
-import { Projects } from '@piyoppi/pico2map-editor'
+import { Projects, defineComponent } from '@piyoppi/pico2map-ui-components'
 import { TiledMap, MapChipImage } from '@piyoppi/pico2map-tiled'
+
+// Define some custom elements
+defineComponent()
 
 // Map size is 15 x 10, MapChip size is 32 x 32px
 const tiledMap = new TiledMap(15, 10, 32, 32)

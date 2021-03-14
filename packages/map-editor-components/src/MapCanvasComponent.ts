@@ -1,15 +1,10 @@
 import { LitElement, html, css, customElement, property } from 'lit-element'
-import { GridImageGenerator } from '../GridImageGenerator'
-import { CursorPositionCalculator } from './helpers/CursorPositionCalculator'
-import { MapCanvas } from './../MapCanvas'
-import { Projects, Project } from './../Projects'
-import { ColiderCanvas } from '../ColiderCanvas'
-import { EditorCanvas } from '../EditorCanvas'
-import { TiledMap, MapChipFragment, MapChipFragmentProperties, ColiderTypes } from '@piyoppi/pico2map-tiled'
+import { CursorPositionCalculator } from './Helpers/CursorPositionCalculator'
+import { GridImageGenerator, MapCanvas, Projects, Project, ColiderCanvas, EditorCanvas } from '@piyoppi/pico2map-editor'
+import { MapChipFragment, MapChipFragmentProperties, ColiderTypes } from '@piyoppi/pico2map-tiled'
 
 type EditMode = 'mapChip' | 'colider'
 
-@customElement('map-canvas-component')
 export class MapCanvasComponent extends LitElement {
   private gridImageSrc = ''
   private gridImageGenerator: GridImageGenerator = new GridImageGenerator()
@@ -26,6 +21,7 @@ export class MapCanvasComponent extends LitElement {
   constructor() {
     super()
 
+  console.log(Projects)
     Projects.setProjectAddCallbackFunction(() => this.setupProject())
   }
 
