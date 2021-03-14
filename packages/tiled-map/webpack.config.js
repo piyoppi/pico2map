@@ -1,6 +1,7 @@
 const path = require('path');
 
 module.exports = {
+  mode: 'none',
   devtool: "source-map",
   entry: {
     main: './src/main.ts',
