@@ -1,5 +1,8 @@
-import { Projects, MapChipSelectedEvent, AutoTileSelectedEvent } from '@piyoppi/pico2map-editor'
+import { Projects, defineComponent, MapChipSelectedEvent, AutoTileSelectedEvent } from '@piyoppi/pico2map-ui-components'
 import { TiledMap, MapChipImage, DefaultAutoTileImportStrategy } from '@piyoppi/pico2map-tiled'
+
+// Define some custom elements
+defineComponent()
 
 // Get some elements
 const mapCanvas = document.getElementById('mapCanvas') as HTMLInputElement

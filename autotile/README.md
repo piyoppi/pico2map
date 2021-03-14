@@ -28,8 +28,11 @@ The AutoTile format is shown below.
 ```
 
 ```ts
-import { Projects } from '@piyoppi/pico2map-editor'
+import { Projects, defineComponent } from '@piyoppi/pico2map-ui-components'
 import { TiledMap, MapChipImage, DefaultAutoTileImportStrategy } from '@piyoppi/pico2map-tiled'
+
+// Define some custom elements
+defineComponent()
 
 // Map size is 30 x 30, MapChip size is 32 x 32px
 const tiledMap = new TiledMap(30, 30, 32, 32)
