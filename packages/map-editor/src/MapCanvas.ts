@@ -6,7 +6,7 @@ import { Arrangements } from './Brushes/Arrangements/Arrangements'
 import { Brush } from './Brushes/Brush'
 import { Arrangement, isMapChipFragmentRequired, isTiledMapDataRequired, isAutoTileRequired, isAutoTilesRequired } from './Brushes/Arrangements/Arrangement'
 import { DefaultArrangement } from './Brushes/Arrangements/DefaultArrangement'
-import { MapRenderer } from './MapRenderer'
+import { MapRenderer } from '@piyoppi/pico2map-tiled'
 import { EditorCanvas } from './EditorCanvas'
 
 export class MapCanvas implements EditorCanvas {
