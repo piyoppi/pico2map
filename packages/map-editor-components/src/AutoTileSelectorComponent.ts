@@ -182,7 +182,7 @@ export class AutoTileSelectorComponent extends LitElement {
       }
 
       #boundary {
-        position: absolute;
+        position: relative;
       }
 
       #chip-image {
