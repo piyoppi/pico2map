@@ -125,6 +125,8 @@ export class MapChipSelectorComponent extends LitElement {
       <style>
         .grid {
           background-image: url("${this._gridImageSrc}");
+          width: ${this._chipImage?.image.width || 0}px;
+          height: ${this._chipImage?.image.height || 0}px;
         }
 
         .cursor {
@@ -162,8 +164,6 @@ export class MapChipSelectorComponent extends LitElement {
         top: 0;
         left: 0;
         background-repeat: repeat;
-        width: 100%;
-        height: 100%;
       }
 
       .cursor, .selected {
@@ -183,7 +183,7 @@ export class MapChipSelectorComponent extends LitElement {
       }
 
       #boundary {
-        position: absolute;
+        position: relative;
       }
 
       #chip-image {
