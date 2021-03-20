@@ -3,7 +3,7 @@ name: Node.js Package
 on: workflow_dispatch
 
 jobs:
-  build:
+  build-publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -24,47 +24,6 @@ jobs:
       - name: Build ui-components
         run: npm run build
         working-directory: ./packages/map-editor-components
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: built-tiled-map
-          path: ./packages/tiled-map/dist/
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: built-map-editor
-          path: ./packages/map-editor/dist/
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: built-ui-components
-          path: ./packages/map-editor-components/dist/
-
-  publish-gpr:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-
-      - uses: actions/setup-node@v2
-        with:
-         node-version: '15'
-         registry-url: https://npm.pkg.github.com/
-
-      - uses: actions/download-artifact@v2
-        with:
-          name: built-tiled-map
-          path: ./packages/tiled-map/dist/
-
-      - uses: actions/download-artifact@v2
-        with:
-          name: built-map-editor
-          path: ./packages/map-editor/dist/
-
-      - uses: actions/download-artifact@v2
-        with:
-          name: built-ui-components
-          path: ./packages/map-editor-components/dist/
 
       - run: npm publish
         working-directory: ./packages/tiled-map
