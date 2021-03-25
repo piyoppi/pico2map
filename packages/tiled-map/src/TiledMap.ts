@@ -11,14 +11,14 @@ export type TiledMapProperties = {
   chipHeight: number,
   mapChipImages: MapChipCollectionProperties,
   autoTiles: AutoTilesProperties,
-  tiledMapData: TiledMapDataProperties,
+  tiledMapDatas: Array<TiledMapDataProperties>,
   coliders: ColiderMapProperties
 }
 
 export class TiledMap {
   private _mapChipImages = new MapChipsCollection()
   private _autoTiles = new AutoTiles()
-  private _data = new TiledMapData(this._chipCountX, this._chipCountY)
+  private _datas: Array<TiledMapData> = []
   private _coliders = new ColiderMap(this._chipCountX, this._chipCountY)
 
   constructor(
@@ -27,6 +27,7 @@ export class TiledMap {
     private _chipWidth: number,
     private _chipHeight: number
   ) {
+    this._datas.push(new TiledMapData(this._chipCountX, this._chipCountY))
   }
 
   get chipWidth() {
@@ -53,8 +54,8 @@ export class TiledMap {
     return this._autoTiles
   }
 
-  get data() {
-    return this._data
+  get datas() {
+    return this._datas
   }
 
   get coliders() {
@@ -68,8 +69,8 @@ export class TiledMap {
     }
   }
 
-  put(mapChip: MapChip | null, chipX: number, chipY: number) {
-    this._data.put(mapChip, chipX, chipY)
+  put(mapChip: MapChip | null, chipX: number, chipY: number, index: number) {
+    this._datas[index].put(mapChip, chipX, chipY)
   }
 
   toObject(): TiledMapProperties {
@@ -80,21 +81,21 @@ export class TiledMap {
       chipHeight: this._chipHeight,
       mapChipImages: this._mapChipImages.toObject(),
       autoTiles: this._autoTiles.toObject(),
-      tiledMapData: this._data.toObject(),
+      tiledMapDatas: this._datas.map(data => data.toObject()),
       coliders: this._coliders.toObject()
     }
   }
 
-  private setSerializedProperties(val: {mapChipImages: MapChipCollectionProperties, autoTiles: AutoTilesProperties, tiledMapData: TiledMapDataProperties, coliders: ColiderMapProperties}) {
+  private setSerializedProperties(val: {mapChipImages: MapChipCollectionProperties, autoTiles: AutoTilesProperties, tiledMapDatas: Array<TiledMapDataProperties>, coliders: ColiderMapProperties}) {
     this._mapChipImages.fromObject(val.mapChipImages)
     this._autoTiles.fromObject(val.autoTiles)
-    this._data = TiledMapData.fromObject(val.tiledMapData)
+    this._datas = val.tiledMapDatas.map(tiledMapData => TiledMapData.fromObject(tiledMapData))
     this._coliders = ColiderMap.fromObject(val.coliders)
   }
 
   static fromObject(val: TiledMapProperties) {
     const tiledMap = new TiledMap(val.chipCountX, val.chipCountY, val.chipWidth, val.chipHeight)
-    tiledMap.setSerializedProperties({mapChipImages: val.mapChipImages, autoTiles: val.autoTiles, tiledMapData: val.tiledMapData, coliders: val.coliders})
+    tiledMap.setSerializedProperties({mapChipImages: val.mapChipImages, autoTiles: val.autoTiles, tiledMapDatas: val.tiledMapDatas, coliders: val.coliders})
 
     return tiledMap
   }
