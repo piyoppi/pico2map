@@ -92,8 +92,8 @@ export class TiledMap {
 
   convertMapNumberToPosition(num: number) {
     return {
-      x: num % this._chipCountY,
-      y: Math.floor(num / this._chipCountY)
+      x: num % this._chipCountX,
+      y: Math.floor(num / this._chipCountX)
     }
   }
 
