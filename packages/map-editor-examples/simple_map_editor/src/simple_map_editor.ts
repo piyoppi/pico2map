@@ -18,6 +18,7 @@ const coliderModeRadioButton = document.getElementById('coliderMode') as HTMLInp
 const coliderGroup = document.getElementById('coliderGroup') as HTMLDivElement
 const coliderTypeNoneRadioButton = document.getElementById('coliderTypeNone') as HTMLInputElement
 const coliderTypeColiderRadioButton = document.getElementById('coliderTypeColider') as HTMLInputElement
+const layerSelector = document.getElementById('layer') as HTMLInputElement
 
 function setProjectId(id: number) {
   mapChipSelector.setAttribute('projectId', id.toString())
@@ -41,6 +42,8 @@ async function setMapChip(tiledMap: TiledMap, chipSize: {width: number, height: 
 async function initialize() {
   const chipSize = { width: 32, height: 32 }
   let tiledMap = new TiledMap(30, 30, chipSize.width, chipSize.height)
+  tiledMap.addLayer()
+  tiledMap.addLayer()
 
   await setMapChip(tiledMap, chipSize)
 
@@ -103,7 +106,12 @@ async function initialize() {
     mapCanvas.setAttribute('mapChipFragmentProperties', JSON.stringify(e.detail.selectedMapChipProperties))
   })
 
+  layerSelector.addEventListener('change', e => {
+    if (!(e.target instanceof HTMLSelectElement)) return
+
+    mapCanvas.setAttribute('activeLayer', e.target.value)
+  })
+
   penRadioButton.checked = true
 }
-
 initialize()
