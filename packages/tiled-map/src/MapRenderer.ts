@@ -1,5 +1,6 @@
 import { MapChip, MapChipFragment } from './MapChip'
 import { TiledMap } from './TiledMap'
+import { TiledMapData } from './MapData/TiledMapData'
 
 export class MapRenderer {
   private _backgroundRgba = {r: 255, g: 255, b: 255, a: 1.0}
@@ -14,8 +15,16 @@ export class MapRenderer {
   }
 
   renderAll(ctx: CanvasRenderingContext2D) {
-    this._tiledMap.data.items.forEach((value, index) => {
-      const position = this._tiledMap.data.convertMapNumberToPosition(index)
+    this._tiledMap.datas.forEach( data => this.render(data, ctx) )
+  }
+
+  renderLayer(index: number, ctx: CanvasRenderingContext2D) {
+    this.render(this._tiledMap.datas[index], ctx)
+  }
+
+  private render(data: TiledMapData, ctx: CanvasRenderingContext2D) {
+    data.items.forEach((value, index) => {
+      const position = this._tiledMap.convertMapNumberToPosition(index)
       this.putOrClearChipToCanvas(ctx, value, position.x, position.y)
     })
   }

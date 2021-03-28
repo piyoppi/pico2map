@@ -27,7 +27,7 @@ export class TiledMap {
     private _chipWidth: number,
     private _chipHeight: number
   ) {
-    this._datas.push(new TiledMapData(this._chipCountX, this._chipCountY))
+    this.addLayer()
   }
 
   get chipWidth() {
@@ -83,6 +83,17 @@ export class TiledMap {
       autoTiles: this._autoTiles.toObject(),
       tiledMapDatas: this._datas.map(data => data.toObject()),
       coliders: this._coliders.toObject()
+    }
+  }
+
+  addLayer() {
+    this._datas.push(new TiledMapData(this._chipCountX, this._chipCountY))
+  }
+
+  convertMapNumberToPosition(num: number) {
+    return {
+      x: num % this._chipCountY,
+      y: Math.floor(num / this._chipCountY)
     }
   }
 
