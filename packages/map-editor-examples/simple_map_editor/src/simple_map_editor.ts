@@ -10,6 +10,7 @@ const mapChipSelector = document.getElementById('mapChipSelector') as HTMLInputE
 const autoTileSelector = document.getElementById('autoTileSelector') as HTMLInputElement
 const loadButton = document.getElementById('load') as HTMLInputElement
 const saveButton = document.getElementById('save') as HTMLInputElement
+const addLayerButton = document.getElementById('addlayer') as HTMLInputElement
 const rectangleRadioButton = document.getElementById('rectangle') as HTMLInputElement
 const eraseRadioButton = document.getElementById('erase') as HTMLInputElement
 const penRadioButton = document.getElementById('pen') as HTMLInputElement
@@ -110,6 +111,12 @@ async function initialize() {
     if (!(e.target instanceof HTMLSelectElement)) return
 
     mapCanvas.setAttribute('activeLayer', e.target.value)
+  })
+
+  addLayerButton.addEventListener('click', () => {
+    tiledMap.addLayer()
+    const currentLayerIndex = tiledMap.datas.length - 1
+    layerSelector.appendChild(new Option(currentLayerIndex, currentLayerIndex))
   })
 
   penRadioButton.checked = true

@@ -175,20 +175,28 @@ export class MapCanvasComponent extends LitElement {
       this.setupMapCanvas()
       this.setActiveAutoTile()
       this.requestUpdate()
+      this._project.addBeforeAddLayerCallback(() => this._mapCanvas.addCanvas(this.addCanvasToDOMTree()))
     }
+  }
+
+  private createCanvas() {
+    const canvas = document.createElement('canvas')
+    canvas.width = this.width
+    canvas.height = this.height
+    return canvas
+  }
+
+  private addCanvasToDOMTree(): HTMLCanvasElement {
+    if (!this._canvasesOuterElement) throw new Error()
+    const canvas = this.createCanvas()
+    this._canvasesOuterElement.appendChild(canvas)
+    return canvas
   }
 
   private _createCanvases(): Array<HTMLCanvasElement> {
     if (!this._project || !this._canvasesOuterElement) throw new Error()
 
-    const canvasesOuterElement = this._canvasesOuterElement
-    return this._project.tiledMap.datas.map(_ => {
-      const canvas = document.createElement('canvas')
-      canvas.width = this.width
-      canvas.height = this.height
-      canvasesOuterElement.appendChild(canvas)
-      return canvas
-    })
+    return this._project.tiledMap.datas.map(_ => this.addCanvasToDOMTree())
   }
 
   private setActiveAutoTile(forced: boolean = false) {

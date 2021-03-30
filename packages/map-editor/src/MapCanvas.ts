@@ -72,6 +72,11 @@ export class MapCanvas implements EditorCanvas {
     this._secondaryCanvasCtx = this.secondaryCanvas.getContext('2d') as CanvasRenderingContext2D
   }
 
+  addCanvas(canvas: HTMLCanvasElement) {
+    this._canvases.push(canvas)
+    this._canvasContexts.push(canvas.getContext('2d') as CanvasRenderingContext2D)
+  }
+
   setAutoTile(value: AutoTile) {
     this._selectedAutoTile = value
   }
