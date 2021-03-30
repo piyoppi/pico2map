@@ -1,4 +1,4 @@
-import { TiledMapDataItem, MapChipFragment, MapChip, AutoTile } from '@piyoppi/pico2map-tiled'
+import { TiledMapDataItem, MapChipFragment, MapChip, AutoTile, MapRenderer } from '@piyoppi/pico2map-tiled'
 import { Project } from './Projects'
 import { Pen } from './Brushes/Pen'
 import { Brushes } from './Brushes/Brushes'
@@ -6,9 +6,7 @@ import { Arrangements } from './Brushes/Arrangements/Arrangements'
 import { Brush } from './Brushes/Brush'
 import { Arrangement, isMapChipFragmentRequired, isTiledMapDataRequired, isAutoTileRequired, isAutoTilesRequired } from './Brushes/Arrangements/Arrangement'
 import { DefaultArrangement } from './Brushes/Arrangements/DefaultArrangement'
-import { MapRenderer } from '@piyoppi/pico2map-tiled'
 import { EditorCanvas } from './EditorCanvas'
-import { CallbackCaller } from './Callbacks'
 
 export class MapCanvas implements EditorCanvas {
   private _secondaryCanvasCtx: CanvasRenderingContext2D | null = null
