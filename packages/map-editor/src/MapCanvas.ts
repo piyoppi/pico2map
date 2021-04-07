@@ -1,4 +1,4 @@
-import { TiledMapDataItem, MapChipFragment, MapChip, AutoTile } from '@piyoppi/pico2map-tiled'
+import { TiledMapDataItem, MapChipFragment, MapChip, AutoTile, MapRenderer } from '@piyoppi/pico2map-tiled'
 import { Project } from './Projects'
 import { Pen } from './Brushes/Pen'
 import { Brushes } from './Brushes/Brushes'
@@ -6,22 +6,22 @@ import { Arrangements } from './Brushes/Arrangements/Arrangements'
 import { Brush } from './Brushes/Brush'
 import { Arrangement, isMapChipFragmentRequired, isTiledMapDataRequired, isAutoTileRequired, isAutoTilesRequired } from './Brushes/Arrangements/Arrangement'
 import { DefaultArrangement } from './Brushes/Arrangements/DefaultArrangement'
-import { MapRenderer } from '@piyoppi/pico2map-tiled'
 import { EditorCanvas } from './EditorCanvas'
 
 export class MapCanvas implements EditorCanvas {
-  private _ctx: CanvasRenderingContext2D | null = null
   private _secondaryCanvasCtx: CanvasRenderingContext2D | null = null
   private _isMouseDown = false
   private _brush: Brush<TiledMapDataItem> = new Pen()
   private _arrangement: Arrangement<TiledMapDataItem> = new DefaultArrangement()
   private _lastMapChipPosition = {x: -1, y: -1}
   private _renderer: MapRenderer | null = null
-  private canvas: HTMLCanvasElement | null = null
+  private _canvases: Array<HTMLCanvasElement> = []
+  private _canvasContexts: Array<CanvasRenderingContext2D> = []
   private secondaryCanvas: HTMLCanvasElement | null = null
   private _project: Project | null = null
   private _selectedAutoTile: AutoTile | null = null
   private _selectedMapChipFragment: MapChipFragment | null = null
+  private _activeLayerIndex: number = 0
 
   constructor(
   ) {
@@ -45,6 +45,10 @@ export class MapCanvas implements EditorCanvas {
     return this._renderer
   }
 
+  get activeLayer() {
+    return this._activeLayerIndex
+  }
+
   hasActiveAutoTile() {
     return !!this._selectedAutoTile
   }
@@ -54,16 +58,23 @@ export class MapCanvas implements EditorCanvas {
     this._renderer = new MapRenderer(this._project.tiledMap)
 
     this._project.registerRenderAllCallback(() => {
-      if (!this._ctx || !this._renderer) return
-      this._renderer.renderAll(this._ctx)
+      if (!this._renderer) return
+
+      const renderer = this.renderer
+      this._canvasContexts.forEach((ctx, index) => renderer.renderLayer(index, ctx))
     })
   }
 
-  setCanvas(canvas: HTMLCanvasElement, secondaryCanvas: HTMLCanvasElement) {
-    this.canvas = canvas
+  setCanvases(canvases: Array<HTMLCanvasElement>, secondaryCanvas: HTMLCanvasElement) {
+    this._canvases = canvases
+    this._canvasContexts = this._canvases.map(canvas => canvas.getContext('2d') as CanvasRenderingContext2D)
     this.secondaryCanvas = secondaryCanvas
-    this._ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D
     this._secondaryCanvasCtx = this.secondaryCanvas.getContext('2d') as CanvasRenderingContext2D
+  }
+
+  addCanvas(canvas: HTMLCanvasElement) {
+    this._canvases.push(canvas)
+    this._canvasContexts.push(canvas.getContext('2d') as CanvasRenderingContext2D)
   }
 
   setAutoTile(value: AutoTile) {
@@ -94,13 +105,23 @@ export class MapCanvas implements EditorCanvas {
     }
   }
 
+  setActiveLayer(index: number) {
+    if (!this._project) return
+
+    if (index < 0 || index >= this._project.tiledMap.datas.length) {
+      throw new Error('The layer index is out of range.')
+    }
+
+    this._activeLayerIndex = index
+  }
+
   private _setupBrush() {
     if (!this._project || !this._arrangement) return
 
     this._brush.setArrangement(this._arrangement)
 
     if (isTiledMapDataRequired(this._arrangement)) {
-      this._arrangement.setTiledMapData(this._project.tiledMap.data)
+      this._arrangement.setTiledMapData(this._project.tiledMap.datas[this._activeLayerIndex])
     }
   }
 
@@ -170,10 +191,8 @@ export class MapCanvas implements EditorCanvas {
   }
 
   putChip(mapChip: MapChip | null, chipX: number, chipY: number) {
-    if (!this._ctx) return
-
-    this.project.tiledMap.put(mapChip, chipX, chipY)
-    this.renderer.putOrClearChipToCanvas(this._ctx, mapChip, chipX, chipY)
+    this.project.tiledMap.put(mapChip, chipX, chipY, this._activeLayerIndex)
+    this.renderer.putOrClearChipToCanvas(this._canvasContexts[this._activeLayerIndex], mapChip, chipX, chipY)
   }
 
   private clearSecondaryCanvas() {

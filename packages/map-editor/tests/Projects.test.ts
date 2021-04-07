@@ -32,3 +32,12 @@ describe('#fromProjectId', () => {
     expect(Projects.fromProjectId(2)).toEqual(null)
   })
 })
+
+describe('#clear', () => {
+  it('The collection has not any projects', () => {
+    const tiledMap = new TiledMap(30, 30, 32, 32)
+    Projects.add(tiledMap, 1)
+    Projects.clear()
+    expect(Projects.fromProjectId(1)).toEqual(null)
+  })
+})

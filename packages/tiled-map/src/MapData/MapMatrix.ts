@@ -69,13 +69,6 @@ export class MapMatrix<T> {
     return y * this._chipCountX + x
   }
 
-  convertMapNumberToPosition(num: number) {
-    return {
-      x: num % this._chipCountY,
-      y: Math.floor(num / this._chipCountY)
-    }
-  }
-
   protected allocate(defaultValue: T | null = null) {
     this._items = new Array(this._chipCountY * this._chipCountX).fill(null)
   }

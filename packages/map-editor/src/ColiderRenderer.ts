@@ -10,7 +10,7 @@ export class ColiderRenderer {
 
   renderAll(ctx: CanvasRenderingContext2D) {
     this._tiledMap.coliders.items.forEach((value, index) => {
-      const position = this._tiledMap.data.convertMapNumberToPosition(index)
+      const position = this._tiledMap.convertMapNumberToPosition(index)
       this.putOrClearChipToCanvas(ctx, value, position.x, position.y)
     })
   }

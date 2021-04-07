@@ -12,16 +12,15 @@ export class MapCanvasComponent extends LitElement {
   private _mapCanvas = new MapCanvas()
   private _coliderCanvas = new ColiderCanvas()
   private _project: Project | null = null
-  private _canvasElement: HTMLCanvasElement | null = null
   private _secondaryCanvasElement: HTMLCanvasElement | null = null
   private _coliderCanvasElement : HTMLCanvasElement | null = null
+  private _canvasesOuterElement : HTMLCanvasElement | null = null
   private _mode: EditMode = 'mapChip'
   private _autoTileIdAttributeValue: number = -1
 
   constructor() {
     super()
 
-  console.log(Projects)
     Projects.setProjectAddCallbackFunction(() => this.setupProject())
   }
 
@@ -121,6 +120,14 @@ export class MapCanvasComponent extends LitElement {
     this._coliderCanvas.setColiderType(value)
   }
 
+  @property({type: Number})
+  get activeLayer() {
+    return this._mapCanvas.activeLayer
+  }
+  set activeLayer(value: number) {
+    this._mapCanvas.setActiveLayer(value)
+  }
+
   private get width() {
     return this.xCount * this.gridWidth
   }
@@ -168,7 +175,28 @@ export class MapCanvasComponent extends LitElement {
       this.setupMapCanvas()
       this.setActiveAutoTile()
       this.requestUpdate()
+      this._project.addBeforeAddLayerCallback(() => this._mapCanvas.addCanvas(this.addCanvasToDOMTree()))
     }
+  }
+
+  private createCanvas() {
+    const canvas = document.createElement('canvas')
+    canvas.width = this.width
+    canvas.height = this.height
+    return canvas
+  }
+
+  private addCanvasToDOMTree(): HTMLCanvasElement {
+    if (!this._canvasesOuterElement) throw new Error()
+    const canvas = this.createCanvas()
+    this._canvasesOuterElement.appendChild(canvas)
+    return canvas
+  }
+
+  private _createCanvases(): Array<HTMLCanvasElement> {
+    if (!this._project || !this._canvasesOuterElement) throw new Error()
+
+    return this._project.tiledMap.datas.map(_ => this.addCanvasToDOMTree())
   }
 
   private setActiveAutoTile(forced: boolean = false) {
@@ -182,10 +210,10 @@ export class MapCanvasComponent extends LitElement {
   }
 
   private setupMapCanvas() {
-    if (!this._project || !this._canvasElement || !this._secondaryCanvasElement || !this._coliderCanvasElement) return
+    if (!this._project || !this._secondaryCanvasElement || !this._coliderCanvasElement) return
 
     this._mapCanvas.setProject(this._project)
-    this._mapCanvas.setCanvas(this._canvasElement, this._secondaryCanvasElement)
+    this._mapCanvas.setCanvases(this._createCanvases(), this._secondaryCanvasElement)
 
     this._coliderCanvas.setProject(this._project)
     this._coliderCanvas.setCanvas(this._coliderCanvasElement, this._secondaryCanvasElement)
@@ -198,9 +226,9 @@ export class MapCanvasComponent extends LitElement {
     const element = this.shadowRoot?.getElementById('boundary')
     if (element) this.cursorPositionCalculator.setElement(element)
 
-    this._canvasElement = this.shadowRoot?.getElementById('map-canvas') as HTMLCanvasElement
     this._secondaryCanvasElement = this.shadowRoot?.getElementById('secondary-canvas') as HTMLCanvasElement
     this._coliderCanvasElement = this.shadowRoot?.getElementById('colider-canvas') as HTMLCanvasElement
+    this._canvasesOuterElement = this.shadowRoot?.getElementById('canvases') as HTMLCanvasElement
     this.setupMapCanvas()
   }
 
@@ -254,11 +282,7 @@ export class MapCanvasComponent extends LitElement {
           width="${this.width}"
           height="${this.height}"
         ></canvas>
-        <canvas
-          id="map-canvas"
-          width="${this.width}"
-          height="${this.height}"
-        ></canvas>
+        <div id="canvases"></div>
         <canvas
           id="secondary-canvas"
           width="${this.width}"
@@ -292,6 +316,16 @@ export class MapCanvasComponent extends LitElement {
         box-sizing: border-box;
         border-color: red;
         pointer-events: none;
+      }
+
+      #canvases {
+        position: relative;
+      }
+
+      #canvases > canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
       }
 
       #boundary {
