@@ -73,13 +73,13 @@ async function initialize() {
   // DefaultEraseArrangement put empty MapChips.
   eraseRadioButton.addEventListener('change', () => mapCanvas.setAttribute('arrangement', 'DefaultEraseArrangement'))
 
-  mapChipModeRadioButton.addEventListener('change', e => {
+  mapChipModeRadioButton.addEventListener('change', _ => {
     // Set arrangement map-chips mode
     mapCanvas.setAttribute('mode', 'mapChip')
 
     coliderGroup.style.display = coliderModeRadioButton.checked ? 'block' : 'none'
   })
-  coliderModeRadioButton?.addEventListener('change', e => {
+  coliderModeRadioButton?.addEventListener('change', _ => {
     // Set colider-edit mode
     mapCanvas.setAttribute('mode', 'colider')
 
@@ -116,7 +116,7 @@ async function initialize() {
   addLayerButton.addEventListener('click', () => {
     tiledMap.addLayer()
     const currentLayerIndex = tiledMap.datas.length - 1
-    layerSelector.appendChild(new Option(currentLayerIndex, currentLayerIndex))
+    layerSelector.appendChild(new Option(currentLayerIndex.toString(), currentLayerIndex.toString()))
   })
 
   penRadioButton.checked = true
