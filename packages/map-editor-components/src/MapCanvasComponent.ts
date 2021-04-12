@@ -210,10 +210,12 @@ export class MapCanvasComponent extends LitElement {
   }
 
   private setupMapCanvas() {
-    if (!this._project || !this._secondaryCanvasElement || !this._coliderCanvasElement) return
+    if (!this._project || !this._secondaryCanvasElement || !this._coliderCanvasElement || !this._canvasesOuterElement) return
 
     this._mapCanvas.setProject(this._project)
-    this._mapCanvas.setCanvases(this._createCanvases(), this._secondaryCanvasElement)
+    if (this._canvasesOuterElement.childNodes.length === 0) {
+      this._mapCanvas.setCanvases(this._createCanvases(), this._secondaryCanvasElement)
+    }
 
     this._coliderCanvas.setProject(this._project)
     this._coliderCanvas.setCanvas(this._coliderCanvasElement, this._secondaryCanvasElement)
