@@ -17,6 +17,7 @@ export class MapCanvasComponent extends LitElement {
   private _canvasesOuterElement : HTMLCanvasElement | null = null
   private _mode: EditMode = 'mapChip'
   private _autoTileIdAttributeValue: number = -1
+  private _inactiveLayerOpacity = 1.0
 
   constructor() {
     super()
@@ -26,6 +27,19 @@ export class MapCanvasComponent extends LitElement {
 
   @property({type: Number}) cursorChipX = 0
   @property({type: Number}) cursorChipY = 0
+
+  @property({type: Number})
+  get inactiveLayerOpacity(): number {
+    return this._inactiveLayerOpacity
+  }
+  set inactiveLayerOpacity(value: number) {
+    const oldValue = this._inactiveLayerOpacity
+    this._inactiveLayerOpacity = value
+
+    this.setInactiveCanvasStyle()
+
+    this.requestUpdate('inactiveLayerOpacity', oldValue);
+  }
 
   private _projectId = -1
   @property({type: Number})
@@ -126,6 +140,7 @@ export class MapCanvasComponent extends LitElement {
   }
   set activeLayer(value: number) {
     this._mapCanvas.setActiveLayer(value)
+    this.setInactiveCanvasStyle()
   }
 
   private get width() {
@@ -222,6 +237,20 @@ export class MapCanvasComponent extends LitElement {
 
     this._mapCanvas.setBrushFromName(this._brushName)
     this._mapCanvas.setArrangementFromName(this._arrangementName)
+  }
+
+  private setInactiveCanvasStyle() {
+    if (!this._canvasesOuterElement) return
+
+    this._canvasesOuterElement.childNodes.forEach((node, index) => {
+      const element = node as HTMLElement
+
+      if (this.activeLayer === index) {
+        element.style.opacity = '1.0'
+      } else {
+        element.style.opacity = this._inactiveLayerOpacity.toString()
+      }
+    })
   }
 
   firstUpdated() {
