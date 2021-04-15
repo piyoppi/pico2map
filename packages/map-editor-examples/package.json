@@ -1,6 +1,6 @@
 {
   "name": "@piyoppi/pico2map-samples",
-  "version": "0.0.23",
+  "version": "0.0.24",
   "description": "",
   "main": "src/main.js",
   "directories": {
@@ -8,8 +8,8 @@
   },
   "dependencies": {
     "typescript": "^4.1.3",
-    "@piyoppi/pico2map-ui-components": "0.0.23",
-    "@piyoppi/pico2map-tiled": "0.0.23"
+    "@piyoppi/pico2map-ui-components": "0.0.24",
+    "@piyoppi/pico2map-tiled": "0.0.24"
   },
   "devDependencies": {
     "ts-loader": "^8.0.12",
