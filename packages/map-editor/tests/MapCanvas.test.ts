@@ -1,6 +1,16 @@
 import { Projects } from './../src/Projects'
 import { MapCanvas } from './../src/MapCanvas'
 import { TiledMap } from '@piyoppi/pico2map-tiled'
+import { Brush } from './../src/Brushes/Brush'
+import { Arrangement } from '../src/Brushes/Arrangements/Arrangement'
+
+class EmptyBrush<T> implements Brush<T> {
+  setArrangement(_: Arrangement<T>) {}
+  mouseDown(_: number, __: number) {}
+  mouseMove(_: number, __: number) {return []}
+  mouseUp(_: number, __: number) {return []}
+  cleanUp() {}
+}
 
 describe('#setActiveLayer', () => {
   it('Should set an active layer', () => {
@@ -94,5 +104,24 @@ describe('#putChip', () => {
     mapCanvas.putChip(null, 1, 2)
     expect(tiledMap.put).toBeCalledWith(null, 1, 2, 1)
     expect(mapCanvas.renderer.putOrClearChipToCanvas).toBeCalledWith('dummy-context-layer1', null, 1, 2)
+  })
+})
+
+describe('#mouseDown', () => {
+  it('Should painted', () => {
+    const tiledMap = new TiledMap(30, 30, 32, 32)
+    const project = Projects.add(tiledMap)
+    const mapCanvas = new MapCanvas()
+    mapCanvas.setProject(project)
+
+    const brush = new EmptyBrush()
+    brush.mouseDown = jest.fn()
+    brush.mouseMove = jest.fn().mockReturnValue([])
+    mapCanvas.setBrush(brush)
+
+    mapCanvas.mouseDown(40, 70)
+
+    expect(brush.mouseDown).toBeCalledWith(1, 2)
+    expect(brush.mouseMove).toBeCalledWith(1, 2)
   })
 })
