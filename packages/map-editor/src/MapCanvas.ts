@@ -153,6 +153,8 @@ export class MapCanvas implements EditorCanvas {
     const chipPosition = this.convertFromCursorPositionToChipPosition(x, y)
     this._brush.mouseDown(chipPosition.x, chipPosition.y)
 
+    this._lastMapChipPosition = chipPosition
+
     this._paint(chipPosition)
   }
 
