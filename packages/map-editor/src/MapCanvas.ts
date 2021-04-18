@@ -154,6 +154,8 @@ export class MapCanvas implements EditorCanvas {
     this._brush.mouseDown(chipPosition.x, chipPosition.y)
 
     this._lastMapChipPosition = chipPosition
+
+    this._paint(chipPosition)
   }
 
   mouseMove(x: number, y: number): {x: number, y: number} {
@@ -162,13 +164,7 @@ export class MapCanvas implements EditorCanvas {
     if (!this._isMouseDown) return chipPosition
     if (chipPosition.x === this._lastMapChipPosition.x && chipPosition.y === this._lastMapChipPosition.y) return chipPosition
 
-    this.clearSecondaryCanvas()
-    this._brush.mouseMove(chipPosition.x, chipPosition.y).forEach(paint => {
-      if (!this._secondaryCanvasCtx) return
-
-      const chip = paint.item
-      this.renderer.putOrClearChipToCanvas(this._secondaryCanvasCtx, chip, paint.x, paint.y, true)
-    })
+    this._paint(chipPosition)
 
     this._lastMapChipPosition = chipPosition
 
@@ -193,6 +189,16 @@ export class MapCanvas implements EditorCanvas {
   putChip(mapChip: MapChip | null, chipX: number, chipY: number) {
     this.project.tiledMap.put(mapChip, chipX, chipY, this._activeLayerIndex)
     this.renderer.putOrClearChipToCanvas(this._canvasContexts[this._activeLayerIndex], mapChip, chipX, chipY)
+  }
+
+  private _paint(chipPosition: {x: number, y: number}) {
+    this.clearSecondaryCanvas()
+    this._brush.mouseMove(chipPosition.x, chipPosition.y).forEach(paint => {
+      if (!this._secondaryCanvasCtx) return
+
+      const chip = paint.item
+      this.renderer.putOrClearChipToCanvas(this._secondaryCanvasCtx, chip, paint.x, paint.y, true)
+    })
   }
 
   private clearSecondaryCanvas() {
