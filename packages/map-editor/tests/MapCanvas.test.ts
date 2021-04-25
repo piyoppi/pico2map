@@ -12,6 +12,23 @@ class EmptyBrush<T> implements Brush<T> {
   cleanUp() {}
 }
 
+let mockedCanvas = {}
+let mockedCanvasLayer1 = {}
+let mockedSecondaryCanvas = {}
+
+beforeEach(() => {
+  mockedCanvas = {
+    getContext: jest.fn().mockReturnValueOnce('dummy-context-layer0')
+  }
+  mockedCanvasLayer1 = {
+    getContext: jest.fn().mockReturnValueOnce('dummy-context-layer1')
+  }
+  mockedSecondaryCanvas = {
+    getContext: jest.fn().mockReturnValue('dummy-sub-context')
+  }
+})
+
+
 describe('#setActiveLayer', () => {
   it('Should set an active layer', () => {
     const tiledMap = new TiledMap(30, 30, 32, 32)
@@ -53,25 +70,36 @@ describe('#setProject', () => {
     mapCanvas.setProject(project)
     expect(mapCanvas.renderer).not.toBe(previousRenderer)
   })
+
+  it('Should call renderAll function', async () => {
+    const tiledMap = new TiledMap(30, 30, 32, 32)
+    const project = Projects.add(tiledMap)
+    const mapCanvas = new MapCanvas()
+    mapCanvas.renderAll = jest.fn()
+
+    await mapCanvas.setProject(project)
+
+    expect(mapCanvas.renderAll).toBeCalled()
+  })
+})
+
+describe('#renderAll', () => {
+  it('Should call rendering function each layers', async () => {
+    const tiledMap = new TiledMap(30, 30, 32, 32)
+    const project = Projects.add(tiledMap)
+    const mapCanvas = new MapCanvas()
+    await mapCanvas.setProject(project)
+
+    mapCanvas.renderer.renderLayer = jest.fn()
+    mapCanvas.setCanvases([mockedCanvas, mockedCanvasLayer1] as any, mockedSecondaryCanvas as any)
+
+    mapCanvas.renderAll()
+
+    expect(mapCanvas.renderer.renderLayer).toBeCalledTimes(2)
+  })
 })
 
 describe('#putChip', () => {
-  let mockedCanvas = {}
-  let mockedCanvasLayer1 = {}
-  let mockedSecondaryCanvas = {}
-
-  beforeEach(() => {
-    mockedCanvas = {
-      getContext: jest.fn().mockReturnValueOnce('dummy-context-layer0')
-    }
-    mockedCanvasLayer1 = {
-      getContext: jest.fn().mockReturnValueOnce('dummy-context-layer1')
-    }
-    mockedSecondaryCanvas = {
-      getContext: jest.fn().mockReturnValue('dummy-sub-context')
-    }
-  })
-
   it('Should put a mapChip', () => {
     const tiledMap = new TiledMap(30, 30, 32, 32)
     const project = Projects.add(tiledMap)

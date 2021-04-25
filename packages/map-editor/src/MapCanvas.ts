@@ -41,7 +41,7 @@ export class MapCanvas implements EditorCanvas {
   }
 
   get renderer() {
-    if (!this._renderer) throw new Error('Project is not set')
+    if (!this._renderer) throw new Error('Renderer is not set')
     return this._renderer
   }
 
@@ -53,16 +53,20 @@ export class MapCanvas implements EditorCanvas {
     return !!this._selectedAutoTile
   }
 
-  setProject(project: Project) {
+  async setProject(project: Project) {
     this._project = project
     this._renderer = new MapRenderer(this._project.tiledMap)
 
-    this._project.registerRenderAllCallback(() => {
-      if (!this._renderer) return
+    this._project.registerRenderAllCallback(() => this.renderAll())
 
-      const renderer = this.renderer
-      this._canvasContexts.forEach((ctx, index) => renderer.renderLayer(index, ctx))
-    })
+    await this._project.tiledMap.mapChipsCollection.waitWhileLoading()
+    this.renderAll()
+  }
+
+  renderAll() {
+    if (!this._renderer) return
+    const renderer = this.renderer
+    this._canvasContexts.forEach((ctx, index) => renderer.renderLayer(index, ctx))
   }
 
   setCanvases(canvases: Array<HTMLCanvasElement>, secondaryCanvas: HTMLCanvasElement) {

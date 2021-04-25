@@ -58,8 +58,6 @@ async function initialize() {
     tiledMap = TiledMap.fromObject(JSON.parse(serializedData))
     const newProject = Projects.add(tiledMap)
     setProjectId(newProject.projectId)
-    await newProject.tiledMap.mapChipsCollection.waitWhileLoading()
-    newProject.requestRenderAll()
   }
 
   // Serialize a tiled-map data and set to the localStorage
