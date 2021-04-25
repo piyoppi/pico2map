@@ -15,6 +15,17 @@ export class AutoTileSelectorComponent extends LitElement {
     height: 5
   }
 
+  @property({type: String})
+  get gridColor(): string {
+    return this.gridImageGenerator.gridColor
+  }
+  set gridColor(value: string) {
+    const oldValue = this.gridImageGenerator.gridColor
+    this.gridImageGenerator.gridColor = value
+
+    this.requestUpdate('gridColor', oldValue)
+  }
+
   private _projectId = -1
   @property({type: Number})
   get projectId(): number {

@@ -11,6 +11,17 @@ export class MapChipSelectorComponent extends LitElement {
   private _chipImage: MapChipImage | null = null
   private _mapChipSelector : MapChipSelector | null = null
 
+  @property({type: String})
+  get gridColor(): string {
+    return this.gridImageGenerator.gridColor
+  }
+  set gridColor(value: string) {
+    const oldValue = this.gridImageGenerator.gridColor
+    this.gridImageGenerator.gridColor = value
+
+    this.requestUpdate('gridColor', oldValue)
+  }
+
   private _projectId = -1
   @property({type: Number})
   get projectId(): number {
