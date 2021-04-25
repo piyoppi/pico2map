@@ -28,6 +28,17 @@ export class MapCanvasComponent extends LitElement {
   @property({type: Number}) cursorChipX = 0
   @property({type: Number}) cursorChipY = 0
 
+  @property({type: String})
+  get gridColor(): string {
+    return this.gridImageGenerator.gridColor
+  }
+  set gridColor(value: string) {
+    const oldValue = this.gridImageGenerator.gridColor
+    this.gridImageGenerator.gridColor = value
+
+    this.requestUpdate('gridColor', oldValue)
+  }
+
   @property({type: Number})
   get inactiveLayerOpacity(): number {
     return this._inactiveLayerOpacity

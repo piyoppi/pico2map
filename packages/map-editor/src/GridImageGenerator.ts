@@ -2,18 +2,28 @@ export class GridImageGenerator {
   private width = 0
   private height = 0
   private _changed = false
+  private _color = '#000000'
 
   get changed() {
     return this._changed
   }
 
-  public setGridSize(width: number, height: number) {
+  get gridColor() {
+    return this._color
+  }
+
+  set gridColor(color: string) {
+    this._changed = this._color !== color
+    this._color = color
+  }
+
+  setGridSize(width: number, height: number) {
     this._changed = (this.width !== width) || (this.height !== height)
     this.width = width
     this.height = height
   }
 
-  public generateDottedPart(): HTMLCanvasElement {
+  generateDottedPart(): HTMLCanvasElement {
     const {canvas, context} = this.createCanvas()
 
     context.fillRect(this.width - 1, this.height - 1, 1, 1)
@@ -21,7 +31,7 @@ export class GridImageGenerator {
     return canvas
   }
 
-  public generateLinePart(): HTMLCanvasElement {
+  generateLinePart(): HTMLCanvasElement {
     const {canvas, context} = this.createCanvas()
 
     context.fillRect(0, this.height - 1, this.width, 1)
@@ -40,6 +50,8 @@ export class GridImageGenerator {
 
     canvas.width = this.width
     canvas.height = this.height
+
+    context.fillStyle = this._color
 
     return {
       canvas,
