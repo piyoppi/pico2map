@@ -125,6 +125,7 @@ export class MapCanvasComponent extends LitElement {
   }
   set mapChipFragmentProperties(values: Array<MapChipFragmentProperties> | null) {
     const oldValue = values
+
     this.requestUpdate('mapChipFragmentProperties', oldValue);
 
     if (!values) return

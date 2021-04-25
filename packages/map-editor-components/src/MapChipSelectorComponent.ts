@@ -8,7 +8,6 @@ export class MapChipSelectorComponent extends LitElement {
   private gridImageGenerator = new GridImageGenerator()
   private cursorPositionCalculator = new CursorPositionCalculator()
   private _project: Project | null = null
-  private _chipImage: MapChipImage | null = null
   private _mapChipSelector : MapChipSelector | null = null
 
   @property({type: String})
@@ -53,8 +52,10 @@ export class MapChipSelectorComponent extends LitElement {
 
   @property({type: Number}) cursorChipX = 0
   @property({type: Number}) cursorChipY = 0
-  @property({type: Number}) selectedChipY = 0
-  @property({type: Number}) selectedChipX = 0
+  @property({type: Number}) selectedX = 0
+  @property({type: Number}) selectedY = 0
+  @property({type: Number}) selectedWidth = 0
+  @property({type: Number}) selectedHeight = 0
 
   get mapChipSelector() {
     if (!this._mapChipSelector) throw new Error('The project is not set')
@@ -77,48 +78,60 @@ export class MapChipSelectorComponent extends LitElement {
     }
   }
 
-  get selectedPosition() {
-    return {
-      x: this.selectedChipX * this.gridWidth,
-      y: this.selectedChipY * this.gridHeight
-    }
-  }
-
   private setupMapChipSelector() {
     if (!this._project || this._chipId < 0) return
 
-    this._chipImage = this._project.tiledMap.mapChipsCollection.findById(this._chipId)
-    this._mapChipSelector = new MapChipSelector(this._project.tiledMap)
+    const chipImage = this._project.tiledMap.mapChipsCollection.findById(this._chipId)
+    if (!chipImage) return
+
+    this._mapChipSelector = new MapChipSelector(this._project.tiledMap, chipImage)
+  }
+
+  mouseUp(e: MouseEvent) {
+    const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY)
+    this.mapChipSelector.mouseUp(mouseCursorPosition.x, mouseCursorPosition.y)
+
+    const selectedChips = this.mapChipSelector.selectedChips
+
+    this.dispatchEvent(
+      new CustomEvent('mapchip-selected', {
+        detail: {selectedMapChipProperties: selectedChips.map(chip => chip.toObject())},
+        bubbles: true,
+        composed: true
+      })
+    )
+
+    this.syncSelectedCursor()
   }
 
   mouseMove(e: MouseEvent) {
-    if (!this._chipImage) return;
-
     const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY)
-    const chip = this.mapChipSelector.convertFromImagePositionToChipPosition(this._chipImage, mouseCursorPosition.x, mouseCursorPosition.y)
+    this.mapChipSelector.mouseMove(mouseCursorPosition.x, mouseCursorPosition.y)
+
+    this.syncSelectedCursor()
+
+    const chip = this.mapChipSelector.convertFromImagePositionToChipPosition(mouseCursorPosition.x, mouseCursorPosition.y)
     this.cursorChipX = chip.x
     this.cursorChipY = chip.y
   }
 
   mouseDown(e: MouseEvent) {
-    if (!this._chipImage) return
-
     const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY)
-    this.mapChipSelector.selectAtMouseCursor(this._chipImage, mouseCursorPosition.x, mouseCursorPosition.y)
+    this.mapChipSelector.mouseDown(mouseCursorPosition.x, mouseCursorPosition.y)
 
-    const selectedChip = this.mapChipSelector.selectedChips[0]
-    if (!selectedChip) return
+    this.syncSelectedCursor()
+  }
 
-    this.selectedChipX = selectedChip.x
-    this.selectedChipY = selectedChip.y
+  private syncSelectedCursor() {
+    if (!this.mapChipSelector.selecting) return
 
-    this.dispatchEvent(
-      new CustomEvent('mapchip-selected', {
-        detail: {selectedMapChipProperties: [selectedChip.toObject()]},
-        bubbles: true,
-        composed: true
-      })
-    )
+    const startPosition = this.mapChipSelector.startPosition
+    const selectedSize = this.mapChipSelector.selectedSize
+
+    this.selectedX = startPosition.x
+    this.selectedY = startPosition.y
+    this.selectedWidth = selectedSize.width
+    this.selectedHeight = selectedSize.height
   }
 
   firstUpdated() {
@@ -136,8 +149,8 @@ export class MapChipSelectorComponent extends LitElement {
       <style>
         .grid {
           background-image: url("${this._gridImageSrc}");
-          width: ${this._chipImage?.image.width || 0}px;
-          height: ${this._chipImage?.image.height || 0}px;
+          width: ${this._mapChipSelector?.chipImage.image.width || 0}px;
+          height: ${this._mapChipSelector?.chipImage.image.height || 0}px;
         }
 
         .cursor {
@@ -148,19 +161,20 @@ export class MapChipSelectorComponent extends LitElement {
         }
 
         .selected {
-          width: ${this.gridWidth}px;
-          height: ${this.gridHeight}px;
-          left: ${this.selectedPosition.x}px;
-          top: ${this.selectedPosition.y}px;
+          width: ${this.selectedWidth}px;
+          height: ${this.selectedHeight}px;
+          left: ${this.selectedX}px;
+          top: ${this.selectedY}px;
         }
       </style>
 
       <div id="boundary">
-        <img id="chip-image" src="${this._chipImage?.src}">
+        <img id="chip-image" src="${this._mapChipSelector?.chipImage.src || ''}">
         <div
           class="grid-image grid"
           @mousemove="${(e: MouseEvent) => this.mouseMove(e)}"
           @mousedown="${(e: MouseEvent) => this.mouseDown(e)}"
+          @mouseup="${(e: MouseEvent) => this.mouseUp(e)}"
         ></div>
         <div class="cursor"></div>
         <div class="selected"></div>
