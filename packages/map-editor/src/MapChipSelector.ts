@@ -55,10 +55,6 @@ export class MapChipSelector {
     }
   }
 
-  select(item: MapChipFragment) {
-    this._selectedChips.push(item.clone())
-  }
-
   clear() {
     this._selectedChips.length = 0
   }
