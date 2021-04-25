@@ -1,8 +1,8 @@
 import { Projects } from './../src/Projects'
 import { MapCanvas } from './../src/MapCanvas'
 import { TiledMap } from '@piyoppi/pico2map-tiled'
-import { Brush } from './../src/Brushes/Brush'
-import { Arrangement } from '../src/Brushes/Arrangements/Arrangement'
+import { Brush, BrushPaint } from './../src/Brushes/Brush'
+import { Arrangement, ArrangementPaint } from '../src/Brushes/Arrangements/Arrangement'
 
 class EmptyBrush<T> implements Brush<T> {
   setArrangement(_: Arrangement<T>) {}
@@ -10,6 +10,11 @@ class EmptyBrush<T> implements Brush<T> {
   mouseMove(_: number, __: number) {return []}
   mouseUp(_: number, __: number) {return []}
   cleanUp() {}
+}
+
+class EmptyArrangement<T> implements Arrangement<T> {
+  setMapChips(_: Array<T>) {}
+  apply(_: Array<BrushPaint>): Array<ArrangementPaint<T>> { return [] }
 }
 
 let mockedCanvas = {}
@@ -141,6 +146,7 @@ describe('#mouseDown', () => {
     const project = Projects.add(tiledMap)
     const mapCanvas = new MapCanvas()
     mapCanvas.setProject(project)
+    mapCanvas.setArrangement(new EmptyArrangement())
 
     const brush = new EmptyBrush()
     brush.mouseDown = jest.fn()
