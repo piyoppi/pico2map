@@ -41,7 +41,7 @@ export class MapCanvas implements EditorCanvas {
   }
 
   get renderer() {
-    if (!this._renderer) throw new Error('Project is not set')
+    if (!this._renderer) throw new Error('Renderer is not set')
     return this._renderer
   }
 
