@@ -53,6 +53,17 @@ describe('#setProject', () => {
     mapCanvas.setProject(project)
     expect(mapCanvas.renderer).not.toBe(previousRenderer)
   })
+
+  it('Should call renderAll function', async () => {
+    const tiledMap = new TiledMap(30, 30, 32, 32)
+    const project = Projects.add(tiledMap)
+    const mapCanvas = new MapCanvas()
+    mapCanvas.renderAll = jest.fn()
+
+    await mapCanvas.setProject(project)
+
+    expect(mapCanvas.renderAll).toBeCalled()
+  })
 })
 
 describe('#putChip', () => {
