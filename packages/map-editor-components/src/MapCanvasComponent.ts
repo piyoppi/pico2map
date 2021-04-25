@@ -293,7 +293,9 @@ export class MapCanvasComponent extends LitElement {
 
   render() {
     this.gridImageGenerator.setGridSize(this.gridWidth, this.gridHeight)
-    this.gridImageSrc = this.gridImageGenerator.generateLinePart().toDataURL()
+    if (this.gridImageGenerator.changed) {
+      this.gridImageSrc = this.gridImageGenerator.generateLinePart().toDataURL()
+    }
 
     return html`
       <style>
