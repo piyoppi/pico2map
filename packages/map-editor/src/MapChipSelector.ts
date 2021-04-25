@@ -107,6 +107,9 @@ export class MapChipSelector {
   mouseUp(x: number, y: number) {
     if (!this._selecting) return
 
+    const chipPosition = this.convertFromImagePositionToChipPosition(x, y)
+    this._endChipPosition = {...chipPosition}
+
     this._selectAtMouseCursor()
     this._selecting = false
   }
