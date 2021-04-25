@@ -114,7 +114,7 @@ export class MapChipSelectorComponent extends LitElement {
 
     this.dispatchEvent(
       new CustomEvent('mapchip-selected', {
-        detail: {selectedMapChipProperties: selectedChip.toObject()},
+        detail: {selectedMapChipProperties: [selectedChip.toObject()]},
         bubbles: true,
         composed: true
       })
