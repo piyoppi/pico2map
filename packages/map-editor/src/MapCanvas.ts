@@ -20,7 +20,7 @@ export class MapCanvas implements EditorCanvas {
   private secondaryCanvas: HTMLCanvasElement | null = null
   private _project: Project | null = null
   private _selectedAutoTile: AutoTile | null = null
-  private _selectedMapChipFragment: MapChipFragment | null = null
+  private _selectedMapChipFragments: Array<MapChipFragment> = []
   private _activeLayerIndex: number = 0
 
   constructor(
@@ -31,8 +31,8 @@ export class MapCanvas implements EditorCanvas {
     return this._selectedAutoTile
   }
 
-  get selectedMapChipFragment() {
-    return this._selectedMapChipFragment
+  get selectedMapChipFragments() {
+    return this._selectedMapChipFragments
   }
 
   get project() {
@@ -85,8 +85,8 @@ export class MapCanvas implements EditorCanvas {
     this._selectedAutoTile = value
   }
 
-  setMapChipFragment(value: MapChipFragment) {
-    this._selectedMapChipFragment = value
+  setMapChipFragments(value: Array<MapChipFragment>) {
+    this._selectedMapChipFragments = value
   }
 
   setBrushFromName(brushName: string) {
@@ -142,8 +142,8 @@ export class MapCanvas implements EditorCanvas {
   mouseDown(x: number, y: number) {
     this._isMouseDown = true
 
-    if (isMapChipFragmentRequired(this._arrangement) && this._selectedMapChipFragment) {
-      this._arrangement.setMapChips([this._selectedMapChipFragment])
+    if (isMapChipFragmentRequired(this._arrangement) && this._selectedMapChipFragments) {
+      this._arrangement.setMapChips(this._selectedMapChipFragments)
     }
 
     if (isAutoTileRequired(this._arrangement) && this._selectedAutoTile) {

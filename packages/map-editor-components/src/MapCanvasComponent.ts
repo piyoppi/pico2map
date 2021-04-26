@@ -121,16 +121,17 @@ export class MapCanvasComponent extends LitElement {
 
   @property({type: Object})
   get mapChipFragmentProperties() {
-    return this._mapCanvas.selectedMapChipFragment?.toObject() || null
+    return this._mapCanvas.selectedMapChipFragments?.map(mapChipFragment => mapChipFragment.toObject()) || null
   }
-  set mapChipFragmentProperties(value: MapChipFragmentProperties | null) {
-    const oldValue = value
+  set mapChipFragmentProperties(values: Array<MapChipFragmentProperties> | null) {
+    const oldValue = values
+
     this.requestUpdate('mapChipFragmentProperties', oldValue);
 
-    if (!value) return
+    if (!values) return
 
-    const mapChipFragment = MapChipFragment.fromObject(value)
-    this._mapCanvas.setMapChipFragment(mapChipFragment)
+    const mapChipFragments = values.map(value => MapChipFragment.fromObject(value))
+    this._mapCanvas.setMapChipFragments(mapChipFragments)
   }
 
   @property({type: String})
@@ -139,7 +140,7 @@ export class MapCanvasComponent extends LitElement {
   }
   set coliderType(value: ColiderTypes | '') {
     const oldValue = value
-    this.requestUpdate('mapChipFragmentProperties', oldValue);
+    this.requestUpdate('coliderType', oldValue);
 
     if (!value) return
     this._coliderCanvas.setColiderType(value)
