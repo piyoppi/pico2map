@@ -60,6 +60,17 @@ export class MapMatrix<T> {
     return this._items[mapNumber]
   }
 
+  resize(chipCountX: number, chipCountY: number, emptyValue: T) {
+    const src = this.clone()
+
+    this._chipCountX = chipCountX
+    this._chipCountY = chipCountY
+
+    this.allocate(emptyValue)
+
+    this.transferFromTiledMapData(src, 0, 0, src.width, src.height, 0, 0)
+  }
+
   put(item: T, x: number, y: number) {
     const mapNumber = this.convertPositionToMapNumber(x, y)
     this._items[mapNumber] = item 
@@ -70,6 +81,10 @@ export class MapMatrix<T> {
   }
 
   protected allocate(defaultValue: T | null = null) {
-    this._items = new Array(this._chipCountY * this._chipCountX).fill(null)
+    this._items = new Array(this._chipCountY * this._chipCountX).fill(defaultValue)
+  }
+
+  clone() {
+    return new MapMatrix<T>(this._chipCountX, this._chipCountY, this._items)
   }
 }

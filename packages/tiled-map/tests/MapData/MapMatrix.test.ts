@@ -1,5 +1,48 @@
 import { MapMatrix } from './../../src/MapData/MapMatrix'
 
+describe('resize', () => {
+  it('Should matrix is expanded', () => {
+    const source = [
+      1, 1, 2, 1, 1,
+      1, 2, 2, 2, 1,
+      2, 2, 1, 2, 2,
+      1, 2, 2, 2, 1,
+      1, 1, 2, 1, 1
+    ]
+    const matrix = new MapMatrix<number>(5, 5, source)
+
+    matrix.resize(6, 7, 0)
+
+    expect(matrix.items).toEqual([
+      1, 1, 2, 1, 1, 0,
+      1, 2, 2, 2, 1, 0,
+      2, 2, 1, 2, 2, 0,
+      1, 2, 2, 2, 1, 0,
+      1, 1, 2, 1, 1, 0,
+      0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0
+    ])
+  })
+
+  it('Should matrix is reduced', () => {
+    const source = [
+      1, 1, 2, 1, 1,
+      1, 2, 2, 2, 1,
+      2, 2, 1, 2, 2,
+      1, 2, 2, 2, 1,
+      1, 1, 2, 1, 1
+    ]
+    const matrix = new MapMatrix<number>(5, 5, source)
+
+    matrix.resize(3, 2, 0)
+
+    expect(matrix.items).toEqual([
+      1, 1, 2,
+      1, 2, 2
+    ])
+  })
+})
+
 describe('#transferFromTiledMapData', () => {
   it('Transfered a source data', () => {
     const srcMatrix = new MapMatrix<number>(5, 5)
