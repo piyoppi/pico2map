@@ -13,6 +13,10 @@ describe('resize', () => {
 
     matrix.resize(6, 7, 0)
 
+    expect(matrix.width).toEqual(6)
+    expect(matrix.height).toEqual(7)
+    expect(matrix.size).toEqual(42)
+
     expect(matrix.items).toEqual([
       1, 1, 2, 1, 1, 0,
       1, 2, 2, 2, 1, 0,
@@ -35,6 +39,10 @@ describe('resize', () => {
     const matrix = new MapMatrix<number>(5, 5, source)
 
     matrix.resize(3, 2, 0)
+
+    expect(matrix.width).toEqual(3)
+    expect(matrix.height).toEqual(2)
+    expect(matrix.size).toEqual(6)
 
     expect(matrix.items).toEqual([
       1, 1, 2,
