@@ -198,6 +198,7 @@ export class AutoTileSelectorComponent extends LitElement {
 
       #chip-image {
         display: block;
+        user-select: none;
       }
     `
   }
