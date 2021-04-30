@@ -213,6 +213,7 @@ export class MapChipSelectorComponent extends LitElement {
 
       #chip-image {
         display: block;
+        user-select: none;
       }
     `
   }
