@@ -155,6 +155,7 @@ describe('#mouseDown', () => {
 
     mapCanvas.mouseDown(40, 70)
 
+    expect(mapCanvas.isMouseDown).toEqual(true)
     expect(brush.mouseDown).toBeCalledWith(1, 2)
     expect(brush.mouseMove).toBeCalledWith(1, 2)
   })

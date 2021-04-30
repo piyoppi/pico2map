@@ -49,6 +49,10 @@ export class MapCanvas implements EditorCanvas {
     return this._activeLayerIndex
   }
 
+  get isMouseDown() {
+    return this._isMouseDown
+  }
+
   hasActiveAutoTile() {
     return !!this._selectedAutoTile
   }

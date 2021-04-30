@@ -19,6 +19,9 @@ export class MapCanvasComponent extends LitElement {
   private _autoTileIdAttributeValue: number = -1
   private _inactiveLayerOpacity = 1.0
 
+  private _documentMouseMoveEventCallee: ((e: MouseEvent) => void) | null = null
+  private _documentMouseUpEventCallee: ((e: MouseEvent) => void) | null = null
+
   constructor() {
     super()
 
@@ -285,11 +288,23 @@ export class MapCanvasComponent extends LitElement {
   mouseDown(e: MouseEvent) {
     const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY)
     this.currentEditorCanvas.mouseDown(mouseCursorPosition.x, mouseCursorPosition.y)
+
+    this._documentMouseMoveEventCallee = e => this.mouseMove(e)
+    this._documentMouseUpEventCallee = e => this.mouseUp(e)
+
+    document.addEventListener('mousemove', this._documentMouseMoveEventCallee)
+    document.addEventListener('mouseup', this._documentMouseUpEventCallee)
   }
 
   mouseUp(e: MouseEvent) {
     const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY)
     this.currentEditorCanvas.mouseUp(mouseCursorPosition.x, mouseCursorPosition.y)
+
+    if (this._documentMouseMoveEventCallee) document.removeEventListener('mousemove', this._documentMouseMoveEventCallee)
+    if (this._documentMouseUpEventCallee) document.removeEventListener('mouseup', this._documentMouseUpEventCallee)
+
+    this._documentMouseMoveEventCallee = null
+    this._documentMouseUpEventCallee = null
   }
 
   render() {
@@ -335,9 +350,8 @@ export class MapCanvasComponent extends LitElement {
         ></canvas>
         <div
           class="grid-image grid"
-          @mousemove="${(e: MouseEvent) => this.mouseMove(e)}"
           @mousedown="${(e: MouseEvent) => this.mouseDown(e)}"
-          @mouseup ="${(e: MouseEvent) => this.mouseUp(e)}"
+          @mousemove="${(e: MouseEvent) => !this._mapCanvas.isMouseDown ? this.mouseMove(e) : null}"
         ></div>
         <div class="cursor"></div>
       </div>
