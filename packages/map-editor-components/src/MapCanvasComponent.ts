@@ -1,7 +1,8 @@
 import { LitElement, html, css, customElement, property } from 'lit-element'
 import { CursorPositionCalculator } from './Helpers/CursorPositionCalculator'
 import { GridImageGenerator, MapCanvas, Projects, Project, ColiderCanvas, EditorCanvas } from '@piyoppi/pico2map-editor'
-import { MapChipFragment, MapChipFragmentProperties, ColiderTypes } from '@piyoppi/pico2map-tiled'
+import { MapChipFragment, MapChipFragmentProperties } from '@piyoppi/pico2map-tiled'
+import { ColiderTypes } from '@piyoppi/pico2map-tiled-colision-detector'
 
 type EditMode = 'mapChip' | 'colider'
 

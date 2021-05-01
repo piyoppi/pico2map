@@ -11,7 +11,7 @@ export interface ColidedObject {
 
 export type ColiderTypes = 0 | 1
 
-export type DetectedState = {
+export type OverlappingAmount = {
   dx: number,
   dy: number
 }
@@ -53,7 +53,7 @@ export class TiledColisionDetector {
     return colidedTilePositions
   }
 
-  getOverlapped(item: ColidedObject): DetectedState {
+  getOverlapped(item: ColidedObject): OverlappingAmount {
     const itemRect = {
       x1: item.x,
       x2: item.x + item.width,
@@ -64,7 +64,7 @@ export class TiledColisionDetector {
 
     if (colidedPositions.length === 0) return {dx: 0, dy: 0}
 
-    const result: DetectedState = {dx: this._chipWidth, dy: this._chipHeight}
+    const result: OverlappingAmount = {dx: this._chipWidth, dy: this._chipHeight}
 
     colidedPositions.forEach(position => {
       result.dx = [

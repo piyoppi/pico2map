@@ -1,4 +1,4 @@
-import { ColiderTypes } from '@piyoppi/pico2map-tiled'
+import { ColiderTypes } from '@piyoppi/pico2map-tiled-colision-detector'
 import { Arrangement, ArrangementPaint, ArrangementDescription, ColiderTypesRequired } from './Arrangement'
 import { BrushPaint } from './../Brush'
 
@@ -8,7 +8,7 @@ export const ColiderArrangementDescription: ArrangementDescription<ColiderTypes>
 }
 
 export class ColiderArrangement implements Arrangement<ColiderTypes>, ColiderTypesRequired {
-  private _coliderType: ColiderTypes = 'none'
+  private _coliderType: ColiderTypes = 0
   
   setColiderTypes(coliderType: ColiderTypes) {
     this._coliderType = coliderType

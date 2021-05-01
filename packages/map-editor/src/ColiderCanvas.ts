@@ -1,6 +1,6 @@
 import { Project } from './Projects'
 import { ColiderRenderer } from './ColiderRenderer'
-import { ColiderTypes } from '@piyoppi/pico2map-tiled'
+import { ColiderTypes } from '@piyoppi/pico2map-tiled-colision-detector'
 import { Pen } from './Brushes/Pen'
 import { Brush } from './Brushes/Brush'
 import { Arrangement, isColiderTypesRequired } from './Brushes/Arrangements/Arrangement'
@@ -17,7 +17,7 @@ export class ColiderCanvas implements EditorCanvas {
   private _arrangement: Arrangement<ColiderTypes> = new ColiderArrangement()
   private _isMouseDown = false
   private _lastMapChipPosition = {x: -1, y: -1}
-  private _selectedColiderType: ColiderTypes = 'none'
+  private _selectedColiderType: ColiderTypes = 0
 
   constructor() {
     this._brush = new Pen()

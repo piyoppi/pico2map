@@ -1,4 +1,5 @@
-import { MapChipFragment, TiledMapData, AutoTile, AutoTiles, ColiderTypes } from '@piyoppi/pico2map-tiled'
+import { MapChipFragment, TiledMapData, AutoTile, AutoTiles } from '@piyoppi/pico2map-tiled'
+import { ColiderTypes } from '@piyoppi/pico2map-tiled-colision-detector'
 import { BrushPaint } from './../Brush'
 
 export interface ArrangementPaint<T> {

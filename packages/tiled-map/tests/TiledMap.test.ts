@@ -85,12 +85,12 @@ describe('#resize', () => {
     tiledMap.put(c2, 2, 3, 1)
     tiledMap.put(c2, 3, 3, 1)
     //colider
-    tiledMap.coliders.put('colider', 0, 0)
-    tiledMap.coliders.put('colider', 1, 0)
-    tiledMap.coliders.put('colider', 2, 0)
-    tiledMap.coliders.put('colider', 0, 2)
-    tiledMap.coliders.put('colider', 1, 2)
-    tiledMap.coliders.put('colider', 2, 2)
+    tiledMap.coliders.put(1, 0, 0)
+    tiledMap.coliders.put(1, 1, 0)
+    tiledMap.coliders.put(1, 2, 0)
+    tiledMap.coliders.put(1, 0, 2)
+    tiledMap.coliders.put(1, 1, 2)
+    tiledMap.coliders.put(1, 2, 2)
   })
 
   it('Should map is expanded', () => {
@@ -120,13 +120,13 @@ describe('#resize', () => {
     ])
 
     expect(tiledMap.coliders.items).toEqual([
-      'colider', 'colider', 'colider', 'none', 'none', 'none',
-         'none',    'none',    'none', 'none', 'none', 'none',
-      'colider', 'colider', 'colider', 'none', 'none', 'none',
-         'none',    'none',    'none', 'none', 'none', 'none',
-         'none',    'none',    'none', 'none', 'none', 'none',
-         'none',    'none',    'none', 'none', 'none', 'none',
-         'none',    'none',    'none', 'none', 'none', 'none'
+      1, 1, 1, 0, 0, 0,
+      0, 0, 0, 0, 0, 0,
+      1, 1, 1, 0, 0, 0,
+      0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0
     ])
   })
 
@@ -149,9 +149,9 @@ describe('#resize', () => {
     ])
 
     expect(tiledMap.coliders.items).toEqual([
-      'colider', 'colider',
-         'none',    'none',
-      'colider', 'colider'
+      1, 1,
+      0, 0,
+      1, 1
     ])
   })
 })
