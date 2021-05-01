@@ -6,7 +6,7 @@ on:
   push:
 
 jobs:
-  deploy:
+  ci:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -25,6 +25,10 @@ jobs:
        
       - name: Install dependencies
         run: npm install
+
+      - name: Build colision-detector
+        run: npm run build
+        working-directory: ./packages/tiled-colision-detector
         
       - name: Build tiled-map
         run: npm run build
