@@ -28,6 +28,10 @@ jobs:
        
       - name: Install dependencies
         run: npm install
+
+      - name: Build tiled-colision-detector
+        run: npm run build
+        working-directory: ./packages/tiled-colision-detector
         
       - name: Build tiled-map
         run: npm run build
