@@ -13,6 +13,10 @@ jobs:
           node-version: '15.x'
       - run: npm install
 
+      - name: Build tiled-colision-detector
+        run: npm run build
+        working-directory: ./packages/tiled-colision-detector
+
       - name: Build tiled-map
         run: npm run build
         working-directory: ./packages/tiled-map
@@ -24,6 +28,11 @@ jobs:
       - name: Build ui-components
         run: npm run build
         working-directory: ./packages/map-editor-components
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: built-tiled-colision-detector
+          path: ./packages/tiled-colision-detector/dist/
 
       - uses: actions/upload-artifact@v2
         with:
@@ -53,6 +62,11 @@ jobs:
 
       - uses: actions/download-artifact@v2
         with:
+          name: built-tiled-colision-detector
+          path: ./packages/tiled-colision-detector/dist/
+
+      - uses: actions/download-artifact@v2
+        with:
           name: built-tiled-map
           path: ./packages/tiled-map/dist/
 
@@ -65,6 +79,11 @@ jobs:
         with:
           name: built-ui-components
           path: ./packages/map-editor-components/dist/
+
+      - run: npm publish
+        working-directory: ./packages/tiled-colision-detector
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
       - run: npm publish
         working-directory: ./packages/tiled-map

@@ -102,7 +102,7 @@ export class TiledMap {
     this._chipCountY = chipCountY
 
     this._datas.forEach(item => item.resize(chipCountX, chipCountY, null))
-    this._coliders.resize(chipCountX, chipCountY, 'none')
+    this._coliders.resize(chipCountX, chipCountY, 0)
   }
 
   private setSerializedProperties(val: {mapChipImages: MapChipCollectionProperties, autoTiles: AutoTilesProperties, tiledMapDatas: Array<TiledMapDataProperties>, coliders: ColiderMapProperties}) {

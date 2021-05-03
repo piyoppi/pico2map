@@ -1,4 +1,5 @@
-import { TiledMap, MapChipFragment, MapChip, ColiderTypes } from '@piyoppi/pico2map-tiled'
+import { TiledMap, MapChipFragment, MapChip } from '@piyoppi/pico2map-tiled'
+import { ColiderTypes } from '@piyoppi/pico2map-tiled-colision-detector'
 
 export class ColiderRenderer {
   private _backgroundRgba = {r: 255, g: 255, b: 255, a: 1.0}
@@ -16,7 +17,7 @@ export class ColiderRenderer {
   }
 
   putOrClearChipToCanvas(ctx: CanvasRenderingContext2D, coliderType: ColiderTypes, chipX: number, chipY: number, isTemporaryRendering: boolean = false) {
-    if (coliderType === 'colider') {
+    if (coliderType === 1) {
       this._putToCanvas(ctx, chipX, chipY)
     } else {
       this._clearChipToCanvas(ctx, chipX, chipY, isTemporaryRendering)

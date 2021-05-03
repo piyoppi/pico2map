@@ -4,5 +4,5 @@ export { MapChipImage, MapChipImageProperties, MapChipsCollection, MapChipCollec
 export { MapChipFragment, MapChipFragmentProperties, MapChip, AutoTileMapChip, isAutoTileMapChip } from './MapChip'
 export { AutoTiles, AutoTileProperties, AutoTile, AutoTilesProperties } from './AutoTile/AutoTiles'
 export { DefaultAutoTileImportStrategy } from './AutoTile/DefaultAutoTileImportStrategy'
-export { ColiderTypes, ColiderMap } from './MapData/ColiderMap'
+export { ColiderMap } from './MapData/ColiderMap'
 export { MapRenderer } from './MapRenderer'

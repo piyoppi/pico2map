@@ -1,7 +1,6 @@
 import { MapChip, MapChipProperties,  AutoTileMapChipProperties, isAutoTileMapChipProperties, AutoTileMapChip } from './../MapChip'
+import { ColiderTypes, TiledColisionDetectable } from '@piyoppi/pico2map-tiled-colision-detector'
 import { MapMatrix } from './MapMatrix'
-
-export type ColiderTypes = 'colider' | 'none'
 
 export type ColiderMapProperties = {
   chipCountX: number,
@@ -9,7 +8,7 @@ export type ColiderMapProperties = {
   coliders: Array<ColiderTypes>
 }
 
-export class ColiderMap extends MapMatrix<ColiderTypes> {
+export class ColiderMap extends MapMatrix<ColiderTypes> implements TiledColisionDetectable {
   toObject(): ColiderMapProperties {
     return {
       chipCountX: this._chipCountX,
@@ -23,6 +22,6 @@ export class ColiderMap extends MapMatrix<ColiderTypes> {
   }
 
   protected allocate() {
-    super.allocate('none')
+    super.allocate(0)
   }
 }
