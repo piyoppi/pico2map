@@ -68,18 +68,18 @@ export class TiledColisionDetector {
 
     colidedPositions.forEach(position => {
       result.dx = [
-        itemRect.x1 - position.x * this._chipWidth,
-        itemRect.x1 - (position.x + 1) * this._chipWidth,
-        itemRect.x2 - position.x * this._chipWidth,
-        itemRect.x2 - (position.x + 1) * this._chipWidth,
+        position.x * this._chipWidth - itemRect.x1,
+        (position.x + 1) * this._chipWidth - itemRect.x1,
+        position.x * this._chipWidth - itemRect.x2,
+        (position.x + 1) * this._chipWidth - itemRect.x2,
         result.dx
       ].reduce((acc, val) => Math.abs(acc) < Math.abs(val) ? acc : val)
 
       result.dy = [
-        itemRect.y1 - position.y * this._chipHeight,
-        itemRect.y1 - (position.y + 1) * this._chipHeight,
-        itemRect.y2 - position.y * this._chipHeight,
-        itemRect.y2 - (position.y + 1) * this._chipHeight,
+        position.y * this._chipHeight - itemRect.y1,
+        (position.y + 1) * this._chipHeight - itemRect.y1,
+        position.y * this._chipHeight - itemRect.y2,
+        (position.y + 1) * this._chipHeight - itemRect.y2,
         result.dy
       ].reduce((acc, val) => Math.abs(acc) < Math.abs(val) ? acc : val)
     })
