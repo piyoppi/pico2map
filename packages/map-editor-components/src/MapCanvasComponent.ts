@@ -138,11 +138,11 @@ export class MapCanvasComponent extends LitElement {
     this._mapCanvas.setMapChipFragments(mapChipFragments)
   }
 
-  @property({type: String})
+  @property({type: Number})
   get coliderType() {
-    return this._coliderCanvas.selectedColiderType || ''
+    return this._coliderCanvas.selectedColiderType
   }
-  set coliderType(value: ColiderTypes | '') {
+  set coliderType(value: ColiderTypes) {
     const oldValue = value
     this.requestUpdate('coliderType', oldValue);
 

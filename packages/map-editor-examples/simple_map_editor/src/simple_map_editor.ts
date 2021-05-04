@@ -85,8 +85,8 @@ async function initialize() {
   })
 
   // Set an active colider type
-  coliderTypeNoneRadioButton.addEventListener('change', () => mapCanvas?.setAttribute('coliderType', 'none'))
-  coliderTypeColiderRadioButton.addEventListener('change', () => mapCanvas?.setAttribute('coliderType', 'colider'))
+  coliderTypeNoneRadioButton.addEventListener('change', () => mapCanvas?.setAttribute('coliderType', '0'))
+  coliderTypeColiderRadioButton.addEventListener('change', () => mapCanvas?.setAttribute('coliderType', '1'))
 
   autoTileSelector.addEventListener<any>('autotile-selected', (e: AutoTileSelectedEvent) => {
     // Set a AutoTileArrangement.
