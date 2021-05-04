@@ -1,21 +1,8 @@
 import { Projects } from './../src/Projects'
 import { MapCanvas } from './../src/MapCanvas'
 import { TiledMap } from '@piyoppi/pico2map-tiled'
-import { Brush, BrushPaint } from './../src/Brushes/Brush'
-import { Arrangement, ArrangementPaint } from '../src/Brushes/Arrangements/Arrangement'
-
-class EmptyBrush<T> implements Brush<T> {
-  setArrangement(_: Arrangement<T>) {}
-  mouseDown(_: number, __: number) {}
-  mouseMove(_: number, __: number) {return []}
-  mouseUp(_: number, __: number) {return []}
-  cleanUp() {}
-}
-
-class EmptyArrangement<T> implements Arrangement<T> {
-  setMapChips(_: Array<T>) {}
-  apply(_: Array<BrushPaint>): Array<ArrangementPaint<T>> { return [] }
-}
+import { EmptyBrush } from './TestHelpers/EmptyBrush'
+import { EmptyArrangement } from './TestHelpers/EmptyArrangement'
 
 let mockedCanvas = {}
 let mockedCanvasLayer1 = {}
