@@ -58,6 +58,10 @@ export class ColiderCanvas implements EditorCanvas {
     return this._secondaryCanvas
   }
 
+  get isMouseDown() {
+    return this._isMouseDown
+  }
+
   setProject(project: Project) {
     this._project = project
     this._coliderRenderer = new ColiderRenderer(this._project.tiledMap)
