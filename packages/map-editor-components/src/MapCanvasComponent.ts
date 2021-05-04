@@ -1,4 +1,5 @@
 import { LitElement, html, css, customElement, property } from 'lit-element'
+import { styleMap } from 'lit-html/directives/style-map';
 import { CursorPositionCalculator } from './Helpers/CursorPositionCalculator'
 import { GridImageGenerator, MapCanvas, Projects, Project, ColiderCanvas, EditorCanvas } from '@piyoppi/pico2map-editor'
 import { MapChipFragment, MapChipFragmentProperties } from '@piyoppi/pico2map-tiled'
@@ -31,6 +32,7 @@ export class MapCanvasComponent extends LitElement {
 
   @property({type: Number}) cursorChipX = 0
   @property({type: Number}) cursorChipY = 0
+  @property({type: Boolean}) hiddenColider = false
 
   @property({type: String})
   get gridColor(): string {
@@ -314,6 +316,10 @@ export class MapCanvasComponent extends LitElement {
       this.gridImageSrc = this.gridImageGenerator.generateLinePart().toDataURL()
     }
 
+    const coliderStyles = {
+      display: this.hiddenColider ? 'none' : 'block'
+    }
+
     return html`
       <style>
         .grid {
@@ -343,6 +349,7 @@ export class MapCanvasComponent extends LitElement {
           id="colider-canvas"
           width="${this.width}"
           height="${this.height}"
+          style="${styleMap(coliderStyles)}"
         ></canvas>
         <canvas
           id="secondary-canvas"

@@ -74,12 +74,15 @@ async function initialize() {
   mapChipModeRadioButton.addEventListener('change', _ => {
     // Set arrangement map-chips mode
     mapCanvas.setAttribute('mode', 'mapChip')
+    mapCanvas.setAttribute('hiddenColider', 'true')
 
     coliderGroup.style.display = coliderModeRadioButton.checked ? 'block' : 'none'
   })
   coliderModeRadioButton?.addEventListener('change', _ => {
     // Set colider-edit mode
     mapCanvas.setAttribute('mode', 'colider')
+    mapCanvas.removeAttribute('hiddenColider')
+    console.log('changedddd')
 
     coliderGroup.style.display = coliderModeRadioButton.checked ? 'block' : 'none'
   })
