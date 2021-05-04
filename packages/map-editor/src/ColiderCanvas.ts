@@ -66,6 +66,10 @@ export class ColiderCanvas implements EditorCanvas {
       if (!this._coliderCtx) return
       this.coliderRenderer.renderAll(this._coliderCtx)
     })
+
+    if (this._coliderCtx) {
+      this.coliderRenderer.renderAll(this._coliderCtx)
+    }
   }
 
   setCanvas(canvas: HTMLCanvasElement, secondaryCanvas: HTMLCanvasElement) {
