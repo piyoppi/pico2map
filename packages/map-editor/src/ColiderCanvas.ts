@@ -98,6 +98,8 @@ export class ColiderCanvas implements EditorCanvas {
     const chipPosition = this.convertFromCursorPositionToChipPosition(x, y)
     this._brush.mouseDown(chipPosition.x, chipPosition.y)
 
+    this._paint(chipPosition)
+
     this._lastMapChipPosition = chipPosition
   }
 
@@ -107,11 +109,7 @@ export class ColiderCanvas implements EditorCanvas {
     if (!this._isMouseDown) return chipPosition
     if (chipPosition.x === this._lastMapChipPosition.x && chipPosition.y === this._lastMapChipPosition.y) return chipPosition
 
-    this.clearSecondaryCanvas()
-    this._brush.mouseMove(chipPosition.x, chipPosition.y).forEach(paint => {
-      const chip = paint.item
-      this.coliderRenderer.putOrClearChipToCanvas(this.secondaryCanvasCtx, chip, paint.x, paint.y, true)
-    })
+    this._paint(chipPosition)
 
     this._lastMapChipPosition = chipPosition
 
@@ -131,6 +129,14 @@ export class ColiderCanvas implements EditorCanvas {
     this.clearSecondaryCanvas()
     this._brush.cleanUp()
     this._lastMapChipPosition = {x: -1, y: -1}
+  }
+
+  private _paint(chipPosition: {x: number, y: number}) {
+    this.clearSecondaryCanvas()
+    this._brush.mouseMove(chipPosition.x, chipPosition.y).forEach(paint => {
+      const chip = paint.item
+      this.coliderRenderer.putOrClearChipToCanvas(this.secondaryCanvasCtx, chip, paint.x, paint.y, true)
+    })
   }
 
   putChip(coliderType: ColiderTypes, chipX: number, chipY: number) {
