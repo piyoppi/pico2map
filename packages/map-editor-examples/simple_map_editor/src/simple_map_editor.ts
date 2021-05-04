@@ -82,7 +82,6 @@ async function initialize() {
     // Set colider-edit mode
     mapCanvas.setAttribute('mode', 'colider')
     mapCanvas.removeAttribute('hiddenColider')
-    console.log('changedddd')
 
     coliderGroup.style.display = coliderModeRadioButton.checked ? 'block' : 'none'
   })
