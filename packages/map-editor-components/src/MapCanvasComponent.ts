@@ -338,12 +338,12 @@ export class MapCanvasComponent extends LitElement {
       </style>
 
       <div id="boundary">
+        <div id="canvases"></div>
         <canvas
           id="colider-canvas"
           width="${this.width}"
           height="${this.height}"
         ></canvas>
-        <div id="canvases"></div>
         <canvas
           id="secondary-canvas"
           width="${this.width}"
