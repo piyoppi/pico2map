@@ -74,19 +74,21 @@ async function initialize() {
   mapChipModeRadioButton.addEventListener('change', _ => {
     // Set arrangement map-chips mode
     mapCanvas.setAttribute('mode', 'mapChip')
+    mapCanvas.setAttribute('hiddenColider', 'true')
 
     coliderGroup.style.display = coliderModeRadioButton.checked ? 'block' : 'none'
   })
   coliderModeRadioButton?.addEventListener('change', _ => {
     // Set colider-edit mode
     mapCanvas.setAttribute('mode', 'colider')
+    mapCanvas.removeAttribute('hiddenColider')
 
     coliderGroup.style.display = coliderModeRadioButton.checked ? 'block' : 'none'
   })
 
   // Set an active colider type
-  coliderTypeNoneRadioButton.addEventListener('change', () => mapCanvas?.setAttribute('coliderType', 'none'))
-  coliderTypeColiderRadioButton.addEventListener('change', () => mapCanvas?.setAttribute('coliderType', 'colider'))
+  coliderTypeNoneRadioButton.addEventListener('change', () => mapCanvas?.setAttribute('coliderType', '0'))
+  coliderTypeColiderRadioButton.addEventListener('change', () => mapCanvas?.setAttribute('coliderType', '1'))
 
   autoTileSelector.addEventListener<any>('autotile-selected', (e: AutoTileSelectedEvent) => {
     // Set a AutoTileArrangement.
