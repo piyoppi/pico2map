@@ -3,6 +3,7 @@ import { ColiderRenderer } from './ColiderRenderer'
 import { ColiderTypes } from '@piyoppi/pico2map-tiled-colision-detector'
 import { Pen } from './Brushes/Pen'
 import { Brush } from './Brushes/Brush'
+import { Brushes } from './Brushes/Brushes'
 import { Arrangement, isColiderTypesRequired } from './Brushes/Arrangements/Arrangement'
 import { ColiderArrangement } from './Brushes/Arrangements/ColiderArrangement'
 import { EditorCanvas } from './EditorCanvas'
@@ -85,6 +86,16 @@ export class ColiderCanvas implements EditorCanvas {
   setBrush(brush: Brush<ColiderTypes>) {
     this._brush = brush
     this._setupBrush()
+  }
+
+  setBrushFromName(brushName: string) {
+    const registeredBrush = Brushes.find(registeredBrush => registeredBrush.name === brushName)
+
+    if (!registeredBrush) {
+      this.setBrush(new Pen())
+    } else {
+      this.setBrush(registeredBrush.create<ColiderTypes>())
+    }
   }
 
   setColiderType(value: ColiderTypes) {
