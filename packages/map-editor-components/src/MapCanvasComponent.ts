@@ -1,23 +1,16 @@
-import { LitElement, html, css, customElement, property } from 'lit-element'
-import { styleMap } from 'lit-html/directives/style-map';
+import { LitElement, html, css, property } from 'lit-element'
 import { CursorPositionCalculator } from './Helpers/CursorPositionCalculator'
-import { GridImageGenerator, MapCanvas, Projects, Project, ColiderCanvas, EditorCanvas } from '@piyoppi/pico2map-editor'
+import { GridImageGenerator, MapCanvas, Projects, Project } from '@piyoppi/pico2map-editor'
 import { MapChipFragment, MapChipFragmentProperties } from '@piyoppi/pico2map-tiled'
-import { ColiderTypes } from '@piyoppi/pico2map-tiled-colision-detector'
-
-type EditMode = 'mapChip' | 'colider'
 
 export class MapCanvasComponent extends LitElement {
   private gridImageSrc = ''
   private gridImageGenerator: GridImageGenerator = new GridImageGenerator()
   private cursorPositionCalculator = new CursorPositionCalculator()
   private _mapCanvas = new MapCanvas()
-  private _coliderCanvas = new ColiderCanvas()
   private _project: Project | null = null
   private _secondaryCanvasElement: HTMLCanvasElement | null = null
-  private _coliderCanvasElement : HTMLCanvasElement | null = null
   private _canvasesOuterElement : HTMLCanvasElement | null = null
-  private _mode: EditMode = 'mapChip'
   private _autoTileIdAttributeValue: number = -1
   private _inactiveLayerOpacity = 1.0
 
@@ -32,7 +25,6 @@ export class MapCanvasComponent extends LitElement {
 
   @property({type: Number}) cursorChipX = 0
   @property({type: Number}) cursorChipY = 0
-  @property({type: Boolean}) hiddenColider = false
 
   @property({type: String})
   get gridColor(): string {
@@ -100,17 +92,6 @@ export class MapCanvasComponent extends LitElement {
     this.requestUpdate('arrangement', oldValue);
   }
 
-  @property({type: String})
-  get mode() {
-    return this._mode
-  }
-  set mode(value: EditMode) {
-    const oldValue = this._mode
-    this._mode = value
-
-    this.requestUpdate('mode', oldValue);
-  }
-
   @property({type: Number})
   get autoTileId() {
     return this._mapCanvas.selectedAutoTile?.id || -1
@@ -138,18 +119,6 @@ export class MapCanvasComponent extends LitElement {
 
     const mapChipFragments = values.map(value => MapChipFragment.fromObject(value))
     this._mapCanvas.setMapChipFragments(mapChipFragments)
-  }
-
-  @property({type: Number})
-  get coliderType() {
-    return this._coliderCanvas.selectedColiderType
-  }
-  set coliderType(value: ColiderTypes) {
-    const oldValue = value
-    this.requestUpdate('coliderType', oldValue);
-
-    if (!value) return
-    this._coliderCanvas.setColiderType(value)
   }
 
   @property({type: Number})
@@ -189,15 +158,6 @@ export class MapCanvasComponent extends LitElement {
     return {
       x: this.cursorChipX * this.gridWidth,
       y: this.cursorChipY * this.gridHeight
-    }
-  }
-
-  get currentEditorCanvas(): EditorCanvas {
-    switch (this._mode) {
-      case 'colider':
-        return this._coliderCanvas
-      default:
-        return this._mapCanvas
     }
   }
 
@@ -243,15 +203,12 @@ export class MapCanvasComponent extends LitElement {
   }
 
   private setupMapCanvas() {
-    if (!this._project || !this._secondaryCanvasElement || !this._coliderCanvasElement || !this._canvasesOuterElement) return
+    if (!this._project || !this._secondaryCanvasElement || !this._canvasesOuterElement) return
 
     this._mapCanvas.setProject(this._project)
     if (this._canvasesOuterElement.childNodes.length === 0) {
       this._mapCanvas.setCanvases(this._createCanvases(), this._secondaryCanvasElement)
     }
-
-    this._coliderCanvas.setProject(this._project)
-    this._coliderCanvas.setCanvas(this._coliderCanvasElement, this._secondaryCanvasElement)
 
     this._mapCanvas.setBrushFromName(this._brushName)
     this._mapCanvas.setArrangementFromName(this._arrangementName)
@@ -276,21 +233,20 @@ export class MapCanvasComponent extends LitElement {
     if (element) this.cursorPositionCalculator.setElement(element)
 
     this._secondaryCanvasElement = this.shadowRoot?.getElementById('secondary-canvas') as HTMLCanvasElement
-    this._coliderCanvasElement = this.shadowRoot?.getElementById('colider-canvas') as HTMLCanvasElement
     this._canvasesOuterElement = this.shadowRoot?.getElementById('canvases') as HTMLCanvasElement
     this.setupMapCanvas()
   }
 
   mouseMove(e: MouseEvent) {
     const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY)
-    const cursor = this.currentEditorCanvas.mouseMove(mouseCursorPosition.x, mouseCursorPosition.y)
+    const cursor = this._mapCanvas.mouseMove(mouseCursorPosition.x, mouseCursorPosition.y)
     this.cursorChipX = cursor.x
     this.cursorChipY = cursor.y
   }
 
   mouseDown(e: MouseEvent) {
     const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY)
-    this.currentEditorCanvas.mouseDown(mouseCursorPosition.x, mouseCursorPosition.y)
+    this._mapCanvas.mouseDown(mouseCursorPosition.x, mouseCursorPosition.y)
 
     this._documentMouseMoveEventCallee = e => this.mouseMove(e)
     this._documentMouseUpEventCallee = e => this.mouseUp(e)
@@ -301,7 +257,7 @@ export class MapCanvasComponent extends LitElement {
 
   mouseUp(e: MouseEvent) {
     const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY)
-    this.currentEditorCanvas.mouseUp(mouseCursorPosition.x, mouseCursorPosition.y)
+    this._mapCanvas.mouseUp(mouseCursorPosition.x, mouseCursorPosition.y)
 
     if (this._documentMouseMoveEventCallee) document.removeEventListener('mousemove', this._documentMouseMoveEventCallee)
     if (this._documentMouseUpEventCallee) document.removeEventListener('mouseup', this._documentMouseUpEventCallee)
@@ -314,10 +270,6 @@ export class MapCanvasComponent extends LitElement {
     this.gridImageGenerator.setGridSize(this.gridWidth, this.gridHeight)
     if (this.gridImageGenerator.changed) {
       this.gridImageSrc = this.gridImageGenerator.generateLinePart().toDataURL()
-    }
-
-    const coliderStyles = {
-      display: this.hiddenColider ? 'none' : 'block'
     }
 
     return html`
@@ -345,12 +297,6 @@ export class MapCanvasComponent extends LitElement {
 
       <div id="boundary">
         <div id="canvases"></div>
-        <canvas
-          id="colider-canvas"
-          width="${this.width}"
-          height="${this.height}"
-          style="${styleMap(coliderStyles)}"
-        ></canvas>
         <canvas
           id="secondary-canvas"
           width="${this.width}"
@@ -399,7 +345,7 @@ export class MapCanvasComponent extends LitElement {
         position: relative;
       }
 
-      #secondary-canvas, #colider-canvas {
+      #secondary-canvas {
         pointer-events: none;
         position: absolute;
         top: 0;
