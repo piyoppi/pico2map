@@ -9,3 +9,12 @@
   display: flex;
   max-width: 100%;
 }
+
+.map-editor {
+  position: relative;
+}
+
+#coliderCanvas {
+  position: absolute;
+  top: 0;
+}
