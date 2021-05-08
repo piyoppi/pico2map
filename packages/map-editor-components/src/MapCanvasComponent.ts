@@ -25,6 +25,7 @@ export class MapCanvasComponent extends LitElement {
 
   @property({type: Number}) cursorChipX = 0
   @property({type: Number}) cursorChipY = 0
+  @property({type: Boolean}) cursorHidden = false
 
   @property({type: String})
   get gridColor(): string {
@@ -240,8 +241,11 @@ export class MapCanvasComponent extends LitElement {
   mouseMove(e: MouseEvent) {
     const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY)
     const cursor = this._mapCanvas.mouseMove(mouseCursorPosition.x, mouseCursorPosition.y)
-    this.cursorChipX = cursor.x
-    this.cursorChipY = cursor.y
+
+    if (!this.cursorHidden) {
+      this.cursorChipX = cursor.x
+      this.cursorChipY = cursor.y
+    }
   }
 
   mouseDown(e: MouseEvent) {
@@ -307,7 +311,7 @@ export class MapCanvasComponent extends LitElement {
           @mousedown="${(e: MouseEvent) => this.mouseDown(e)}"
           @mousemove="${(e: MouseEvent) => !this._mapCanvas.isMouseDown ? this.mouseMove(e) : null}"
         ></div>
-        <div class="cursor"></div>
+        ${!this.cursorHidden ? html`<div class="cursor"></div>` : null}
       </div>
     `;
   }

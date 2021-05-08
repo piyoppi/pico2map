@@ -71,7 +71,6 @@ export class ColiderMarkerComponent extends LitElement {
     const oldValue = value
     this.requestUpdate('coliderType', oldValue);
 
-    if (!value) return
     this._coliderCanvas.setColiderType(value)
   }
 
