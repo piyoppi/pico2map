@@ -6,6 +6,7 @@ defineComponent()
 
 // Get some elements
 const mapCanvas = document.getElementById('mapCanvas') as HTMLInputElement
+const coliderCanvas = document.getElementById('coliderCanvas') as HTMLInputElement
 const mapChipSelector = document.getElementById('mapChipSelector') as HTMLInputElement
 const autoTileSelector = document.getElementById('autoTileSelector') as HTMLInputElement
 const loadButton = document.getElementById('load') as HTMLInputElement
@@ -21,10 +22,13 @@ const coliderTypeNoneRadioButton = document.getElementById('coliderTypeNone') as
 const coliderTypeColiderRadioButton = document.getElementById('coliderTypeColider') as HTMLInputElement
 const layerSelector = document.getElementById('layer') as HTMLInputElement
 
+coliderCanvas.style.display = 'none'
+
 function setProjectId(id: number) {
   mapChipSelector.setAttribute('projectId', id.toString())
   autoTileSelector.setAttribute('projectId', id.toString())
   mapCanvas.setAttribute('projectId', id.toString())
+  coliderCanvas.setAttribute('projectId', id.toString())
 }
 
 async function setMapChip(tiledMap: TiledMap, chipSize: {width: number, height: number}) {
@@ -64,8 +68,14 @@ async function initialize() {
   saveButton.onclick = () => localStorage.setItem('mapData', JSON.stringify(tiledMap.toObject()))
 
   // Set a pen
-  rectangleRadioButton.addEventListener('change', () => mapCanvas.setAttribute('brush', 'RectangleBrush'))
-  penRadioButton.addEventListener('change', () => mapCanvas.setAttribute('brush', 'Pen'))
+  rectangleRadioButton.addEventListener('change', () => {
+    mapCanvas.setAttribute('brush', 'RectangleBrush')
+    coliderCanvas.setAttribute('brush', 'RectangleBrush')
+  })
+  penRadioButton.addEventListener('change', () => {
+    mapCanvas.setAttribute('brush', 'Pen')
+    coliderCanvas.setAttribute('brush', 'Pen')
+  })
 
   // Set eraser arrangement
   // DefaultEraseArrangement put empty MapChips.
@@ -73,22 +83,22 @@ async function initialize() {
 
   mapChipModeRadioButton.addEventListener('change', _ => {
     // Set arrangement map-chips mode
-    mapCanvas.setAttribute('mode', 'mapChip')
-    mapCanvas.setAttribute('hiddenColider', 'true')
+    coliderCanvas.style.display = 'none'
+    mapCanvas.removeAttribute('cursorHidden')
 
     coliderGroup.style.display = coliderModeRadioButton.checked ? 'block' : 'none'
   })
   coliderModeRadioButton?.addEventListener('change', _ => {
     // Set colider-edit mode
-    mapCanvas.setAttribute('mode', 'colider')
-    mapCanvas.removeAttribute('hiddenColider')
+    coliderCanvas.style.display = 'block'
+    mapCanvas.setAttribute('cursorHidden', 'true')
 
     coliderGroup.style.display = coliderModeRadioButton.checked ? 'block' : 'none'
   })
 
   // Set an active colider type
-  coliderTypeNoneRadioButton.addEventListener('change', () => mapCanvas?.setAttribute('coliderType', '0'))
-  coliderTypeColiderRadioButton.addEventListener('change', () => mapCanvas?.setAttribute('coliderType', '1'))
+  coliderTypeNoneRadioButton.addEventListener('change', () => coliderCanvas?.setAttribute('coliderType', '0'))
+  coliderTypeColiderRadioButton.addEventListener('change', () => coliderCanvas?.setAttribute('coliderType', '1'))
 
   autoTileSelector.addEventListener<any>('autotile-selected', (e: AutoTileSelectedEvent) => {
     // Set a AutoTileArrangement.
