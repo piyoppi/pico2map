@@ -11,7 +11,14 @@ export interface ColidedObject {
 
 export type ColiderTypes = 0 | 1
 
-export type OverlappingAmount = {
+export type OverlappingState = {
+  dx: number,
+  dy: number,
+  dxMax: number,
+  dyMax: number
+}
+
+export type PositionDiff = {
   dx: number,
   dy: number
 }
@@ -53,40 +60,74 @@ export class TiledColisionDetector {
     return colidedTilePositions
   }
 
-  getOverlapped(item: ColidedObject): OverlappingAmount {
-    const itemRect = {
-      x1: item.x,
-      x2: item.x + item.width,
-      y1: item.y,
-      y2: item.y + item.height
-    }
+  getOverlapped(item: ColidedObject): OverlappingState {
     const colidedPositions = this.detect(item)
 
-    if (colidedPositions.length === 0) return {dx: 0, dy: 0}
+    const overlapped: OverlappingState = {
+      dx: this._chipWidth,
+      dy: this._chipHeight,
+      dxMax: 0,
+      dyMax: 0,
+    }
 
-    const result: OverlappingAmount = {dx: this._chipWidth, dy: this._chipHeight}
+    if (colidedPositions.length === 0) return {...overlapped, dx: 0, dy: 0}
+
+    const overlappedThresholdX = (item.width + this._chipWidth) / 2
+    const overlappedThresholdY = (item.height + this._chipHeight) / 2
 
     colidedPositions.forEach(position => {
-      result.dx = [
-        position.x * this._chipWidth - itemRect.x1,
-        (position.x + 1) * this._chipWidth - itemRect.x1,
-        position.x * this._chipWidth - itemRect.x2,
-        (position.x + 1) * this._chipWidth - itemRect.x2,
-        result.dx
-      ].reduce((acc, val) => Math.abs(acc) < Math.abs(val) ? acc : val)
+      const chipPositionPixeled = {
+        x: position.x * this._chipWidth,
+        y: position.y * this._chipHeight
+      }
+      const dx = item.x + (item.width / 2) - (chipPositionPixeled.x + (this._chipWidth / 2))
+      const dy = item.y + (item.height / 2)  - (chipPositionPixeled.y + (this._chipHeight / 2))
+      const absdx = Math.abs(dx)
+      const absdy = Math.abs(dy)
+      const overlappedX = (overlappedThresholdX - absdx) * (dx < 0 ? -1 : 1)
+      const overlappedY = (overlappedThresholdY - absdy) * (dy < 0 ? -1 : 1)
+      const absOverlappedX = Math.abs(overlappedX)
+      const absOverlappedY = Math.abs(overlappedY)
 
-      result.dy = [
-        position.y * this._chipHeight - itemRect.y1,
-        (position.y + 1) * this._chipHeight - itemRect.y1,
-        position.y * this._chipHeight - itemRect.y2,
-        (position.y + 1) * this._chipHeight - itemRect.y2,
-        result.dy
-      ].reduce((acc, val) => Math.abs(acc) < Math.abs(val) ? acc : val)
+      if (absOverlappedX < Math.abs(overlapped.dx)) {
+        overlapped.dx = overlappedX
+      }
+
+      if (absOverlappedX > Math.abs(overlapped.dxMax)) {
+        overlapped.dxMax = overlappedX
+      }
+
+      if (absOverlappedY < Math.abs(overlapped.dy)) {
+        overlapped.dy = overlappedY
+      }
+
+      if (absOverlappedY > Math.abs(overlapped.dyMax)) {
+        overlapped.dyMax = overlappedY
+      }
     })
 
-    if (Math.abs(result.dx) > this._chipWidth / 2) result.dx = 0
-    if (Math.abs(result.dy) > this._chipHeight / 2) result.dy = 0
+    if (overlapped.dx === this._chipWidth) overlapped.dx = 0
+    if (overlapped.dy === this._chipHeight) overlapped.dy = 0
 
-    return result
+    return overlapped
+  }
+
+  solveOverlapped(item: ColidedObject, limit: number = 2): PositionDiff {
+    const clonedItem = {...item}
+
+    for(let i=0; i<limit; i++) {
+      const overlapped = this.getOverlapped(clonedItem)
+      if (overlapped.dx === 0 && overlapped.dy === 0) break
+
+      if (Math.abs(overlapped.dxMax) > Math.abs(overlapped.dyMax)) {
+        clonedItem.y += overlapped.dy
+      } else if (Math.abs(overlapped.dxMax) < Math.abs(overlapped.dyMax)) {
+        clonedItem.x += overlapped.dx
+      } else {
+        clonedItem.y += overlapped.dy
+      }
+    }
+
+    return {dx: clonedItem.x - item.x, dy: clonedItem.y - item.y}
   }
 }
