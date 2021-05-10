@@ -11,7 +11,7 @@ export interface ColidedObject {
 
 export type ColiderTypes = 0 | 1
 
-export type OverlappingState = {
+export type OverlappingAmount = {
   dx: number,
   dy: number,
   dxMax: number,
@@ -60,10 +60,10 @@ export class TiledColisionDetector {
     return colidedTilePositions
   }
 
-  getOverlapped(item: ColidedObject): OverlappingState {
+  getOverlapped(item: ColidedObject): OverlappingAmount {
     const colidedPositions = this.detect(item)
 
-    const overlapped: OverlappingState = {
+    const overlapped: OverlappingAmount = {
       dx: this._chipWidth,
       dy: this._chipHeight,
       dxMax: 0,
