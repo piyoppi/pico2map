@@ -59,6 +59,25 @@ describe('detect', () => {
   })
 })
 
+describe('getOverlapped', () => {
+  it('Should return the overlapping amount', () => {
+    expect(detector.getOverlapped(items[0])).toEqual({dx: 2, dy: -20, dxMax: 2, dyMax: -20})
+    expect(detector.getOverlapped(items[1])).toEqual({dx: -20, dy: 2, dxMax: -20, dyMax: 2})
+    expect(detector.getOverlapped(items[2])).toEqual({dx: -2, dy: -20, dxMax: -2, dyMax: -20})
+    expect(detector.getOverlapped(items[3])).toEqual({dx: 20, dy: 2, dxMax: 20, dyMax: 2})
+    expect(detector.getOverlapped(items[4])).toEqual({dx: 2, dy: 20, dxMax: 2, dyMax: 20})
+    expect(detector.getOverlapped(items[5])).toEqual({dx: -20, dy: -2, dxMax: -20, dyMax: -2})
+    expect(detector.getOverlapped(items[6])).toEqual({dx: -2, dy: 20, dxMax: -2, dyMax: 20})
+    expect(detector.getOverlapped(items[7])).toEqual({dx: 20, dy: -2, dxMax: 20, dyMax: -2})
+    expect(detector.getOverlapped(items[8])).toEqual({dx: 4, dy: 2, dxMax: -16, dyMax: -18})
+    expect(detector.getOverlapped(items[9])).toEqual({dx: -4, dy: 2, dxMax: 16, dyMax: -18})
+    expect(detector.getOverlapped(items[10])).toEqual({dx: 2, dy: -4, dxMax: -18, dyMax: 16})
+    expect(detector.getOverlapped(items[11])).toEqual({dx: -4, dy: -2, dxMax: 16, dyMax: 18})
+    expect(detector.getOverlapped(items[12])).toEqual({dx: 0, dy: -5, dxMax: 54, dyMax: -5})
+    expect(detector.getOverlapped(items[13])).toEqual({dx: 4, dy: 2, dxMax: 4, dyMax: -18})
+  })
+})
+
 describe('solveOverlapped', () => {
   it('Should return the overlapping amount', () => {
     expect(detector.solveOverlapped(items[0])).toEqual({dx: 2, dy: 0})
