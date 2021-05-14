@@ -8,7 +8,8 @@
   },
   "dependencies": {
     "@piyoppi/pico2map-ui-components": "0.0.27",
-    "@piyoppi/pico2map-tiled": "0.0.27"
+    "@piyoppi/pico2map-tiled": "0.0.27",
+    "@piyoppi/pico2map-tiled-colision-detector": "0.0.27"
   },
   "devDependencies": {
     "typescript": "^4.1.3",

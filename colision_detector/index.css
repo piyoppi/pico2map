@@ -1,0 +1,20 @@
+.map-boundary {
+  display: flex;
+  max-width: 100%;
+}
+
+.map {
+  position: relative;
+}
+
+#coliderCanvas {
+  position: absolute;
+  top: 0;
+}
+
+#character {
+  background-color: orange;
+  width: 24px;
+  height: 24px;
+  position: absolute;
+}
