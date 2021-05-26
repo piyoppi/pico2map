@@ -14,16 +14,62 @@ beforeEach(() => {
 
 const tiledMap = new TiledMap(30, 30, 32, 32)
 
+describe('rendererable', () => {
+  it('Should return true when projectId and canvas is given', () => {
+    const project = Projects.add(tiledMap)
+    const coliderCanvas = new ColiderCanvas()
+    coliderCanvas.setCanvas(createMockedCanvas() as any, createMockedCanvas() as any)
+    coliderCanvas.setProject(project)
+
+    expect(coliderCanvas.renderable).toEqual(true)
+  })
+
+  it('Should return false when projectId is not given', () => {
+    const coliderCanvas = new ColiderCanvas()
+    coliderCanvas.setCanvas(createMockedCanvas() as any, createMockedCanvas() as any)
+
+    expect(coliderCanvas.renderable).toEqual(false)
+  })
+
+  it('Should return false when canvas is not given', () => {
+    const project = Projects.add(tiledMap)
+    const coliderCanvas = new ColiderCanvas()
+    coliderCanvas.setProject(project)
+
+    expect(coliderCanvas.renderable).toEqual(false)
+  })
+})
+
 describe('#setProject', () => {
   it('Should call renderAll function', () => {
     const project = Projects.add(tiledMap)
     const coliderCanvas = new ColiderCanvas()
     coliderCanvas.setCanvas(createMockedCanvas() as any, createMockedCanvas() as any)
-
     coliderCanvas.setProject(project)
 
     const mockedRendererInstance = mocked(ColiderRenderer).mock.instances[0]
-    expect(mockedRendererInstance.renderAll).toBeCalled()
+    expect(mockedRendererInstance.renderAll).toBeCalledTimes(1)
+  })
+
+  it('Should not call renderAll function when the canvas is not given.', () => {
+    const project = Projects.add(tiledMap)
+    const coliderCanvas = new ColiderCanvas()
+    coliderCanvas.setProject(project)
+
+    const mockedRendererInstance = mocked(ColiderRenderer).mock.instances[0]
+    expect(mockedRendererInstance.renderAll).not.toBeCalled()
+  })
+})
+
+describe('setCanvas', () => {
+  it('Should call renderAll function when projectId is already set.', () => {
+    const project = Projects.add(tiledMap)
+    const coliderCanvas = new ColiderCanvas()
+    coliderCanvas.setProject(project)
+    coliderCanvas.setCanvas(createMockedCanvas() as any, createMockedCanvas() as any)
+
+    const mockedRendererInstance = mocked(ColiderRenderer).mock.instances[0]
+    expect(mockedRendererInstance.renderAll).toBeCalledTimes(1)
   })
 })
 
