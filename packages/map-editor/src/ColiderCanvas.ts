@@ -81,6 +81,10 @@ export class ColiderCanvas implements EditorCanvas {
     this._coliderCtx = canvas.getContext('2d') as CanvasRenderingContext2D
     this._secondaryCanvasCtx = secondaryCanvas.getContext('2d') as CanvasRenderingContext2D
     this._secondaryCanvas = secondaryCanvas
+
+    if (this._coliderRenderer) {
+      this.coliderRenderer.renderAll(this._coliderCtx)
+    }
   }
 
   setBrush(brush: Brush<ColiderTypes>) {
