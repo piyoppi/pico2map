@@ -63,16 +63,20 @@ export class ColiderCanvas implements EditorCanvas {
     return this._isMouseDown
   }
 
+  get renderable() {
+    return !!this._coliderCtx && !!this._coliderRenderer
+  }
+
   setProject(project: Project) {
     this._project = project
     this._coliderRenderer = new ColiderRenderer(this._project.tiledMap)
 
     this._project.registerRenderAllCallback(() => {
-      if (!this._coliderCtx) return
+      if (!this.renderable || !this._coliderCtx) return
       this.coliderRenderer.renderAll(this._coliderCtx)
     })
 
-    if (this._coliderCtx) {
+    if (this.renderable && this._coliderCtx) {
       this.coliderRenderer.renderAll(this._coliderCtx)
     }
   }
@@ -81,6 +85,10 @@ export class ColiderCanvas implements EditorCanvas {
     this._coliderCtx = canvas.getContext('2d') as CanvasRenderingContext2D
     this._secondaryCanvasCtx = secondaryCanvas.getContext('2d') as CanvasRenderingContext2D
     this._secondaryCanvas = secondaryCanvas
+
+    if (this.renderable) {
+      this.coliderRenderer.renderAll(this._coliderCtx)
+    }
   }
 
   setBrush(brush: Brush<ColiderTypes>) {

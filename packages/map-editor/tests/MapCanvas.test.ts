@@ -69,9 +69,45 @@ describe('#setProject', () => {
     const mapCanvas = new MapCanvas()
     mapCanvas.renderAll = jest.fn()
 
+    mapCanvas.setCanvases([mockedCanvas, mockedCanvasLayer1] as any, mockedSecondaryCanvas as any)
     await mapCanvas.setProject(project)
 
-    expect(mapCanvas.renderAll).toBeCalled()
+    expect(mapCanvas.renderAll).toBeCalledTimes(1)
+  })
+
+  it('Should not call renderAll function when canvases are not set', async () => {
+    const tiledMap = new TiledMap(30, 30, 32, 32)
+    const project = Projects.add(tiledMap)
+    const mapCanvas = new MapCanvas()
+    mapCanvas.renderAll = jest.fn()
+
+    await mapCanvas.setProject(project)
+
+    expect(mapCanvas.renderAll).not.toBeCalledTimes(1)
+  })
+})
+
+describe('#setCanvases', () => {
+  it('Should call rendering function when projectId is already set.', async () => {
+    const tiledMap = new TiledMap(30, 30, 32, 32)
+    const project = Projects.add(tiledMap)
+    const mapCanvas = new MapCanvas()
+    mapCanvas.renderAll = jest.fn()
+
+    await mapCanvas.setProject(project)
+    mapCanvas.setCanvases([mockedCanvas, mockedCanvasLayer1] as any, mockedSecondaryCanvas as any)
+
+    expect(mapCanvas.renderAll).toBeCalledTimes(1)
+  })
+
+  it('Should not call rendering function when projectId is not given.', async () => {
+    const tiledMap = new TiledMap(30, 30, 32, 32)
+    const mapCanvas = new MapCanvas()
+    mapCanvas.renderAll = jest.fn()
+
+    mapCanvas.setCanvases([mockedCanvas, mockedCanvasLayer1] as any, mockedSecondaryCanvas as any)
+
+    expect(mapCanvas.renderAll).not.toBeCalled()
   })
 })
 
@@ -85,6 +121,8 @@ describe('#renderAll', () => {
     mapCanvas.renderer.renderLayer = jest.fn()
     mapCanvas.setCanvases([mockedCanvas, mockedCanvasLayer1] as any, mockedSecondaryCanvas as any)
 
+    // Reset renderLayer mock because renderAll is invoked by `mapCanvas.setCanvases`
+    mapCanvas.renderer.renderLayer = jest.fn()
     mapCanvas.renderAll()
 
     expect(mapCanvas.renderer.renderLayer).toBeCalledTimes(2)
@@ -96,6 +134,7 @@ describe('#putChip', () => {
     const tiledMap = new TiledMap(30, 30, 32, 32)
     const project = Projects.add(tiledMap)
     const mapCanvas = new MapCanvas()
+    mapCanvas.renderAll = jest.fn()
     mapCanvas.setProject(project)
 
     mapCanvas.setCanvases([mockedCanvas] as any, mockedSecondaryCanvas as any)
@@ -113,6 +152,7 @@ describe('#putChip', () => {
     tiledMap.addLayer()
     const project = Projects.add(tiledMap)
     const mapCanvas = new MapCanvas()
+    mapCanvas.renderAll = jest.fn()
     mapCanvas.setProject(project)
 
     mapCanvas.setCanvases([mockedCanvas, mockedCanvasLayer1] as any, mockedSecondaryCanvas as any)
@@ -132,6 +172,7 @@ describe('#mouseDown', () => {
     const tiledMap = new TiledMap(30, 30, 32, 32)
     const project = Projects.add(tiledMap)
     const mapCanvas = new MapCanvas()
+    mapCanvas.renderAll = jest.fn()
     mapCanvas.setProject(project)
     mapCanvas.setArrangement(new EmptyArrangement())
 

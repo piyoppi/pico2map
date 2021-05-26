@@ -53,6 +53,10 @@ export class MapCanvas implements EditorCanvas {
     return this._isMouseDown
   }
 
+  get renderable() {
+    return this._canvasContexts.length > 0 && !!this._renderer
+  }
+
   hasActiveAutoTile() {
     return !!this._selectedAutoTile
   }
@@ -64,11 +68,14 @@ export class MapCanvas implements EditorCanvas {
     this._project.registerRenderAllCallback(() => this.renderAll())
 
     await this._project.tiledMap.mapChipsCollection.waitWhileLoading()
-    this.renderAll()
+
+    if (this.renderable) {
+      this.renderAll()
+    }
   }
 
   renderAll() {
-    if (!this._renderer) return
+    if (!this.renderable) return
     const renderer = this.renderer
     this._canvasContexts.forEach((ctx, index) => renderer.renderLayer(index, ctx))
   }
@@ -78,6 +85,10 @@ export class MapCanvas implements EditorCanvas {
     this._canvasContexts = this._canvases.map(canvas => canvas.getContext('2d') as CanvasRenderingContext2D)
     this.secondaryCanvas = secondaryCanvas
     this._secondaryCanvasCtx = this.secondaryCanvas.getContext('2d') as CanvasRenderingContext2D
+
+    if (this.renderable) {
+      this.renderAll()
+    }
   }
 
   addCanvas(canvas: HTMLCanvasElement) {
