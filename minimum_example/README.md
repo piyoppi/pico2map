@@ -15,7 +15,7 @@ The `mapChipFragmentProperties` attribute must be set on the `<map-canvas-compon
   chipId: MapChipImage id
 -->
 <map-canvas-component
-  mapChipFragmentProperties='{"x": 0, "y": 3, "chipId": 1, "renderingArea": 15}'
+  mapChipFragmentProperties='[{"x": 0, "y": 3, "chipId": 1, "renderingArea": 15}]'
   projectId="1"
 ></map-canvas-component>
 
