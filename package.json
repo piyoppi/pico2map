@@ -6,6 +6,9 @@
   "workspaces": [
     "packages/*"
   ],
+  "scripts": {
+    "build": "(cd packages/tiled-colision-detector && npm run build) && (cd packages/tiled-map && npm run build) && (cd packages/map-editor && npm run build) && (cd packages/map-editor-components && npm run build) && (cd packages/map-editor-examples && npm run build)"
+  },
   "author": "piyoppi",
   "license": "MIT"
 }
