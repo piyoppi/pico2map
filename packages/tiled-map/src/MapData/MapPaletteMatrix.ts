@@ -2,16 +2,16 @@ import { transferEach } from './TransferEach'
 import { MapMatrix } from './MapMatrix'
 import { MapChipComparable } from '../MapChip'
 
-type MapPaletteMatrixItem = MapChipComparable | null
+type MapPaletteMatrixItem<T> = (T & MapChipComparable) | null
 
-export class MapPaletteMatrix {
+export class MapPaletteMatrix<T> {
   private _paletteIndexes: Map<string, number> = new Map()
 
   constructor(
     chipCountX: number,
     chipCountY: number,
-    items: Array<MapPaletteMatrixItem> = [],
-    private _palette: Array<MapPaletteMatrixItem> = [],
+    items: Array<MapPaletteMatrixItem<T>> = [],
+    private _palette: Array<MapPaletteMatrixItem<T>> = [],
     private _values = new MapMatrix<number>(chipCountX, chipCountY, new Array(chipCountY * chipCountX).fill(-1))
   ) {
     if (items.length > 0) {
@@ -31,7 +31,7 @@ export class MapPaletteMatrix {
     return this._values.height
   }
 
-  get items() {
+  get items(): Array<T | null> {
     return this._values.items.map(value => value >= 0 ? this._palette[value] : null)
   }
 
@@ -43,20 +43,20 @@ export class MapPaletteMatrix {
     return this._values
   }
 
-  set(items: Array<MapPaletteMatrixItem>) {
+  set(items: Array<MapPaletteMatrixItem<T>>) {
     if (items.length !== this._values.items.length) throw new Error()
 
     this._values.set(items.map(value => this._getPaletteIndexFromValue(value)))
   }
 
-  setValuePalette(values: Array<number>, palette: Array<MapPaletteMatrixItem>) {
+  setValuePalette(values: Array<number>, palette: Array<MapPaletteMatrixItem<T>>) {
     if (values.length !== this._values.items.length) throw new Error()
 
     this._values.set(values)
     this._palette = palette
   }
 
-  transferFromTiledMapData(src: MapPaletteMatrix, srcX: number, srcY: number, width: number, height: number, destX: number, destY: number) {
+  transferFromTiledMapData(src: MapPaletteMatrix<T>, srcX: number, srcY: number, width: number, height: number, destX: number, destY: number) {
     transferEach(
       srcX, srcY, width, height, destX, destY,
       src.width, src.height, this.width, this.height,
@@ -67,17 +67,17 @@ export class MapPaletteMatrix {
     )
   }
 
-  resize(chipCountX: number, chipCountY: number, emptyValue: MapPaletteMatrixItem) {
+  resize(chipCountX: number, chipCountY: number, emptyValue: MapPaletteMatrixItem<T>) {
     this._values.resize(chipCountX, chipCountY, this._getPaletteIndexFromValue(emptyValue))
   }
 
-  getFromChipPosition(x: number, y: number): MapPaletteMatrixItem {
+  getFromChipPosition(x: number, y: number): MapPaletteMatrixItem<T> {
     const paletteIndex = this._values.getFromChipPosition(x, y)
 
     return paletteIndex >= 0 ? this._palette[paletteIndex] : null
   }
 
-  put(item: MapPaletteMatrixItem, x: number, y: number) {
+  put(item: MapPaletteMatrixItem<T>, x: number, y: number) {
     this._values.put(this._getPaletteIndexFromValue(item), x, y)
   }
 
@@ -88,7 +88,7 @@ export class MapPaletteMatrix {
     return cloned
   }
 
-  private _getPaletteIndexFromValue(value: MapPaletteMatrixItem): number {
+  private _getPaletteIndexFromValue(value: MapPaletteMatrixItem<T>): number {
     if (value === null) return -1
 
     const index = this._paletteIndexes.get(value.identifyKey)
