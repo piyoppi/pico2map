@@ -6,7 +6,8 @@ export type TiledMapDataItem = MapChip | null
 export type TiledMapDataProperties = {
   chipCountX: number,
   chipCountY: number,
-  mapData: Array<MapChipProperties | AutoTileMapChipProperties | null>
+  values: Array<number>
+  palette: Array<MapChipProperties | AutoTileMapChipProperties | null>
 }
 
 export class TiledMapData extends MapPaletteMatrix<TiledMapDataItem> {
@@ -23,12 +24,13 @@ export class TiledMapData extends MapPaletteMatrix<TiledMapDataItem> {
     return {
       chipCountX: this.width,
       chipCountY: this.height,
-      mapData: this.items.map(data => data ? (data as MapChip).toObject() : null)
+      values: this.values.items,
+      palette: this.palette.map(data => data ? (data as MapChip).toObject() : null)
     }
   }
 
   static fromObject(val: TiledMapDataProperties) {
-    const mapData = val.mapData.map(data => {
+    const palette = val.palette.map(data => {
       if (!data) return null
 
       if (isAutoTileMapChipProperties(data)) {
@@ -36,9 +38,11 @@ export class TiledMapData extends MapPaletteMatrix<TiledMapDataItem> {
       }
 
       return MapChip.fromObject(data)
-
     })
 
-    return new TiledMapData(val.chipCountX, val.chipCountY, mapData)
+    const tiledMapData = new TiledMapData(val.chipCountX, val.chipCountY, [])
+    tiledMapData.setValuePalette(val.values, palette)
+
+    return tiledMapData
   }
 }

@@ -6,14 +6,16 @@ type MapPaletteMatrixItem<T> = (T & MapChipComparable) | null
 
 export class MapPaletteMatrix<T> {
   private _paletteIndexes: Map<string, number> = new Map()
+  private _values = new MapMatrix<number>(0, 0, [])
+  private _palette: Array<MapPaletteMatrixItem<T>> = []
 
   constructor(
     chipCountX: number,
     chipCountY: number,
     items: Array<MapPaletteMatrixItem<T>> = [],
-    private _palette: Array<MapPaletteMatrixItem<T>> = [],
-    private _values = new MapMatrix<number>(chipCountX, chipCountY, new Array(chipCountY * chipCountX).fill(-1))
   ) {
+    this._values = new MapMatrix<number>(chipCountX, chipCountY, new Array(chipCountY * chipCountX).fill(-1))
+
     if (items.length > 0) {
       this.set(items)
     }
