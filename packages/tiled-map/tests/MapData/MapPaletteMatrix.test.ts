@@ -155,3 +155,99 @@ describe('#getFromChipPosition', () => {
     expect(data.getFromChipPosition(1, 2)).toEqual(c[0])
   })
 })
+
+describe('#clone', () => {
+  it('Should return a cloned value', () => {
+    const source = [
+      c[1], c[0], c[2],
+      c[2], c[2], c[1],
+      c[1], null, c[1],
+    ]
+    const data = new MapPaletteMatrix(3, 3, source)
+
+    const cloned = data.clone()
+    expect(data).not.toEqual(cloned)
+    expect(data.width).toEqual(cloned.width)
+    expect(data.height).toEqual(cloned.height)
+    expect(data.values.items).toEqual(cloned.values.items)
+    expect(data.palette).toEqual(cloned.palette)
+  })
+})
+
+describe('#setValuePalette', () => {
+  it('Should set values and the palette', () => {
+    const data = new MapPaletteMatrix(3, 3)
+    data.setValuePalette(
+      [
+        0,  1, 2,
+        2,  2, 0,
+        0, -1, 0
+      ],
+      [c[1], c[0], c[2]]
+    )
+
+    expect(data.values.items).toEqual([
+      0,  1, 2,
+      2,  2, 0,
+      0, -1, 0
+    ])
+    expect(data.palette).toEqual([c[1], c[0], c[2]])
+  })
+})
+
+describe('#set', () => {
+  it('Should set values and a palette using source values', () => {
+    const data = new MapPaletteMatrix(3, 3)
+    const source = [
+      c[1], c[0], c[2],
+      c[2], c[2], c[1],
+      c[1], null, c[1],
+    ]
+    data.set(source)
+
+    expect(data.values.items).toEqual([
+      0,  1, 2,
+      2,  2, 0,
+      0, -1, 0
+    ])
+    expect(data.palette).toEqual([c[1], c[0], c[2]])
+  })
+})
+
+describe('.items', () => {
+  it('Should return generated values using palette and values', () => {
+    const data = new MapPaletteMatrix(3, 3)
+    data.setValuePalette(
+      [
+        0,  1, 2,
+        2,  2, 0,
+        0, -1, 0
+      ],
+      [c[1], c[0], c[2]]
+    )
+
+    expect(data.items).toEqual([
+      c[1], c[0], c[2],
+      c[2], c[2], c[1],
+      c[1], null, c[1],
+    ])
+  })
+})
+
+describe('palette and values', () => {
+  it('Should set palette and values', () => {
+    const source = [
+      c[1], c[0], c[2],
+      c[2], c[2], c[1],
+      c[1], null, c[1],
+    ]
+    const data = new MapPaletteMatrix(3, 3, source)
+
+    expect(data.values.items).toEqual([
+      0,  1, 2,
+      2,  2, 0,
+      0, -1, 0
+    ])
+    expect(data.palette).toEqual([c[1], c[0], c[2]])
+  })
+})
