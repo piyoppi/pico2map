@@ -1,17 +1,18 @@
 import { MapChip, MapChipProperties,  AutoTileMapChipProperties, isAutoTileMapChipProperties, AutoTileMapChip } from './../MapChip'
-import { MapMatrix } from './MapMatrix'
+import { MapPaletteMatrix } from './MapPaletteMatrix'
 
 export type TiledMapDataItem = MapChip | null
 
 export type TiledMapDataProperties = {
   chipCountX: number,
   chipCountY: number,
-  mapData: Array<MapChipProperties | AutoTileMapChipProperties | null>
+  values: Array<number>
+  palette: Array<MapChipProperties | AutoTileMapChipProperties | null>
 }
 
-export class TiledMapData extends MapMatrix<TiledMapDataItem> {
+export class TiledMapData extends MapPaletteMatrix<TiledMapDataItem> {
   filter(needles: Array<MapChip>): TiledMapData {
-    const filtered = this._items.map(chip => needles.some(needle => !!chip && needle.compare(chip)) ? chip : null)
+    const filtered = this.items.map(chip => needles.some(needle => !!chip && needle.compare(chip)) ? chip : null)
     return new TiledMapData(
       this.width,
       this.height,
@@ -21,14 +22,15 @@ export class TiledMapData extends MapMatrix<TiledMapDataItem> {
 
   toObject(): TiledMapDataProperties {
     return {
-      chipCountX: this._chipCountX,
-      chipCountY: this._chipCountY,
-      mapData: this._items.map(data => data?.toObject() || null)
+      chipCountX: this.width,
+      chipCountY: this.height,
+      values: this.values.items,
+      palette: this.palette.map(data => data ? (data as MapChip).toObject() : null)
     }
   }
 
   static fromObject(val: TiledMapDataProperties) {
-    const mapData = val.mapData.map(data => {
+    const palette = val.palette.map(data => {
       if (!data) return null
 
       if (isAutoTileMapChipProperties(data)) {
@@ -36,9 +38,11 @@ export class TiledMapData extends MapMatrix<TiledMapDataItem> {
       }
 
       return MapChip.fromObject(data)
-
     })
 
-    return new TiledMapData(val.chipCountX, val.chipCountY, mapData)
+    const tiledMapData = new TiledMapData(val.chipCountX, val.chipCountY, [])
+    tiledMapData.setValuePalette(val.values, palette)
+
+    return tiledMapData
   }
 }

@@ -1,14 +1,22 @@
+import { transferEach } from './TransferEach'
+
 export class MapMatrix<T> {
+  protected _items: Array<T> = []
+
   constructor(
     protected _chipCountX: number,
     protected _chipCountY: number,
-    protected _items: Array<T> = []
+    items: Array<T> = []
   ) {
-    if (this._items.length > 0 && this.size !== this._items.length) {
+    if (items.length > 0 && this.size !== items.length) {
       throw new Error()
     }
 
-    if (this._items.length === 0) this.allocate()
+    if (items.length === 0) {
+      this.allocate()
+    } else {
+      this._items = items
+    }
   }
 
   get size() {
@@ -34,30 +42,14 @@ export class MapMatrix<T> {
   }
 
   transferFromTiledMapData(src: MapMatrix<T>, srcX: number, srcY: number, width: number, height: number, destX: number, destY: number) {
-    for(let x = 0; x < width; x++) {
-      const putX = destX + x
-      const pickupX = srcX + x
-      if (putX < 0 || putX >= this.width) continue;
-      if (pickupX < 0 || pickupX >= src.width) continue;
-
-      for(let y = 0; y < height; y++) {
-        const putY = destY + y
-        const pickupY = srcY + y
-        if (putY < 0 || putY >= this.height) continue;
-        if (pickupY < 0 || pickupY >= src.height) continue;
-
+    transferEach(
+      srcX, srcY, width, height, destX, destY,
+      src.width, src.height, this.width, this.height,
+      (pickupX, pickupY, putX, putY) => {
         const item = src.getFromChipPosition(pickupX, pickupY)
-
         this.put(item, putX, putY)
       }
-    }
-  }
-
-  getFromChipPosition(x: number, y: number): T {
-    if ((x < 0)  || (y < 0) || (x >= this._chipCountX) || (y >= this._chipCountY)) throw new Error('The position is out of range.')
-
-    const mapNumber = this.convertPositionToMapNumber(x, y)
-    return this._items[mapNumber]
+    )
   }
 
   resize(chipCountX: number, chipCountY: number, emptyValue: T) {
@@ -71,20 +63,31 @@ export class MapMatrix<T> {
     this.transferFromTiledMapData(src, 0, 0, src.width, src.height, 0, 0)
   }
 
+  getFromChipPosition(x: number, y: number): T {
+    if (this.isOutOfRange(x, y)) throw new Error('The position is out of range.')
+
+    const mapNumber = this.convertPositionToMapNumber(x, y)
+    return this._items[mapNumber]
+  }
+
   put(item: T, x: number, y: number) {
     const mapNumber = this.convertPositionToMapNumber(x, y)
     this._items[mapNumber] = item 
+  }
+
+  clone() {
+    return new MapMatrix<T>(this._chipCountX, this._chipCountY, this._items)
   }
 
   convertPositionToMapNumber(x: number, y: number) {
     return y * this._chipCountX + x
   }
 
-  protected allocate(defaultValue: T | null = null) {
-    this._items = new Array(this._chipCountY * this._chipCountX).fill(defaultValue)
+  protected isOutOfRange(x: number, y: number): boolean {
+    return (x < 0)  || (y < 0) || (x >= this._chipCountX) || (y >= this._chipCountY)
   }
 
-  clone() {
-    return new MapMatrix<T>(this._chipCountX, this._chipCountY, this._items)
+  protected allocate(defaultValue: T | null = null) {
+    this._items = new Array(this._chipCountY * this._chipCountX).fill(defaultValue)
   }
 }
