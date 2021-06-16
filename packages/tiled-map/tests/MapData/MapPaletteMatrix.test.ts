@@ -5,6 +5,8 @@ const c = [
   new MapChip([new MapChipFragment(0, 0, 0)]),
   new MapChip([new MapChipFragment(1, 0, 0)]),
   new MapChip([new MapChipFragment(2, 0, 0)]),
+  new MapChip([new MapChipFragment(3, 0, 0)]),
+  new MapChip([new MapChipFragment(4, 0, 0)]),
 ]
 
 describe('resize', () => {
@@ -249,5 +251,28 @@ describe('palette and values', () => {
       0, -1, 0
     ])
     expect(data.palette).toEqual([c[1], c[0], c[2]])
+  })
+})
+
+describe('#rebuild', () => {
+  it('Should rebuild a palette and values', () => {
+    const data = new MapPaletteMatrix(3, 3)
+    data.setValuePalette(
+      [
+        1,  2, 4,
+        4,  4, 1,
+        1, -1, 1
+      ],
+      [c[0], c[1], c[2], c[3], c[4]]
+    )
+
+    data.rebuild()
+
+    expect(data.values.items).toEqual([
+      0,  1, 2,
+      2,  2, 0,
+      0, -1, 0
+    ])
+    expect(data.palette).toEqual([c[1], c[2], c[4]])
   })
 })

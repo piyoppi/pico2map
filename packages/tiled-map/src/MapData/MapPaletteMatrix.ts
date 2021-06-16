@@ -33,7 +33,7 @@ export class MapPaletteMatrix<T> {
     return this._values.height
   }
 
-  get items(): Array<T | null> {
+  get items(): Array<MapPaletteMatrixItem<T>> {
     return this._values.items.map(value => value >= 0 ? this._palette[value] : null)
   }
 
@@ -88,6 +88,13 @@ export class MapPaletteMatrix<T> {
     cloned.setValuePalette(this._values.items, this._palette)
 
     return cloned
+  }
+
+  rebuild() {
+    const items = this.items
+    this._palette = []
+    this._paletteIndexes.clear()
+    this.set(items)
   }
 
   private _getPaletteIndexFromValue(value: MapPaletteMatrixItem<T>): number {
