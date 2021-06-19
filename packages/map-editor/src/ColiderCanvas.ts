@@ -101,6 +101,10 @@ export class ColiderCanvas implements EditorCanvas {
     this._setupBrush()
   }
 
+  setArrangement(value: Arrangement<ColiderTypes>) {
+    this._arrangement = value
+  }
+
   setBrushFromName(brushName: string) {
     const registeredBrush = Brushes.find(registeredBrush => registeredBrush.name === brushName)
 
