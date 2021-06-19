@@ -74,6 +74,17 @@ export class ColiderMarkerComponent extends LitElement {
     this._coliderCanvas.setColiderType(value)
   }
 
+  @property({type: Number})
+  get subColiderType() {
+    return this._coliderCanvas.selectedSubColiderType
+  }
+  set subColiderType(value: ColiderTypes) {
+    const oldValue = value
+    this.requestUpdate('subColiderType', oldValue);
+
+    this._coliderCanvas.setSubColiderType(value)
+  }
+
   private get width() {
     return this.xCount * this.gridWidth
   }
@@ -141,7 +152,7 @@ export class ColiderMarkerComponent extends LitElement {
 
   mouseDown(e: MouseEvent) {
     const mouseCursorPosition = this._cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY)
-    this._coliderCanvas.mouseDown(mouseCursorPosition.x, mouseCursorPosition.y)
+    this._coliderCanvas.mouseDown(mouseCursorPosition.x, mouseCursorPosition.y, e.button === 2)
 
     this._documentMouseMoveEventCallee = e => this.mouseMove(e)
     this._documentMouseUpEventCallee = e => this.mouseUp(e)
