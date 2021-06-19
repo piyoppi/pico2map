@@ -23,6 +23,7 @@ export class ColiderMarkerComponent extends LitElement {
 
   @property({type: Number}) cursorChipX = 0
   @property({type: Number}) cursorChipY = 0
+  @property({type: Boolean}) preventDefaultContextMenu = true
 
   @property({type: String})
   get gridColor(): string {
@@ -216,6 +217,7 @@ export class ColiderMarkerComponent extends LitElement {
           class="grid-image grid"
           @mousedown="${(e: MouseEvent) => this.mouseDown(e)}"
           @mousemove="${(e: MouseEvent) => !this._coliderCanvas.isMouseDown ? this.mouseMove(e) : null}"
+          @contextmenu="${(e: MouseEvent) => this.preventDefaultContextMenu && e.preventDefault()}"
         ></div>
         <div class="cursor"></div>
       </div>
