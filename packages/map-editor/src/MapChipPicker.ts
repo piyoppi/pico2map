@@ -8,6 +8,11 @@ export class MapChipPicker {
   }
 
   pick(x: number, y: number): TiledMapDataItem {
-    return this._tiledMap.datas.reverse().reduce((acc: TiledMapDataItem, data) =>  acc ||= data.getFromChipPosition(x, y), null)
+    return this._tiledMap.datas.reduce((acc: TiledMapDataItem, data) => {
+      const chip = data.getFromChipPosition(x, y)
+      if (chip) return chip
+
+      return acc
+    }, null)
   }
 }
