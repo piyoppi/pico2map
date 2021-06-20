@@ -19,6 +19,7 @@ export class ColiderCanvas implements EditorCanvas {
   private _isMouseDown = false
   private _lastMapChipPosition = {x: -1, y: -1}
   private _selectedColiderType: ColiderTypes = 0
+  private _selectedSubColiderType: ColiderTypes = 0
 
   constructor() {
     this._brush = new Pen()
@@ -27,6 +28,10 @@ export class ColiderCanvas implements EditorCanvas {
 
   get selectedColiderType() {
     return this._selectedColiderType
+  }
+
+  get selectedSubColiderType() {
+    return this._selectedSubColiderType
   }
 
   get project() {
@@ -96,6 +101,10 @@ export class ColiderCanvas implements EditorCanvas {
     this._setupBrush()
   }
 
+  setArrangement(value: Arrangement<ColiderTypes>) {
+    this._arrangement = value
+  }
+
   setBrushFromName(brushName: string) {
     const registeredBrush = Brushes.find(registeredBrush => registeredBrush.name === brushName)
 
@@ -108,19 +117,24 @@ export class ColiderCanvas implements EditorCanvas {
 
   setColiderType(value: ColiderTypes) {
     this._selectedColiderType = value
-    this._setupBrush()
   }
 
-  private _setupBrush() {
+  setSubColiderType(value: ColiderTypes) {
+    this._selectedSubColiderType = value
+  }
+
+  private _setupBrush(isSubButton: boolean = false) {
     this._brush.setArrangement(this._arrangement)
 
     if (isColiderTypesRequired(this._arrangement)) {
-      this._arrangement.setColiderTypes(this._selectedColiderType)
+      this._arrangement.setColiderTypes(isSubButton ? this._selectedSubColiderType : this._selectedColiderType)
     }
   }
 
-  mouseDown(x: number, y: number) {
+  mouseDown(x: number, y: number, isSubButton: boolean = false) {
     this._isMouseDown = true
+
+    this._setupBrush(isSubButton)
 
     const chipPosition = this.convertFromCursorPositionToChipPosition(x, y)
     this._brush.mouseDown(chipPosition.x, chipPosition.y)

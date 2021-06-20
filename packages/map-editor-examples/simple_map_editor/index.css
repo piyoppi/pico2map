@@ -17,4 +17,9 @@
 #coliderCanvas {
   position: absolute;
   top: 0;
+  user-select: none;
+}
+
+#mapCanvas {
+  user-select: none;
 }

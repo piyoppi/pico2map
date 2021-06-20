@@ -97,8 +97,14 @@ async function initialize() {
   })
 
   // Set an active colider type
-  coliderTypeNoneRadioButton.addEventListener('change', () => coliderCanvas?.setAttribute('coliderType', '0'))
-  coliderTypeColiderRadioButton.addEventListener('change', () => coliderCanvas?.setAttribute('coliderType', '1'))
+  coliderTypeNoneRadioButton.addEventListener('change', () => {
+    coliderCanvas?.setAttribute('coliderType', '0')
+    coliderCanvas?.setAttribute('subColiderType', '1')
+  })
+  coliderTypeColiderRadioButton.addEventListener('change', () => {
+    coliderCanvas?.setAttribute('coliderType', '1')
+    coliderCanvas?.setAttribute('subColiderType', '0')
+  })
 
   autoTileSelector.addEventListener<any>('autotile-selected', (e: AutoTileSelectedEvent) => {
     // Set a AutoTileArrangement.
