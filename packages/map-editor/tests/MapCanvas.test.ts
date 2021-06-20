@@ -3,6 +3,7 @@ import { MapCanvas } from './../src/MapCanvas'
 import { TiledMap } from '@piyoppi/pico2map-tiled'
 import { EmptyBrush } from './TestHelpers/EmptyBrush'
 import { EmptyArrangement } from './TestHelpers/EmptyArrangement'
+import { MapChipFragment, MapChip, AutoTile, AutoTileMapChip } from '@piyoppi/pico2map-tiled'
 
 let mockedCanvas = {}
 let mockedCanvasLayer1 = {}
@@ -168,10 +169,26 @@ describe('#putChip', () => {
 })
 
 describe('#mouseDown', () => {
-  it('Should painted', () => {
-    const tiledMap = new TiledMap(30, 30, 32, 32)
+  const c1Fragments = [new MapChipFragment(1, 0, 0)]
+  const c1 = new MapChip(c1Fragments)
+  const autoTileFragments = [new MapChipFragment(2, 0, 0)]
+  const autoTileMapChip = new AutoTileMapChip(1, autoTileFragments, '')
+  const autoTile = new AutoTile(autoTileFragments, 1)
+  const pickedEventHandler = jest.fn()
+
+  beforeEach(() => {
+    pickedEventHandler.mockClear()
+  })
+
+  function mapCanvasFactory() {
+    const tiledMap = new TiledMap(3, 3, 32, 32)
+    tiledMap.autoTiles.push(autoTile)
+    tiledMap.put(c1, 0, 0, 0)
+    tiledMap.put(autoTileMapChip, 2, 0, 0)
+
     const project = Projects.add(tiledMap)
     const mapCanvas = new MapCanvas()
+    mapCanvas.setPickedCallback(pickedEventHandler)
     mapCanvas.renderAll = jest.fn()
     mapCanvas.setProject(project)
     mapCanvas.setArrangement(new EmptyArrangement())
@@ -181,10 +198,50 @@ describe('#mouseDown', () => {
     brush.mouseMove = jest.fn().mockReturnValue([])
     mapCanvas.setBrush(brush)
 
+    return {mapCanvas, brush}
+  }
+
+  it('Should painted', () => {
+    const {mapCanvas, brush} = mapCanvasFactory()
+
     mapCanvas.mouseDown(40, 70)
 
     expect(mapCanvas.isMouseDown).toEqual(true)
     expect(brush.mouseDown).toBeCalledWith(1, 2)
     expect(brush.mouseMove).toBeCalledWith(1, 2)
+  })
+
+  it('Should picked a mapchip when the cursor is over the mapchip', () => {
+    const {mapCanvas, brush} = mapCanvasFactory()
+
+    mapCanvas.mouseDown(0, 0, true)
+    expect(mapCanvas.isMouseDown).toEqual(false)
+    expect(brush.mouseDown).not.toBeCalled()
+    expect(brush.mouseMove).not.toBeCalled()
+    expect(mapCanvas.selectedMapChipFragments).toEqual(c1Fragments)
+    expect(pickedEventHandler).toBeCalledWith(c1)
+  })
+
+  it('Should picked a AutoTile when the cursor is over the AutoTile', () => {
+    const {mapCanvas, brush} = mapCanvasFactory()
+
+    mapCanvas.mouseDown(66, 0, true)
+    expect(mapCanvas.isMouseDown).toEqual(false)
+    expect(brush.mouseDown).not.toBeCalled()
+    expect(brush.mouseMove).not.toBeCalled()
+    expect(mapCanvas.selectedAutoTile).toEqual(autoTile)
+    expect(pickedEventHandler).toBeCalledWith(autoTileMapChip)
+  })
+
+  it('Should not picked when the cursor is over the empty space', () => {
+    const {mapCanvas, brush} = mapCanvasFactory()
+
+    mapCanvas.mouseDown(32, 32, true)
+    expect(mapCanvas.isMouseDown).toEqual(false)
+    expect(brush.mouseDown).not.toBeCalled()
+    expect(brush.mouseMove).not.toBeCalled()
+    expect(mapCanvas.selectedMapChipFragments).toEqual([])
+    expect(mapCanvas.selectedAutoTile).toEqual(null)
+    expect(pickedEventHandler).toBeCalledWith(null)
   })
 })
