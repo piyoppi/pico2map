@@ -1,4 +1,4 @@
-import { MapChipFragmentProperties } from '@piyoppi/pico2map-tiled'
+import { MapChipFragmentProperties, TiledMapDataItem } from '@piyoppi/pico2map-tiled'
 
 interface MapChipSelectedDetail {
   selectedMapChipProperties: MapChipFragmentProperties
@@ -17,5 +17,15 @@ interface AutoTileSelectedDetail {
 export class AutoTileSelectedEvent extends CustomEvent<AutoTileSelectedDetail> {
   constructor(detail: AutoTileSelectedDetail) {
     super('autotile-selected', { detail });
+  }
+}
+
+interface PickedMapChipDetail {
+  picked: TiledMapDataItem
+}
+
+export class PickedMapChipEvent extends CustomEvent<PickedMapChipDetail> {
+  constructor(detail: PickedMapChipDetail) {
+    super('mapchip-picked', { detail });
   }
 }
