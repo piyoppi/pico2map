@@ -21,11 +21,22 @@ export class MapCanvasComponent extends LitElement {
     super()
 
     Projects.setProjectAddCallbackFunction(() => this.setupProject())
+
+    this._mapCanvas.setPickedCallback((picked => {
+      this.dispatchEvent(
+        new CustomEvent('mapchip-picked', {
+          detail: {picked},
+          bubbles: true,
+          composed: true
+        })
+      )
+    }))
   }
 
   @property({type: Number}) cursorChipX = 0
   @property({type: Number}) cursorChipY = 0
   @property({type: Boolean}) cursorHidden = false
+  @property({type: Boolean}) preventDefaultContextMenu = true
 
   @property({type: String})
   get gridColor(): string {
@@ -250,7 +261,7 @@ export class MapCanvasComponent extends LitElement {
 
   mouseDown(e: MouseEvent) {
     const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY)
-    this._mapCanvas.mouseDown(mouseCursorPosition.x, mouseCursorPosition.y)
+    this._mapCanvas.mouseDown(mouseCursorPosition.x, mouseCursorPosition.y, e.button === 2)
 
     this._documentMouseMoveEventCallee = e => this.mouseMove(e)
     this._documentMouseUpEventCallee = e => this.mouseUp(e)
@@ -310,6 +321,7 @@ export class MapCanvasComponent extends LitElement {
           class="grid-image grid"
           @mousedown="${(e: MouseEvent) => this.mouseDown(e)}"
           @mousemove="${(e: MouseEvent) => !this._mapCanvas.isMouseDown ? this.mouseMove(e) : null}"
+          @contextmenu="${(e: MouseEvent) => this.preventDefaultContextMenu && e.preventDefault()}"
         ></div>
         ${!this.cursorHidden ? html`<div class="cursor"></div>` : null}
       </div>

@@ -10,4 +10,5 @@ export function defineComponent() {
   customElements.define('colider-marker-component', ColiderMarkerComponent)
 }
 export { Projects } from '@piyoppi/pico2map-editor'
-export { MapChipSelectedEvent, AutoTileSelectedEvent } from './Events'
+export { MapChipSelectedEvent, AutoTileSelectedEvent, PickedMapChipEvent } from './Events'
+export { PickedArrangementSelector } from './PickedArrangementSelector'

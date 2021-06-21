@@ -1,4 +1,4 @@
-import { TiledMapDataItem, MapChipFragment, MapChip, AutoTile, MapRenderer } from '@piyoppi/pico2map-tiled'
+import { TiledMapDataItem, MapChipFragment, MapChip, AutoTile, MapRenderer, isAutoTileMapChip } from '@piyoppi/pico2map-tiled'
 import { Project } from './Projects'
 import { Pen } from './Brushes/Pen'
 import { Brushes } from './Brushes/Brushes'
@@ -7,6 +7,9 @@ import { Brush } from './Brushes/Brush'
 import { Arrangement, isMapChipFragmentRequired, isTiledMapDataRequired, isAutoTileRequired, isAutoTilesRequired } from './Brushes/Arrangements/Arrangement'
 import { DefaultArrangement } from './Brushes/Arrangements/DefaultArrangement'
 import { EditorCanvas } from './EditorCanvas'
+import { MapChipPicker } from './MapChipPicker'
+
+type PickedCallbackFn = (picked: TiledMapDataItem) => void
 
 export class MapCanvas implements EditorCanvas {
   private _secondaryCanvasCtx: CanvasRenderingContext2D | null = null
@@ -22,6 +25,9 @@ export class MapCanvas implements EditorCanvas {
   private _selectedAutoTile: AutoTile | null = null
   private _selectedMapChipFragments: Array<MapChipFragment> = []
   private _activeLayerIndex: number = 0
+  private _mapChipPickerEnabled = true
+  private _mapChipPicker: MapChipPicker | null = null
+  private _pickedCallback: PickedCallbackFn | null = null
 
   constructor(
   ) {
@@ -57,6 +63,10 @@ export class MapCanvas implements EditorCanvas {
     return this._canvasContexts.length > 0 && !!this._renderer
   }
 
+  get mapChipPickerEnabled() {
+    return this._mapChipPickerEnabled
+  }
+
   hasActiveAutoTile() {
     return !!this._selectedAutoTile
   }
@@ -64,6 +74,7 @@ export class MapCanvas implements EditorCanvas {
   async setProject(project: Project) {
     this._project = project
     this._renderer = new MapRenderer(this._project.tiledMap)
+    this._mapChipPicker = new MapChipPicker(this._project.tiledMap)
 
     this._project.registerRenderAllCallback(() => this.renderAll())
 
@@ -104,6 +115,10 @@ export class MapCanvas implements EditorCanvas {
     this._selectedMapChipFragments = value
   }
 
+  setPickedCallback(callbackFn: PickedCallbackFn) {
+    this._pickedCallback = callbackFn
+  }
+
   setBrushFromName(brushName: string) {
     const registeredBrush = Brushes.find(registeredBrush => registeredBrush.name === brushName)
 
@@ -134,6 +149,10 @@ export class MapCanvas implements EditorCanvas {
     this._activeLayerIndex = index
   }
 
+  setMapChipPickerEnabled(value: boolean) {
+    this._mapChipPickerEnabled = value
+  }
+
   private _setupBrush() {
     if (!this._project || !this._arrangement) return
 
@@ -154,7 +173,15 @@ export class MapCanvas implements EditorCanvas {
     this._setupBrush()
   }
 
-  mouseDown(x: number, y: number) {
+  mouseDown(x: number, y: number, isSubButton = false) {
+    const chipPosition = this.convertFromCursorPositionToChipPosition(x, y)
+
+    if (isSubButton && this._mapChipPickerEnabled) {
+      this.pick(chipPosition.x, chipPosition.y)
+
+      return
+    }
+
     this._isMouseDown = true
 
     if (isMapChipFragmentRequired(this._arrangement) && this._selectedMapChipFragments) {
@@ -169,7 +196,6 @@ export class MapCanvas implements EditorCanvas {
       this._arrangement.setAutoTiles(this.project.tiledMap.autoTiles)
     }
 
-    const chipPosition = this.convertFromCursorPositionToChipPosition(x, y)
     this._brush.mouseDown(chipPosition.x, chipPosition.y)
 
     this._lastMapChipPosition = chipPosition
@@ -191,6 +217,8 @@ export class MapCanvas implements EditorCanvas {
   }
 
   mouseUp(x: number, y: number) {
+    if (!this._isMouseDown) return
+
     this._isMouseDown = false
 
     const chipPosition = this.convertFromCursorPositionToChipPosition(x, y)
@@ -231,5 +259,18 @@ export class MapCanvas implements EditorCanvas {
       x: Math.max(0, Math.min(Math.floor(x / this.project.tiledMap.chipWidth), this.project.tiledMap.chipCountX - 1)),
       y: Math.max(0, Math.min(Math.floor(y / this.project.tiledMap.chipHeight), this.project.tiledMap.chipCountY - 1))
     }
+  }
+
+  private pick(x: number, y: number) {
+    const picked = this._mapChipPicker?.pick(x, y) || null
+
+    if (isAutoTileMapChip(picked)) {
+      const autoTile = this.project.tiledMap.autoTiles.fromId(picked.autoTileId)
+      if (autoTile) this.setAutoTile(autoTile)
+    } else if (picked) {
+      this.setMapChipFragments(picked.items)
+    }
+
+    if (this._pickedCallback) this._pickedCallback(picked)
   }
 }
