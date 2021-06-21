@@ -20,7 +20,7 @@ export class AutoTileSelectedEvent extends CustomEvent<AutoTileSelectedDetail> {
   }
 }
 
-interface PickedMapChipDetail {
+export interface PickedMapChipDetail {
   picked: TiledMapDataItem
 }
 

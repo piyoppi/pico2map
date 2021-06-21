@@ -1,4 +1,4 @@
-import { Projects, defineComponent, MapChipSelectedEvent, AutoTileSelectedEvent } from '@piyoppi/pico2map-ui-components'
+import { Projects, defineComponent, MapChipSelectedEvent, AutoTileSelectedEvent, PickedArrangementSelector } from '@piyoppi/pico2map-ui-components'
 import { TiledMap, MapChipImage, DefaultAutoTileImportStrategy, isAutoTileMapChip } from '@piyoppi/pico2map-tiled'
 
 // Define some custom elements
@@ -124,13 +124,7 @@ async function initialize() {
   })
 
   mapCanvas.addEventListener<any>('mapchip-picked', e => {
-    if (isAutoTileMapChip(e.detail.picked)) {
-      mapCanvas.setAttribute('arrangement', 'AutoTileArrangement')
-    } else if (e.detail.picked) {
-      mapCanvas.setAttribute('arrangement', 'DefaultArrangement')
-    } else {
-      mapCanvas.setAttribute('arrangement', 'DefaultEraseArrangement')
-    }
+    mapCanvas.setAttribute('arrangement', PickedArrangementSelector(e.detail))
   })
 
   layerSelector.addEventListener('change', e => {

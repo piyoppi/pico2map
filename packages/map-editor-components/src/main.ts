@@ -11,3 +11,4 @@ export function defineComponent() {
 }
 export { Projects } from '@piyoppi/pico2map-editor'
 export { MapChipSelectedEvent, AutoTileSelectedEvent, PickedMapChipEvent } from './Events'
+export { PickedArrangementSelector } from './PickedArrangementSelector'
