@@ -1,6 +1,6 @@
 {
   "name": "@piyoppi/pico2map-tiled",
-  "version": "0.0.30",
+  "version": "0.0.31",
   "description": "",
   "main": "dist/main.js",
   "repository": {
@@ -17,7 +17,7 @@
     "webpack-cli": "^4.4.0"
   },
   "dependencies": {
-    "@piyoppi/pico2map-tiled-colision-detector": "0.0.30"
+    "@piyoppi/pico2map-tiled-colision-detector": "0.0.31"
   },
   "scripts": {
     "test": "jest",
