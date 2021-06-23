@@ -11,9 +11,9 @@ export class MapGridComponent extends LitElement {
   @property({type: Number}) gridHeight = 0
   @property({type: Number}) chipCountX = 0
   @property({type: Number}) chipCountY = 0
+  @property({type: Boolean}) cursorHidden = false
   @property({type: Number}) cursorX = 0
   @property({type: Number}) cursorY = 0
-  @property({type: Boolean}) cursorHidden = false
 
   @property({type: String})
   get gridColor(): string {
@@ -39,6 +39,11 @@ export class MapGridComponent extends LitElement {
       x: this.cursorX * this.gridWidth,
       y: this.cursorY * this.gridHeight
     }
+  }
+
+  firstUpdated() {
+    const element = this.shadowRoot?.getElementById('boundary')
+    if (element) this.cursorPositionCalculator.setElement(element)
   }
 
   mouseMove(e: MouseEvent) {
