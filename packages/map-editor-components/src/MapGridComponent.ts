@@ -105,6 +105,10 @@ export class MapGridComponent extends LitElement {
         height: 100%;
       }
 
+      #boundary {
+        position: relative;
+      }
+
       .cursor {
         position: absolute;
         border-style: solid;
