@@ -8,6 +8,7 @@ import { Arrangement, isMapChipFragmentRequired, isTiledMapDataRequired, isAutoT
 import { DefaultArrangement } from './Brushes/Arrangements/DefaultArrangement'
 import { EditorCanvas } from './EditorCanvas'
 import { MapChipPicker } from './MapChipPicker'
+import { convertFromCursorPositionToChipPosition } from './CursorPositionConverter'
 
 type PickedCallbackFn = (picked: TiledMapDataItem) => void
 
@@ -255,10 +256,7 @@ export class MapCanvas implements EditorCanvas {
   }
 
   public convertFromCursorPositionToChipPosition(x: number, y: number) {
-    return {
-      x: Math.max(0, Math.min(Math.floor(x / this.project.tiledMap.chipWidth), this.project.tiledMap.chipCountX - 1)),
-      y: Math.max(0, Math.min(Math.floor(y / this.project.tiledMap.chipHeight), this.project.tiledMap.chipCountY - 1))
-    }
+    return convertFromCursorPositionToChipPosition(x, y, this.project.tiledMap.chipWidth, this.project.tiledMap.chipHeight, this.project.tiledMap.chipCountX, this.project.tiledMap.chipCountY)
   }
 
   private pick(x: number, y: number) {

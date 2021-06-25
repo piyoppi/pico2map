@@ -1,11 +1,9 @@
 import { LitElement, html, css, property } from 'lit-element'
 import { CursorPositionCalculator } from './Helpers/CursorPositionCalculator'
-import { GridImageGenerator, MapCanvas, Projects, Project } from '@piyoppi/pico2map-editor'
+import { MapCanvas, Projects, Project } from '@piyoppi/pico2map-editor'
 import { MapChipFragment, MapChipFragmentProperties } from '@piyoppi/pico2map-tiled'
 
 export class MapCanvasComponent extends LitElement {
-  private gridImageSrc = ''
-  private gridImageGenerator: GridImageGenerator = new GridImageGenerator()
   private cursorPositionCalculator = new CursorPositionCalculator()
   private _mapCanvas = new MapCanvas()
   private _project: Project | null = null
@@ -33,21 +31,9 @@ export class MapCanvasComponent extends LitElement {
     }))
   }
 
-  @property({type: Number}) cursorChipX = 0
-  @property({type: Number}) cursorChipY = 0
-  @property({type: Boolean}) cursorHidden = false
+  @property({type: Boolean}) gridCursorHidden = false
   @property({type: Boolean}) preventDefaultContextMenu = true
-
-  @property({type: String})
-  get gridColor(): string {
-    return this.gridImageGenerator.gridColor
-  }
-  set gridColor(value: string) {
-    const oldValue = this.gridImageGenerator.gridColor
-    this.gridImageGenerator.gridColor = value
-
-    this.requestUpdate('gridColor', oldValue)
-  }
+  @property({type: String}) gridColor = '#000'
 
   @property({type: Number})
   get inactiveLayerOpacity(): number {
@@ -166,13 +152,6 @@ export class MapCanvasComponent extends LitElement {
     return this._project?.tiledMap.chipHeight || 0 
   }
 
-  get cursorPosition() {
-    return {
-      x: this.cursorChipX * this.gridWidth,
-      y: this.cursorChipY * this.gridHeight
-    }
-  }
-
   private setupProject(forced: boolean = false) {
     if (!this._project || forced) {
       this._project = Projects.fromProjectId(this._projectId)
@@ -251,12 +230,7 @@ export class MapCanvasComponent extends LitElement {
 
   mouseMove(e: MouseEvent) {
     const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY)
-    const cursor = this._mapCanvas.mouseMove(mouseCursorPosition.x, mouseCursorPosition.y)
-
-    if (!this.cursorHidden) {
-      this.cursorChipX = cursor.x
-      this.cursorChipY = cursor.y
-    }
+    this._mapCanvas.mouseMove(mouseCursorPosition.x, mouseCursorPosition.y)
   }
 
   mouseDown(e: MouseEvent) {
@@ -282,71 +256,41 @@ export class MapCanvasComponent extends LitElement {
   }
 
   render() {
-    this.gridImageGenerator.setGridSize(this.gridWidth, this.gridHeight)
-    if (this.gridImageGenerator.changed) {
-      this.gridImageSrc = this.gridImageGenerator.generateLinePart().toDataURL()
-    }
-
     return html`
       <style>
-        .grid {
-          background-image: url("${this.gridImageSrc}");
-        }
-
         #boundary {
           width: ${this.width + 1}px;
           height: ${this.height + 1}px;
         }
-
-        .cursor {
-          width: ${this.gridWidth}px;
-          height: ${this.gridHeight}px;
-          left: ${this.cursorPosition.x}px;
-          top: ${this.cursorPosition.y}px;
-        }
-
-        .grid-image {
-          background-position: 1px 1px
-        }
       </style>
 
-      <div id="boundary">
+      <div id="boundary"
+        @mousedown="${(e: MouseEvent) => this.mouseDown(e)}"
+        @mousemove="${(e: MouseEvent) => !this._mapCanvas.isMouseDown ? this.mouseMove(e) : null}"
+        @contextmenu="${(e: MouseEvent) => this.preventDefaultContextMenu && e.preventDefault()}"
+      >
         <div id="canvases"></div>
         <canvas
           id="secondary-canvas"
           width="${this.width}"
           height="${this.height}"
         ></canvas>
-        <div
-          class="grid-image grid"
-          @mousedown="${(e: MouseEvent) => this.mouseDown(e)}"
-          @mousemove="${(e: MouseEvent) => !this._mapCanvas.isMouseDown ? this.mouseMove(e) : null}"
-          @contextmenu="${(e: MouseEvent) => this.preventDefaultContextMenu && e.preventDefault()}"
-        ></div>
-        ${!this.cursorHidden ? html`<div class="cursor"></div>` : null}
+        ${
+          this.gridCursorHidden ? null : html`
+          <map-grid-component
+            gridWidth="${this.gridWidth}"
+            gridHeight="${this.gridHeight}"
+            chipCountX="${this.xCount}"
+            chipCountY="${this.yCount}"
+            gridColor="${this.gridColor}"
+          ></map-grid-component>`
+        }
       </div>
-    `;
+    `
   }
 
   static get styles() {
     return css`
-      .grid-image {
-        position: absolute;
-        top: 0;
-        left: 0;
-        background-repeat: repeat;
-        width: 100%;
-        height: 100%;
-      }
-
-      .cursor {
-        position: absolute;
-        border-style: solid;
-        box-sizing: border-box;
-        border-color: red;
-        pointer-events: none;
-      }
-
       #canvases {
         position: relative;
       }
