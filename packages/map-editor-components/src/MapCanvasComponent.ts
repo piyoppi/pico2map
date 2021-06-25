@@ -31,9 +31,7 @@ export class MapCanvasComponent extends LitElement {
     }))
   }
 
-  @property({type: Number}) cursorChipX = 0
-  @property({type: Number}) cursorChipY = 0
-  @property({type: Boolean}) cursorHidden = false
+  @property({type: Boolean}) gridCursorHidden = false
   @property({type: Boolean}) preventDefaultContextMenu = true
   @property({type: String}) gridColor = '#000'
 
@@ -232,12 +230,7 @@ export class MapCanvasComponent extends LitElement {
 
   mouseMove(e: MouseEvent) {
     const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY)
-    const cursor = this._mapCanvas.mouseMove(mouseCursorPosition.x, mouseCursorPosition.y)
-
-    if (!this.cursorHidden) {
-      this.cursorChipX = cursor.x
-      this.cursorChipY = cursor.y
-    }
+    this._mapCanvas.mouseMove(mouseCursorPosition.x, mouseCursorPosition.y)
   }
 
   mouseDown(e: MouseEvent) {
@@ -271,24 +264,27 @@ export class MapCanvasComponent extends LitElement {
         }
       </style>
 
-      <div id="boundary">
+      <div id="boundary"
+        @mousedown="${(e: MouseEvent) => this.mouseDown(e)}"
+        @mousemove="${(e: MouseEvent) => !this._mapCanvas.isMouseDown ? this.mouseMove(e) : null}"
+        @contextmenu="${(e: MouseEvent) => this.preventDefaultContextMenu && e.preventDefault()}"
+      >
         <div id="canvases"></div>
         <canvas
           id="secondary-canvas"
           width="${this.width}"
           height="${this.height}"
         ></canvas>
-        <map-grid-component
-          gridWidth="${this.gridWidth}"
-          gridHeight="${this.gridHeight}"
-          chipCountX="${this.xCount}"
-          chipCountY="${this.yCount}"
-          gridColor="${this.gridColor}"
-          ?cursorHidden="${this.cursorHidden}"
-          @mousedown="${(e: MouseEvent) => this.mouseDown(e)}"
-          @mousemove="${(e: MouseEvent) => !this._mapCanvas.isMouseDown ? this.mouseMove(e) : null}"
-          @contextmenu="${(e: MouseEvent) => this.preventDefaultContextMenu && e.preventDefault()}"
-        ></map-grid-component>
+        ${
+          this.gridCursorHidden ? null : html`
+          <map-grid-component
+            gridWidth="${this.gridWidth}"
+            gridHeight="${this.gridHeight}"
+            chipCountX="${this.xCount}"
+            chipCountY="${this.yCount}"
+            gridColor="${this.gridColor}"
+          ></map-grid-component>`
+        }
       </div>
     `
   }
