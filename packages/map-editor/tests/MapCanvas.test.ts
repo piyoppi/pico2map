@@ -203,12 +203,22 @@ describe('#mouseDown', () => {
 
   it('Should painted', () => {
     const {mapCanvas, brush} = mapCanvasFactory()
+    mapCanvas.setMapChipFragments(c1Fragments)
 
     mapCanvas.mouseDown(40, 70)
 
     expect(mapCanvas.isMouseDown).toEqual(true)
     expect(brush.mouseDown).toBeCalledWith(1, 2)
     expect(brush.mouseMove).toBeCalledWith(1, 2)
+  })
+
+  it('Should not painted when the arrangement requires mapChipFragments and the mapCanavs has no mapChipFragments', () => {
+    const {mapCanvas, brush} = mapCanvasFactory()
+
+    mapCanvas.mouseDown(40, 70)
+    expect(mapCanvas.isMouseDown).toEqual(false)
+    expect(brush.mouseDown).not.toBeCalled()
+    expect(brush.mouseMove).not.toBeCalled()
   })
 
   it('Should picked a mapchip when the cursor is over the mapchip', () => {

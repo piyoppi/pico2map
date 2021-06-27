@@ -183,9 +183,11 @@ export class MapCanvas implements EditorCanvas {
       return
     }
 
+    if (isMapChipFragmentRequired(this._arrangement) && this._selectedMapChipFragments.length < 1) return
+
     this._isMouseDown = true
 
-    if (isMapChipFragmentRequired(this._arrangement) && this._selectedMapChipFragments) {
+    if (isMapChipFragmentRequired(this._arrangement)) {
       this._arrangement.setMapChips(this._selectedMapChipFragments)
     }
 
