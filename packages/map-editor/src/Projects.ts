@@ -5,6 +5,7 @@ import { Injector } from './Injector'
 export class Project {
   private _renderAllFunction: Array<(() => void)> = []
   private _beforeAddLayerCallbacks = new CallbackCaller()
+  private _afterAddAutoTileCallbacks = new CallbackCaller()
 
   constructor(
     private _tiledMap: TiledMap,
@@ -12,6 +13,7 @@ export class Project {
   ) {
     const injector = new Injector()
     injector.inject(_tiledMap, _tiledMap.addLayer, () => this._beforeAddLayerHandler(), null)
+    injector.inject(_tiledMap.autoTiles, _tiledMap.autoTiles.push, null, () => this._afterAddAutoTileHandler())
   }
 
   get projectId() {
@@ -26,6 +28,10 @@ export class Project {
     this._beforeAddLayerCallbacks.add(callback)
   }
 
+  addAfterAddAutoTileCallback(callback: () => void) {
+    this._afterAddAutoTileCallbacks.add(callback)
+  }
+
   requestRenderAll() {
     this._renderAllFunction.forEach(fn => fn())
   }
@@ -36,6 +42,10 @@ export class Project {
 
   private _beforeAddLayerHandler() {
     this._beforeAddLayerCallbacks.call()
+  }
+
+  private _afterAddAutoTileHandler() {
+    this._afterAddAutoTileCallbacks.call()
   }
 }
 

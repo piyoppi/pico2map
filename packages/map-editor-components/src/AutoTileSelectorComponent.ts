@@ -34,7 +34,7 @@ export class AutoTileSelectorComponent extends LitElement {
   set projectId(value: number) {
     const oldValue = this._projectId
     this._projectId = value
-    this._project = Projects.fromProjectId(value)
+    this._setupProject(value)
 
     this.setupMapChipSelector()
 
@@ -70,8 +70,11 @@ export class AutoTileSelectorComponent extends LitElement {
     }
   }
 
-  private setupMapChipSelector() {
+  private _setupProject(projectId: number) {
+    this._project = Projects.fromProjectId(projectId)
     if (!this._project) return
+
+    this._project.addAfterAddAutoTileCallback(() => this.setupMapChipSelector())
 
     this._autoTileSelector = new AutoTileSelector(
       this.width,
@@ -80,6 +83,11 @@ export class AutoTileSelectorComponent extends LitElement {
       this._project.tiledMap.autoTiles,
       this._project.tiledMap.mapChipsCollection
     )
+  }
+
+  private setupMapChipSelector() {
+    if (!this._project || !this._autoTileSelector) return
+
     const imageSize = this._autoTileSelector.getSizeOfIndexImage()
     this._indexImage.width = imageSize.width
     this._indexImage.height = imageSize.height
