@@ -7,8 +7,8 @@ class DummyClass {
     return this._counter
   }
 
-  count() {
-    this._counter++
+  count(value: number) {
+    this._counter += value
   }
 }
 
@@ -21,9 +21,9 @@ describe('#inject', () => {
     let afterFunctionCalled = false
     injector.inject(injected, injected.count, () => beforeFunctionCalled = true, () => afterFunctionCalled = true)
 
-    injected.count()
+    injected.count(3)
 
-    expect(injected.counter).toEqual(1)
+    expect(injected.counter).toEqual(3)
     expect(beforeFunctionCalled).toEqual(true)
     expect(afterFunctionCalled).toEqual(true)
   })
