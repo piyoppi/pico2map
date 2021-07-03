@@ -37,7 +37,7 @@ export class AutoTileSelector {
   getSizeOfIndexImage() {
     return {
       width: this._canvasWidth,
-      height: Math.ceil(this._autoTiles.length / this._canvasWidth) * this._chipHeight
+      height: Math.ceil(this._autoTiles.length / Math.floor(this._canvasWidth / this._chipWidth)) * this._chipHeight
     }
   }
 
