@@ -41,11 +41,24 @@ export class AutoTileSelectorComponent extends LitElement {
     this.requestUpdate('projectId', oldValue);
   }
 
+  private _width = 192
+  @property({type: Number})
+  get width(): number {
+    return this._width
+  }
+  set width(value: number) {
+    const oldValue = this._width
+
+    this._width = value
+    this.setupMapChipSelector()
+
+    this.requestUpdate('width', oldValue);
+  }
+
   @property({type: Number}) cursorChipX = 0
   @property({type: Number}) cursorChipY = 0
   @property({type: Number}) selectedChipY = 0
   @property({type: Number}) selectedChipX = 0
-  @property({type: Number}) width = 192
   @property({type: String}) indexImageSrc = ''
 
   get gridWidth() {
@@ -88,6 +101,7 @@ export class AutoTileSelectorComponent extends LitElement {
   private setupMapChipSelector() {
     if (!this._project || !this._autoTileSelector) return
 
+    this._autoTileSelector.canvasWidth = this.width
     const imageSize = this._autoTileSelector.getSizeOfIndexImage()
     this._indexImage.width = imageSize.width
     this._indexImage.height = imageSize.height

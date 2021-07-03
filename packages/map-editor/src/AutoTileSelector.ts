@@ -15,6 +15,14 @@ export class AutoTileSelector {
 
   }
 
+  get canvasWidth() {
+    return this._canvasWidth
+  }
+
+  set canvasWidth(value: number) {
+    this._canvasWidth = value
+  }
+
   getAutoTileFragmentFromIndexImagePosition(cursorX: number, cursorY: number): AutoTile | null {
     const x = Math.floor(cursorX / this._chipWidth)
     const y = Math.floor(cursorY / this._chipHeight)
@@ -73,7 +81,7 @@ export class AutoTileSelector {
 
       x++
 
-      if (x > xCount) {
+      if (x >= xCount) {
         x = 0
         y++
       }
