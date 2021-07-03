@@ -3,6 +3,7 @@ import { MapCanvas } from './../src/MapCanvas'
 import { TiledMap } from '@piyoppi/pico2map-tiled'
 import { EmptyBrush } from './TestHelpers/EmptyBrush'
 import { EmptyArrangement } from './TestHelpers/EmptyArrangement'
+import { DummyAutoTileArrangement } from './TestHelpers/DummyAutoTileArrangement'
 import { MapChipFragment, MapChip, AutoTile, AutoTileMapChip } from '@piyoppi/pico2map-tiled'
 
 let mockedCanvas = {}
@@ -204,6 +205,18 @@ describe('#mouseDown', () => {
   it('Should painted', () => {
     const {mapCanvas, brush} = mapCanvasFactory()
     mapCanvas.setMapChipFragments(c1Fragments)
+
+    mapCanvas.mouseDown(40, 70)
+
+    expect(mapCanvas.isMouseDown).toEqual(true)
+    expect(brush.mouseDown).toBeCalledWith(1, 2)
+    expect(brush.mouseMove).toBeCalledWith(1, 2)
+  })
+
+  it('Should painted AutoTile', () => {
+    const {mapCanvas, brush} = mapCanvasFactory()
+    mapCanvas.setArrangement(new DummyAutoTileArrangement())
+    mapCanvas.setAutoTile(autoTile)
 
     mapCanvas.mouseDown(40, 70)
 

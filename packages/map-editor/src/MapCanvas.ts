@@ -183,7 +183,8 @@ export class MapCanvas implements EditorCanvas {
       return
     }
 
-    if (isMapChipFragmentRequired(this._arrangement) && this._selectedMapChipFragments.length < 1) return
+    if (isMapChipFragmentRequired(this._arrangement) && !isAutoTileRequired(this._arrangement) && this._selectedMapChipFragments.length < 1) return
+    if (isAutoTileRequired(this._arrangement) && !this.selectedAutoTile) return
 
     this._isMouseDown = true
 
