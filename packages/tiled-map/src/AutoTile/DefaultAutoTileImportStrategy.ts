@@ -1,6 +1,6 @@
 import { MapChipFragment } from './../MapChip'
 import { AutoTileImportStrategy, MapChipFragmentGroups } from './ImportStrategy'
-import { MapChipImage } from './../MapChips'
+import { MapChipImage } from './../MapChipImage'
 
 type MapChipFragments = Array<MapChipFragment>
 
