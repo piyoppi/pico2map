@@ -1,5 +1,5 @@
 import { MapChip } from './MapChip'
-import { MapChipsCollection, MapChipCollectionProperties } from './MapChips'
+import { MapChipsCollection, MapChipCollectionProperties } from './MapChipsCollection'
 import { AutoTiles, AutoTilesProperties } from './AutoTile/AutoTiles'
 import { TiledMapData, TiledMapDataProperties } from './MapData/TiledMapData'
 import { ColiderMap, ColiderMapProperties } from './MapData/ColiderMap'
