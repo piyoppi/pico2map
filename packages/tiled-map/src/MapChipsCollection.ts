@@ -11,6 +11,10 @@ export class MapChipsCollection {
     this._items.set(item.id, item)
   }
 
+  remove(item: MapChipImage) {
+    this._items.delete(item.id)
+  }
+
   findById(chipId: number) {
     return this._items.get(chipId) || null
   }
