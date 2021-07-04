@@ -58,3 +58,18 @@ describe('#fromObject', () => {
     expect(deserialized.palette).toEqual([c1, c2])
   })
 })
+
+describe('#removeMapChip', () => {
+  it('Should remove mapChip from palette and values', () => {
+    const data = new TiledMapData(3, 3)
+    data.set(source)
+
+    data.removeMapChip(c1)
+    expect(data.palette).toEqual([c2])
+    expect(data.values.items).toEqual([
+      -1, -1,  1,
+       1,  1, -1,
+      -1, -1, -1
+    ])
+  })
+})
