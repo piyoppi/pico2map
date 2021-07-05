@@ -1,8 +1,14 @@
 import { TiledMapData } from './../src/MapData/TiledMapData'
 import { MapChip, MapChipFragment } from './../src/MapChip'
+import { MapChipImage } from '../src/MapChipImage'
 
-const c1 = new MapChip([new MapChipFragment(0, 0, 0)])
-const c2 = new MapChip([new MapChipFragment(2, 0, 0)])
+const image1 = new MapChipImage('dummy1.png', 1)
+const image2 = new MapChipImage('dummy2.png', 2)
+const image3 = new MapChipImage('dummy3.png', 3)
+const c1 = new MapChip([new MapChipFragment(0, 0, image1.id)])
+const c2 = new MapChip([new MapChipFragment(1, 0, image2.id)])
+const c3 = new MapChip([new MapChipFragment(2, 0, image1.id)])
+const c4 = new MapChip([new MapChipFragment(3, 0, image2.id)])
 const source = [
   c1, null,   c2,
   c2,   c2,   c1,
@@ -62,14 +68,53 @@ describe('#fromObject', () => {
 describe('#removeMapChip', () => {
   it('Should remove mapChip from palette and values', () => {
     const data = new TiledMapData(3, 3)
-    data.set(source)
+    data.set([
+      c1, null,   c2,
+      c2,   c2,   c1,
+      c1, null,   c3,
+    ])
 
     data.removeMapChip(c1)
-    expect(data.palette).toEqual([c2])
+    expect(data.palette).toEqual([c2, c3])
     expect(data.values.items).toEqual([
-      -1, -1,  1,
-       1,  1, -1,
-      -1, -1, -1
+      -1, -1,  0,
+       0,  0, -1,
+      -1, -1,  1
+    ])
+  })
+})
+
+describe('getMapChipsFromImage', () => {
+  it('Should return mapChips with a specific image', () => {
+    const data = new TiledMapData(3, 3)
+    data.set([
+      c1, null,   c2,
+      c2,   c2,   c1,
+      c1, null,   c3,
+    ])
+
+    expect(data.getMapChipsFromImage(image1)).toEqual([c1, c3])
+    expect(data.getMapChipsFromImage(image2)).toEqual([c2])
+    expect(data.getMapChipsFromImage(image3)).toEqual([])
+  })
+})
+
+describe('removeMapChipsFromImage', () => {
+  it('Should remove mapChips with a specific image', () => {
+    const data = new TiledMapData(3, 3)
+    data.set([
+      c1, null,   c2,
+      c2,   c2,   c1,
+      c1,   c4,   c3,
+    ])
+
+    data.removeMapChipsFromImage(image1)
+
+    expect(data.palette).toEqual([c2, c4])
+    expect(data.values.items).toEqual([
+      -1, -1,  0,
+       0,  0, -1,
+      -1,  1, -1
     ])
   })
 })
