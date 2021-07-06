@@ -21,7 +21,7 @@ export class TiledMapData extends MapPaletteMatrix<TiledMapDataItem> {
     )
   }
 
-  getMapChipsFromImage(image: MapChipImage) {
+  findByImage(image: MapChipImage) {
     const registeredChips = new Set()
     return this.items.filter(chip => {
       if (!chip) return false
@@ -42,7 +42,7 @@ export class TiledMapData extends MapPaletteMatrix<TiledMapDataItem> {
     mapChips.forEach(mapChip => this.removeMapChip(mapChip))
   }
 
-  removeMapChip(mapChip: MapChip): boolean {
+  remove(mapChip: MapChip): boolean {
     const removePaletteId = this.palette.findIndex(item => item?.identifyKey === mapChip.identifyKey)
     if (removePaletteId < 0) return false
 

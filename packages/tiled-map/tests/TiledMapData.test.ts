@@ -65,7 +65,7 @@ describe('#fromObject', () => {
   })
 })
 
-describe('#removeMapChip', () => {
+describe('#remove', () => {
   it('Should remove mapChip from palette and values', () => {
     const data = new TiledMapData(3, 3)
     data.set([
@@ -74,7 +74,7 @@ describe('#removeMapChip', () => {
       c1, null,   c3,
     ])
 
-    data.removeMapChip(c1)
+    data.remove(c1)
     expect(data.palette).toEqual([c2, c3])
     expect(data.values.items).toEqual([
       -1, -1,  0,
@@ -84,7 +84,7 @@ describe('#removeMapChip', () => {
   })
 })
 
-describe('getMapChipsFromImage', () => {
+describe('findByImage', () => {
   it('Should return mapChips with a specific image', () => {
     const data = new TiledMapData(3, 3)
     data.set([
@@ -93,9 +93,9 @@ describe('getMapChipsFromImage', () => {
       c1, null,   c3,
     ])
 
-    expect(data.getMapChipsFromImage(image1)).toEqual([c1, c3])
-    expect(data.getMapChipsFromImage(image2)).toEqual([c2])
-    expect(data.getMapChipsFromImage(image3)).toEqual([])
+    expect(data.findByImage(image1)).toEqual([c1, c3])
+    expect(data.findByImage(image2)).toEqual([c2])
+    expect(data.findByImage(image3)).toEqual([])
   })
 })
 
