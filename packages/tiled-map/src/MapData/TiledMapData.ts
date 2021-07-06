@@ -1,4 +1,5 @@
-import { MapChip, MapChipProperties,  AutoTileMapChipProperties, isAutoTileMapChipProperties, AutoTileMapChip } from './../MapChip'
+import { MapChip, MapChipProperties, AutoTileMapChipProperties, isAutoTileMapChipProperties, AutoTileMapChip } from './../MapChip'
+import { MapChipImage } from '../MapChipImage'
 import { MapPaletteMatrix } from './MapPaletteMatrix'
 
 export type TiledMapDataItem = MapChip | null
@@ -20,13 +21,29 @@ export class TiledMapData extends MapPaletteMatrix<TiledMapDataItem> {
     )
   }
 
-  removeMapChip(mapChip: MapChip): boolean {
+  findByImage(image: MapChipImage) {
+    const registeredChips = new Set()
+    return this.items.filter(chip => {
+      if (!chip) return false
+
+      const found = chip.items.find(fragment => fragment.chipId === image.id) && !registeredChips.has(chip.identifyKey)
+
+      if (found) {
+        registeredChips.add(chip.identifyKey)
+      }
+
+      return found
+    }) as Array<MapChip>
+  }
+
+  remove(mapChip: MapChip): boolean {
     const removePaletteId = this.palette.findIndex(item => item?.identifyKey === mapChip.identifyKey)
     if (removePaletteId < 0) return false
 
     this.palette.splice(removePaletteId, 1)
     this.values.items.forEach((paletteIndex, valueIndex) => {
       if (paletteIndex === removePaletteId) this.values.items[valueIndex] = -1
+      if (paletteIndex > removePaletteId) this.values.items[valueIndex] = this.values.items[valueIndex] - 1
     })
 
     return true
