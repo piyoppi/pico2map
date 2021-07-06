@@ -36,12 +36,6 @@ export class TiledMapData extends MapPaletteMatrix<TiledMapDataItem> {
     }) as Array<MapChip>
   }
 
-  removeMapChipsFromImage(image: MapChipImage) {
-    const mapChips = this.getMapChipsFromImage(image)
-
-    mapChips.forEach(mapChip => this.removeMapChip(mapChip))
-  }
-
   remove(mapChip: MapChip): boolean {
     const removePaletteId = this.palette.findIndex(item => item?.identifyKey === mapChip.identifyKey)
     if (removePaletteId < 0) return false
