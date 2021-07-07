@@ -32,7 +32,11 @@ export class MapChipSelectorComponent extends LitElement {
     this._projectId = value
     this._project = Projects.fromProjectId(value)
 
-    this.setupMapChipSelector()
+    if (this._project) {
+      this.setupMapChipSelector()
+    } else {
+      this.reset()
+    }
 
     this.requestUpdate('projectId', oldValue);
   }
@@ -85,13 +89,17 @@ export class MapChipSelectorComponent extends LitElement {
     const chipImage = this._project.tiledMap.mapChipsCollection.findById(this._chipId)
 
     if (!chipImage) {
-      this._mapChipSelector = null
-      this._imageSrc = ''
+      this.reset()
       return
     }
 
     this._mapChipSelector = new MapChipSelector(this._project.tiledMap, chipImage)
     this._imageSrc = this._mapChipSelector.chipImage.src
+  }
+
+  private reset() {
+    this._mapChipSelector = null
+    this._imageSrc = ''
   }
 
   mouseUp(e: MouseEvent) {
