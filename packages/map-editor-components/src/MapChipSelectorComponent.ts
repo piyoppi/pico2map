@@ -9,6 +9,7 @@ export class MapChipSelectorComponent extends LitElement {
   private cursorPositionCalculator = new CursorPositionCalculator()
   private _project: Project | null = null
   private _mapChipSelector : MapChipSelector | null = null
+  private _imageSrc: string = ''
 
   @property({type: String})
   get gridColor(): string {
@@ -79,12 +80,18 @@ export class MapChipSelectorComponent extends LitElement {
   }
 
   private setupMapChipSelector() {
-    if (!this._project || this._chipId < 0) return
+    if (!this._project) return
 
     const chipImage = this._project.tiledMap.mapChipsCollection.findById(this._chipId)
-    if (!chipImage) return
+
+    if (!chipImage) {
+      this._mapChipSelector = null
+      this._imageSrc = ''
+      return
+    }
 
     this._mapChipSelector = new MapChipSelector(this._project.tiledMap, chipImage)
+    this._imageSrc = this._mapChipSelector.chipImage.src
   }
 
   mouseUp(e: MouseEvent) {
@@ -169,15 +176,19 @@ export class MapChipSelectorComponent extends LitElement {
       </style>
 
       <div id="boundary">
-        <img id="chip-image" src="${this._mapChipSelector?.chipImage.src || ''}">
+        <img id="chip-image" src="${this._imageSrc}">
         <div
           class="grid-image grid"
           @mousemove="${(e: MouseEvent) => this.mouseMove(e)}"
           @mousedown="${(e: MouseEvent) => this.mouseDown(e)}"
           @mouseup="${(e: MouseEvent) => this.mouseUp(e)}"
         ></div>
-        <div class="cursor"></div>
-        <div class="selected"></div>
+        ${ this._imageSrc &&
+          html`
+            <div class="cursor"></div>
+            <div class="selected"></div>
+          `
+        }
       </div>
     `;
   }
