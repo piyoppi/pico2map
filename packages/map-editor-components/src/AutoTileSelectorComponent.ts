@@ -57,8 +57,8 @@ export class AutoTileSelectorComponent extends LitElement {
 
   @property({type: Number}) cursorChipX = 0
   @property({type: Number}) cursorChipY = 0
-  @property({type: Number}) selectedChipY = 0
-  @property({type: Number}) selectedChipX = 0
+  @property({type: Number}) selectedChipY = -1
+  @property({type: Number}) selectedChipX = -1
   @property({type: String}) indexImageSrc = ''
 
   get gridWidth() {
@@ -99,6 +99,9 @@ export class AutoTileSelectorComponent extends LitElement {
       this._project.tiledMap.autoTiles,
       this._project.tiledMap.mapChipsCollection
     )
+
+    this.selectedChipX = -1
+    this.selectedChipY = -1
   }
 
   private reset() {
@@ -190,8 +193,8 @@ export class AutoTileSelectorComponent extends LitElement {
           @mousemove="${(e: MouseEvent) => this.mouseMove(e)}"
           @mousedown="${(e: MouseEvent) => this.mouseDown(e)}"
         ></div>
-        ${this.indexImageSrc && html`<div class="cursor"></div>`}
-        ${this.indexImageSrc && html`<div class="selected"></div>`}
+        ${this.indexImageSrc ? html`<div class="cursor"></div>` : null}
+        ${(this.indexImageSrc && this.selectedChipX >= 0 && this.selectedChipY >= 0) ? html`<div class="selected"></div>` : null}
       </div>
     `;
   }
