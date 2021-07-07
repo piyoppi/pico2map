@@ -183,12 +183,8 @@ export class MapChipSelectorComponent extends LitElement {
           @mousedown="${(e: MouseEvent) => this.mouseDown(e)}"
           @mouseup="${(e: MouseEvent) => this.mouseUp(e)}"
         ></div>
-        ${ this._imageSrc &&
-          html`
-            <div class="cursor"></div>
-            <div class="selected"></div>
-          `
-        }
+        ${ this._imageSrc && html`<div class="cursor"></div>`}
+        ${ this._imageSrc && this.selectedWidth > 0 && this.selectedHeight > 0 && html`<div class="selected"></div>`}
       </div>
     `;
   }
