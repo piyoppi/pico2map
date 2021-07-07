@@ -85,7 +85,10 @@ export class AutoTileSelectorComponent extends LitElement {
 
   private _setupProject(projectId: number) {
     this._project = Projects.fromProjectId(projectId)
-    if (!this._project) return
+    if (!this._project) {
+      this.reset()
+      return
+    }
 
     this._project.addAfterAddAutoTileCallback(() => this.setupMapChipSelector())
 
@@ -96,6 +99,10 @@ export class AutoTileSelectorComponent extends LitElement {
       this._project.tiledMap.autoTiles,
       this._project.tiledMap.mapChipsCollection
     )
+  }
+
+  private reset() {
+    this.indexImageSrc = ''
   }
 
   private setupMapChipSelector() {
@@ -183,8 +190,8 @@ export class AutoTileSelectorComponent extends LitElement {
           @mousemove="${(e: MouseEvent) => this.mouseMove(e)}"
           @mousedown="${(e: MouseEvent) => this.mouseDown(e)}"
         ></div>
-        <div class="cursor"></div>
-        <div class="selected"></div>
+        ${this.indexImageSrc && html`<div class="cursor"></div>`}
+        ${this.indexImageSrc && html`<div class="selected"></div>`}
       </div>
     `;
   }
