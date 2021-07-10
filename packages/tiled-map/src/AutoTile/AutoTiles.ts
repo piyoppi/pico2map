@@ -1,3 +1,4 @@
+import { MapChipImage } from '../MapChipImage'
 import { MapChipFragment, MapChipFragmentProperties } from './../MapChip'
 import { AutoTileImportStrategy } from './ImportStrategy'
 
@@ -49,6 +50,16 @@ export class AutoTiles {
     this._autoTiles.set(item.id, item)
   }
 
+  remove(item: AutoTile) {
+    this._autoTiles.delete(item.id)
+  }
+
+  findByImages(image: MapChipImage): Array<AutoTile> {
+    const valuesItr = this._autoTiles.values()
+
+    return Array.from(valuesItr).filter(autoTile => autoTile.mapChipFragments.some(fragment => fragment.chipId === image.id))
+  }
+
   fromId(id: number): AutoTile | null {
     return this._autoTiles.get(id) || null
   }
@@ -57,12 +68,14 @@ export class AutoTiles {
     return this._autoTiles.values()
   }
 
-  import(strategy: AutoTileImportStrategy) {
+  import(strategy: AutoTileImportStrategy): Array<AutoTile> {
     const mapChipFragmentGroups = strategy.getMapChipFragments()
 
-    mapChipFragmentGroups.forEach(group => {
+    return mapChipFragmentGroups.map(group => {
       const autoTile = new AutoTile(group, ++this._maxId)
       this.push(autoTile)
+
+      return autoTile
     })
   }
 
