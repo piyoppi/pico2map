@@ -1,13 +1,14 @@
 {
   "name": "pico2map",
-  "version": "0.0.39",
+  "version": "0.0.40",
   "description": "",
   "main": "src/main.js",
   "workspaces": [
     "packages/*"
   ],
   "scripts": {
-    "build": "(cd packages/tiled-colision-detector && npm run build) && (cd packages/tiled-map && npm run build) && (cd packages/map-editor && npm run build) && (cd packages/map-editor-components && npm run build) && (cd packages/map-editor-examples && npm run build)"
+    "build": "(cd packages/tiled-colision-detector && npm run build) && (cd packages/tiled-map && npm run build) && (cd packages/map-editor && npm run build) && (cd packages/map-editor-components && npm run build) && (cd packages/map-editor-examples && npm run build)",
+    "test": "(cd packages/tiled-colision-detector && npm test) && (cd packages/tiled-map && npm test) && (cd packages/map-editor && npm test)"
   },
   "author": "piyoppi",
   "license": "MIT"
