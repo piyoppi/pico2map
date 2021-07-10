@@ -6,6 +6,7 @@ export class Project {
   private _renderAllFunction: Array<(() => void)> = []
   private _beforeAddLayerCallbacks = new CallbackCaller()
   private _afterAddAutoTileCallbacks = new CallbackCaller()
+  private _afterRemoveAutoTileCallbacks = new CallbackCaller()
 
   constructor(
     private _tiledMap: TiledMap,
@@ -14,6 +15,7 @@ export class Project {
     const injector = new Injector()
     injector.inject(_tiledMap, _tiledMap.addLayer, () => this._beforeAddLayerHandler(), null)
     injector.inject(_tiledMap.autoTiles, _tiledMap.autoTiles.push, null, () => this._afterAddAutoTileHandler())
+    injector.inject(_tiledMap.autoTiles, _tiledMap.autoTiles.remove, null, () => this._afterRemoveAutoTileHandler())
   }
 
   get projectId() {
@@ -32,6 +34,10 @@ export class Project {
     this._afterAddAutoTileCallbacks.add(callback)
   }
 
+  addAfterRemoveAutoTileCallback(callback: () => void) {
+    this._afterRemoveAutoTileCallbacks.add(callback)
+  }
+
   requestRenderAll() {
     this._renderAllFunction.forEach(fn => fn())
   }
@@ -46,6 +52,10 @@ export class Project {
 
   private _afterAddAutoTileHandler() {
     this._afterAddAutoTileCallbacks.call()
+  }
+
+  private _afterRemoveAutoTileHandler() {
+    this._afterRemoveAutoTileCallbacks.call()
   }
 }
 
