@@ -9,7 +9,7 @@ const c2 = new MapChipFragment(0, 0, mapChipImage2.id)
 
 describe('getMapChipImageIds', () => {
   it('Should return mapChipImageIds', () => {
-    const autoTile = new AutoTile([c1, c2], 1)
+    const autoTile = new AutoTile([c1, c1, c2], 1)
 
     expect(autoTile.getMapChipImageIds()).toEqual([1, 2])
   })

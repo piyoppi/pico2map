@@ -21,7 +21,10 @@ export class AutoTile {
   }
 
   getMapChipImageIds(): Array<number> {
-    return this._mapChipFragments.map(fragment => fragment.chipId)
+    const chipIds = new Set<number>()
+    this._mapChipFragments.forEach(fragment => chipIds.add(fragment.chipId))
+
+    return Array.from(chipIds.values())
   }
 
   toObject(): AutoTileProperties {
