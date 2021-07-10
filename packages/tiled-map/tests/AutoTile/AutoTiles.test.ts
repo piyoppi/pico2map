@@ -21,7 +21,7 @@ class DummyAutoTileImportStrategy implements AutoTileImportStrategy {
   }
 }
 
-describe('findByImages', () => {
+describe('findByImage', () => {
   it('Should return AutoTiles with the given MapChipImages', () => {
     const autoTiles = new AutoTiles()
 
@@ -29,7 +29,7 @@ describe('findByImages', () => {
     autoTiles.push(autoTile2)
     autoTiles.push(autoTile3)
 
-    expect(autoTiles.findByImages(mapChipImage1)).toEqual([autoTile1, autoTile2])
+    expect(autoTiles.findByImage(mapChipImage1)).toEqual([autoTile1, autoTile2])
   })
 })
 

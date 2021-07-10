@@ -54,7 +54,7 @@ export class AutoTiles {
     this._autoTiles.delete(item.id)
   }
 
-  findByImages(image: MapChipImage): Array<AutoTile> {
+  findByImage(image: MapChipImage): Array<AutoTile> {
     const valuesItr = this._autoTiles.values()
 
     return Array.from(valuesItr).filter(autoTile => autoTile.mapChipFragments.some(fragment => fragment.chipId === image.id))
