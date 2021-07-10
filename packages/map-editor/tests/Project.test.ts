@@ -14,7 +14,7 @@ describe('When add a layer', () => {
   })
 })
 
-describe('When add a autoTile', () => {
+describe('When add an autoTile', () => {
   it('Should call registered callback', () => {
     const tiledMap = new TiledMap(30, 30, 32, 32)
     const project = Projects.add(tiledMap, 1)
@@ -24,6 +24,21 @@ describe('When add a autoTile', () => {
     project.addAfterAddAutoTileCallback(mockFn)
 
     tiledMap.autoTiles.push(autoTile)
+    expect(mockFn).toBeCalled()
+  })
+})
+
+describe('When remove an autoTile', () => {
+  it('Should call registered callback', () => {
+    const tiledMap = new TiledMap(30, 30, 32, 32)
+    const project = Projects.add(tiledMap, 1)
+    const autoTile = new AutoTile([], 1)
+    tiledMap.autoTiles.push(autoTile)
+
+    const mockFn = jest.fn()
+    project.addAfterRemoveAutoTileCallback(mockFn)
+
+    tiledMap.autoTiles.remove(autoTile)
     expect(mockFn).toBeCalled()
   })
 })
