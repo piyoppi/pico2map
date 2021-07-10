@@ -1,4 +1,4 @@
-import { AutoTile, AutoTiles } from './AutoTile/AutoTiles'
+import { AutoTiles } from './AutoTile/AutoTiles'
 
 export interface MapChipComparable {
   identifyKey: string

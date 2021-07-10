@@ -1,4 +1,5 @@
-import { AutoTile, AutoTiles } from './../../src/AutoTile/AutoTiles'
+import { AutoTiles } from './../../src/AutoTile/AutoTiles'
+import { AutoTile } from './../../src/AutoTile/AutoTile'
 import { MapChipFragment } from './../../src/MapChip'
 import { MapChipImage } from '../../src/MapChipImage'
 import { AutoTileImportStrategy, MapChipFragmentGroups } from '../../src/AutoTile/ImportStrategy'
