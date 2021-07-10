@@ -36,9 +36,22 @@ describe('findById', () => {
     expect(collection.findById(mapChipImage2.id)).toEqual(mapChipImage2)
   })
 
-  it('Should return null value when mapChip is note registered', () => {
+  it('Should return null value when mapChip is not registered', () => {
     const collection = new MapChipsCollection()
 
     expect(collection.findById(0)).toEqual(null)
+  })
+})
+
+describe('getItems', () => {
+  it('Should return an array including all MapChipImages', () => {
+    const collection = new MapChipsCollection()
+    const mapChipImage1 = new MapChipImage('dummy1.png', 1)
+    const mapChipImage2 = new MapChipImage('dummy2.png', 2)
+
+    collection.push(mapChipImage1)
+    collection.push(mapChipImage2)
+
+    expect(collection.getItems()).toEqual([mapChipImage1, mapChipImage2])
   })
 })

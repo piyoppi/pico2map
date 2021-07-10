@@ -19,6 +19,10 @@ export class MapChipsCollection {
     return this._items.get(chipId) || null
   }
 
+  getItems(): Array<MapChipImage> {
+    return Array.from(this._items.values())
+  }
+
   async waitWhileLoading(): Promise<void> {
     await Promise.all(Array.from(this._items.values()).map( item => item.waitWhileLoading()))
   }
