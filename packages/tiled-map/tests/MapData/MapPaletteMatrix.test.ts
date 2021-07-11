@@ -276,3 +276,41 @@ describe('#rebuild', () => {
     expect(data.palette).toEqual([c[1], c[2], c[4]])
   })
 })
+
+describe('#remove', () => {
+  it('Should remove mapChip from palette and values', () => {
+    const data = new MapPaletteMatrix(3, 3)
+    data.set([
+      c[1], null, c[2],
+      c[2], c[2], c[1],
+      c[1], null, c[3],
+    ])
+
+    data.remove(c[1])
+    expect(data.palette).toEqual([c[2], c[3]])
+    expect(data.values.items).toEqual([
+      -1, -1,  0,
+       0,  0, -1,
+      -1, -1,  1
+    ])
+  })
+
+  it('Should be able to put items in the removed area', () => {
+    const data = new MapPaletteMatrix(3, 3)
+    data.set([
+      c[1], null, c[2],
+      c[2], c[2], c[1],
+      c[1], null, c[3],
+    ])
+
+    data.remove(c[1])
+
+    data.put(c[1], 0, 0)
+    expect(data.palette).toEqual([c[2], c[3], c[1]])
+    expect(data.values.items).toEqual([
+       2, -1,  0,
+       0,  0, -1,
+      -1, -1,  1
+    ])
+  })
+})

@@ -97,6 +97,22 @@ export class MapPaletteMatrix<T> {
     this.set(items)
   }
 
+  remove(target: MapPaletteMatrixItem<T>): boolean {
+    if (!target) return false
+
+    const removePaletteId = this.palette.findIndex(item => item?.identifyKey === target.identifyKey)
+    if (removePaletteId < 0) return false
+
+    this.palette.splice(removePaletteId, 1)
+    this.values.items.forEach((paletteIndex, valueIndex) => {
+      if (paletteIndex === removePaletteId) this.values.items[valueIndex] = -1
+      if (paletteIndex > removePaletteId) this.values.items[valueIndex] = this.values.items[valueIndex] - 1
+    })
+    this._paletteIndexes.delete(target.identifyKey)
+
+    return true
+  }
+
   private _getPaletteIndexFromValue(value: MapPaletteMatrixItem<T>): number {
     if (value === null) return -1
 
