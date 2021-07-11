@@ -112,12 +112,14 @@ export class AutoTileSelectorComponent extends LitElement {
   private setupMapChipSelector() {
     if (!this._project || !this._autoTileSelector) return
 
-    this._autoTileSelector.canvasWidth = this.width
-    const imageSize = this._autoTileSelector.getSizeOfIndexImage()
-    this._indexImage.width = imageSize.width
-    this._indexImage.height = imageSize.height
-    this._autoTileSelector.generateIndexImage(this._indexImage)
-    this.indexImageSrc = this._indexImage.toDataURL()
+    if (this._project.tiledMap.autoTiles.length > 0) {
+      this._autoTileSelector.canvasWidth = this.width
+      const imageSize = this._autoTileSelector.getSizeOfIndexImage()
+      this._indexImage.width = imageSize.width
+      this._indexImage.height = imageSize.height
+      this._autoTileSelector.generateIndexImage(this._indexImage)
+      this.indexImageSrc = this._indexImage.toDataURL()
+    }
   }
 
   mouseMove(e: MouseEvent) {
@@ -188,14 +190,16 @@ export class AutoTileSelectorComponent extends LitElement {
       </style>
 
       <div id="boundary">
-        <img id="chip-image" src="${this.indexImageSrc}">
-        <div
-          class="grid-image grid"
-          @mousemove="${(e: MouseEvent) => this.mouseMove(e)}"
-          @mousedown="${(e: MouseEvent) => this.mouseDown(e)}"
-        ></div>
-        ${this.indexImageSrc ? html`<div class="cursor"></div>` : null}
-        ${(this.indexImageSrc && this.selectedChipX >= 0 && this.selectedChipY >= 0) ? html`<div class="selected"></div>` : null}
+        ${this.indexImageSrc ? html`
+          <img id="chip-image" src="${this.indexImageSrc}">
+          <div
+            class="grid-image grid"
+            @mousemove="${(e: MouseEvent) => this.mouseMove(e)}"
+            @mousedown="${(e: MouseEvent) => this.mouseDown(e)}"
+          ></div>
+          <div class="cursor"></div>
+          ${(this.selectedChipX >= 0 && this.selectedChipY >= 0) ? html`<div class="selected"></div>` : null}
+        ` : null}
       </div>
     `;
   }
