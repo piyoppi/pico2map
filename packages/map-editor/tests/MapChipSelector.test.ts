@@ -83,6 +83,14 @@ describe('#mouseUp', () => {
       new MapChipFragment(1, 2, chipImage.id),
       new MapChipFragment(2, 2, chipImage.id)
     ])
+
+    selector.mouseDown(80, 80)
+    selector.mouseUp(40, 80)
+
+    expect(selector.selectedChips).toEqual([
+      new MapChipFragment(1, 2, chipImage.id),
+      new MapChipFragment(2, 2, chipImage.id)
+    ])
   })
 
   it('Should set selectedChips when the cursor x-position is outside of image', () => {

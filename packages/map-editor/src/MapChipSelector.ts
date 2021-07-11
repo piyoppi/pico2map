@@ -62,7 +62,10 @@ export class MapChipSelector {
   private _selectAtMouseCursor() {
     this.clear()
 
-    const chipPosition = this._startChipPosition
+    const chipPosition = {
+      x: Math.min(this._startChipPosition.x, this._endChipPosition.x),
+      y: Math.min(this._startChipPosition.y, this._endChipPosition.y)
+    }
     const maximumChipCount = this._chipImage.getChipCount(this._tiledMap.chipWidth, this._tiledMap.chipHeight)
     const {width, height} = this.selectedChipSize
 
