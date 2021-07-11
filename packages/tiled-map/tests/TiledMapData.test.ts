@@ -64,25 +64,6 @@ describe('#fromObject', () => {
   })
 })
 
-describe('#remove', () => {
-  it('Should remove mapChip from palette and values', () => {
-    const data = new TiledMapData(3, 3)
-    data.set([
-      c1, null,   c2,
-      c2,   c2,   c1,
-      c1, null,   c3,
-    ])
-
-    data.remove(c1)
-    expect(data.palette).toEqual([c2, c3])
-    expect(data.values.items).toEqual([
-      -1, -1,  0,
-       0,  0, -1,
-      -1, -1,  1
-    ])
-  })
-})
-
 describe('findByImage', () => {
   it('Should return mapChips with a specific image', () => {
     const data = new TiledMapData(3, 3)
