@@ -1,6 +1,5 @@
 import { Projects } from './../src/Projects'
-import { TiledMap } from '@piyoppi/pico2map-tiled'
-import { AutoTile } from '@piyoppi/pico2map-tiled'
+import { TiledMap, AutoTile, MapChipImage } from '@piyoppi/pico2map-tiled'
 
 describe('When add a layer', () => {
   it('Should call registered callback', () => {
@@ -39,6 +38,23 @@ describe('When remove an autoTile', () => {
     project.addAfterRemoveAutoTileCallback(mockFn)
 
     tiledMap.autoTiles.remove(autoTile)
+    expect(mockFn).toBeCalled()
+  })
+})
+
+describe('When replace a MapChipImage', () => {
+  it('Should call registered callback', () => {
+    const tiledMap = new TiledMap(30, 30, 32, 32)
+    const project = Projects.add(tiledMap, 1)
+    const mapChipImage1 = new MapChipImage('dummy1.png', 1)
+    const mapChipImageReplaced = new MapChipImage('dummy1-new.png', 1)
+    tiledMap.mapChipsCollection.push(mapChipImage1)
+
+    const mockFn = jest.fn()
+    project.addAfterReplacedMapChipImageCallback(mockFn)
+
+    tiledMap.mapChipsCollection.replace(mapChipImageReplaced)
+
     expect(mockFn).toBeCalled()
   })
 })

@@ -7,6 +7,7 @@ export class Project {
   private _beforeAddLayerCallbacks = new CallbackCaller()
   private _afterAddAutoTileCallbacks = new CallbackCaller()
   private _afterRemoveAutoTileCallbacks = new CallbackCaller()
+  private _afterReplacedMapChipImageCallbacks = new CallbackCaller()
 
   constructor(
     private _tiledMap: TiledMap,
@@ -16,6 +17,7 @@ export class Project {
     injector.inject(_tiledMap, _tiledMap.addLayer, () => this._beforeAddLayerHandler(), null)
     injector.inject(_tiledMap.autoTiles, _tiledMap.autoTiles.push, null, () => this._afterAddAutoTileHandler())
     injector.inject(_tiledMap.autoTiles, _tiledMap.autoTiles.remove, null, () => this._afterRemoveAutoTileHandler())
+    injector.inject(_tiledMap.mapChipsCollection, _tiledMap.mapChipsCollection.replace, null, () => this._afterReplacedMapChipImageHandler())
   }
 
   get projectId() {
@@ -38,6 +40,10 @@ export class Project {
     this._afterRemoveAutoTileCallbacks.add(callback)
   }
 
+  addAfterReplacedMapChipImageCallback(callback: () => void) {
+    this._afterReplacedMapChipImageCallbacks.add(callback)
+  }
+
   requestRenderAll() {
     this._renderAllFunction.forEach(fn => fn())
   }
@@ -56,6 +62,10 @@ export class Project {
 
   private _afterRemoveAutoTileHandler() {
     this._afterRemoveAutoTileCallbacks.call()
+  }
+
+  private _afterReplacedMapChipImageHandler() {
+    this._afterReplacedMapChipImageCallbacks.call()
   }
 }
 
