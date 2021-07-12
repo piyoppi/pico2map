@@ -30,7 +30,8 @@ export class MapChipSelectorComponent extends LitElement {
   set projectId(value: number) {
     const oldValue = this._projectId
     this._projectId = value
-    this._project = Projects.fromProjectId(value)
+
+    this._setupProject(value)
 
     if (this._project) {
       this.setupMapChipSelector()
@@ -81,6 +82,13 @@ export class MapChipSelectorComponent extends LitElement {
       x: this.cursorChipX * this.gridWidth,
       y: this.cursorChipY * this.gridHeight
     }
+  }
+
+  private _setupProject(projectId: number) {
+    this._project = Projects.fromProjectId(projectId)
+    if (!this._project) return
+
+    this._project.addAfterReplacedMapChipImageCallback(() => this.setupMapChipSelector())
   }
 
   private setupMapChipSelector() {

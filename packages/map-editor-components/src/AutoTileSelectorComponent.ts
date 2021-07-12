@@ -92,6 +92,7 @@ export class AutoTileSelectorComponent extends LitElement {
 
     this._project.addAfterAddAutoTileCallback(() => this.setupMapChipSelector())
     this._project.addAfterRemoveAutoTileCallback(() => this.setupMapChipSelector())
+    this._project.addAfterReplacedMapChipImageCallback(() => this.setupMapChipSelector())
 
     this._autoTileSelector = new AutoTileSelector(
       this.width,
