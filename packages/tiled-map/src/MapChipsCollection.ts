@@ -15,6 +15,15 @@ export class MapChipsCollection {
     this._items.delete(item.id)
   }
 
+  replace(replacement: MapChipImage) {
+    const target = this.findById(replacement.id)
+
+    if (!target) throw new Error('Target MapChipImage cannot be found.')
+
+    this.remove(target)
+    this.push(replacement)
+  }
+
   findById(chipId: number) {
     return this._items.get(chipId) || null
   }

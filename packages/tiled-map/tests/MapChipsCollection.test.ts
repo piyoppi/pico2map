@@ -55,3 +55,29 @@ describe('getItems', () => {
     expect(collection.getItems()).toEqual([mapChipImage1, mapChipImage2])
   })
 })
+
+describe('replace', () => {
+  it('Should throw an error when target MapChipImage is not found', () => {
+    const collection = new MapChipsCollection()
+    const mapChipImage1 = new MapChipImage('dummy1.png', 1)
+    collection.push(mapChipImage1)
+
+    const mapChipImageReplaced = new MapChipImage('dummy2.png', 2)
+
+    expect(() => collection.replace(mapChipImageReplaced)).toThrow()
+  })
+
+  it('Should be replaced MapChipImage', () => {
+    const collection = new MapChipsCollection()
+
+    const mapChipImage1 = new MapChipImage('dummy1.png', 1)
+    const mapChipImage2 = new MapChipImage('dummy2.png', 2)
+    collection.push(mapChipImage1)
+    collection.push(mapChipImage2)
+
+    const mapChipImageReplaced = new MapChipImage('dummy1-new.png', 1)
+
+    collection.replace(mapChipImageReplaced)
+    expect(collection.getItems()).toEqual([mapChipImage2, mapChipImageReplaced])
+  })
+})
