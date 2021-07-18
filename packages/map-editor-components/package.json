@@ -1,6 +1,6 @@
 {
   "name": "@piyoppi/pico2map-ui-components",
-  "version": "0.0.41",
+  "version": "0.0.42",
   "description": "pico2map Web Components",
   "main": "dist/main.js",
   "repository": {
@@ -18,9 +18,9 @@
     "ts-loader": "^8.0.14",
     "webpack": "^5.17.0",
     "webpack-cli": "^4.4.0",
-    "@piyoppi/pico2map-tiled": "0.0.41",
-    "@piyoppi/pico2map-editor": "0.0.41",
-    "@piyoppi/pico2map-tiled-colision-detector": "0.0.41"
+    "@piyoppi/pico2map-tiled": "0.0.42",
+    "@piyoppi/pico2map-editor": "0.0.42",
+    "@piyoppi/pico2map-tiled-colision-detector": "0.0.42"
   },
   "scripts": {
     "test": "jest",
