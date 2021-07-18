@@ -53,6 +53,8 @@ export class AutoTileSelector {
     const indexImageContext: CanvasRenderingContext2D | null = canvas.getContext('2d')
     if (!indexImageContext) return
 
+    indexImageContext.clearRect(0, 0, canvas.width, canvas.height)
+
     this._autoTilesMap.clear()
 
     const xCount = Math.floor(this._canvasWidth / this._chipWidth)
