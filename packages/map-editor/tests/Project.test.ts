@@ -58,3 +58,17 @@ describe('When replace a MapChipImage', () => {
     expect(mockFn).toBeCalled()
   })
 })
+
+describe('When the map is resized', () => {
+  it('Should call registered callback', () => {
+    const tiledMap = new TiledMap(30, 30, 32, 32)
+    const project = Projects.add(tiledMap, 1)
+
+    const mockFn = jest.fn()
+    project.addAfterResizedMapCallback(mockFn)
+
+    tiledMap.resize(10, 10)
+
+    expect(mockFn).toBeCalled()
+  })
+})
