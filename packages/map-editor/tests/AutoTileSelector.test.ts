@@ -31,8 +31,9 @@ describe('generateIndexImage', () => {
     const drawImageMock = jest.fn()
     const dummyCanvas = {
       getContext: () => ({
-        drawImage: drawImageMock
-      })
+        drawImage: drawImageMock,
+        clearRect: jest.fn()
+      }),
     }
 
     selector.generateIndexImage(dummyCanvas as any)
