@@ -160,6 +160,14 @@ export class MapCanvasComponent extends LitElement {
       this.setActiveAutoTile()
       this.requestUpdate()
       this._project.addBeforeAddLayerCallback(() => this._mapCanvas.addCanvas(this.addCanvasToDOMTree()))
+      this._project.addAfterResizedMapCallback(() => {
+        this.requestUpdate()
+        this._mapCanvas.canvases.forEach(canvas => {
+          canvas.width = this.width
+          canvas.height = this.height
+        })
+        this._mapCanvas.renderAll()
+      })
     }
   }
 
