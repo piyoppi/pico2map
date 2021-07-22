@@ -68,6 +68,10 @@ export class MapCanvas implements EditorCanvas {
     return this._mapChipPickerEnabled
   }
 
+  get canvases() {
+    return this._canvases
+  }
+
   hasActiveAutoTile() {
     return !!this._selectedAutoTile
   }
