@@ -20,4 +20,11 @@ describe('#pick', () => {
     expect(picker.pick(1, 0)).toEqual(c1)
     expect(picker.pick(2, 0)).toEqual(null)
   })
+
+  it('Should picking a map chip from the specific layer when layer index is given', () => {
+    const picker = new MapChipPicker(tiledMap)
+
+    expect(picker.pick(0, 0, 0)).toEqual(c1)
+    expect(picker.pick(0, 0, 1)).toEqual(c2)
+  })
 })

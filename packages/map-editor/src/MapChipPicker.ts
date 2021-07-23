@@ -7,7 +7,11 @@ export class MapChipPicker {
 
   }
 
-  pick(x: number, y: number): TiledMapDataItem {
+  pick(x: number, y: number, layerIndex?: number): TiledMapDataItem {
+    if (layerIndex !== undefined) {
+      return this._tiledMap.datas[layerIndex].getFromChipPosition(x, y)
+    }
+
     return this._tiledMap.datas.reduce((acc: TiledMapDataItem, data) => {
       const chip = data.getFromChipPosition(x, y)
       if (chip) return chip
