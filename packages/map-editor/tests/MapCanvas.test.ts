@@ -171,7 +171,9 @@ describe('#putChip', () => {
 
 describe('#mouseDown', () => {
   const c1Fragments = [new MapChipFragment(1, 0, 0)]
+  const c2Fragments = [new MapChipFragment(2, 0, 0)]
   const c1 = new MapChip(c1Fragments)
+  const c2 = new MapChip(c2Fragments)
   const autoTileFragments = [new MapChipFragment(2, 0, 0)]
   const autoTileMapChip = new AutoTileMapChip(1, autoTileFragments, '')
   const autoTile = new AutoTile(autoTileFragments, 1)
@@ -183,8 +185,10 @@ describe('#mouseDown', () => {
 
   function mapCanvasFactory() {
     const tiledMap = new TiledMap(3, 3, 32, 32)
+    tiledMap.addLayer()
     tiledMap.autoTiles.push(autoTile)
     tiledMap.put(c1, 0, 0, 0)
+    tiledMap.put(c2, 0, 0, 1)
     tiledMap.put(autoTileMapChip, 2, 0, 0)
 
     const project = Projects.add(tiledMap)
@@ -237,6 +241,19 @@ describe('#mouseDown', () => {
   it('Should picked a mapchip when the cursor is over the mapchip', () => {
     const {mapCanvas, brush} = mapCanvasFactory()
 
+    mapCanvas.mouseDown(0, 0, true)
+    expect(mapCanvas.isMouseDown).toEqual(false)
+    expect(brush.mouseDown).not.toBeCalled()
+    expect(brush.mouseMove).not.toBeCalled()
+    expect(mapCanvas.selectedMapChipFragments).toEqual(c2Fragments)
+    expect(pickedEventHandler).toBeCalledWith(c2)
+  })
+
+  it('Should picked a mapchip from an active layer when isPickFromActiveLayer is true', () => {
+    const {mapCanvas, brush} = mapCanvasFactory()
+
+    mapCanvas.isPickFromActiveLayer = true
+    mapCanvas.setActiveLayer(0)
     mapCanvas.mouseDown(0, 0, true)
     expect(mapCanvas.isMouseDown).toEqual(false)
     expect(brush.mouseDown).not.toBeCalled()

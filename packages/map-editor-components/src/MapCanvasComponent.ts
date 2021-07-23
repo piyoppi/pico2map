@@ -128,6 +128,14 @@ export class MapCanvasComponent extends LitElement {
     this.setInactiveCanvasStyle()
   }
 
+  @property({type: Boolean})
+  get pickFromActiveLayer() {
+    return this._mapCanvas.isPickFromActiveLayer
+  }
+  set pickFromActiveLayer(value: boolean) {
+    this._mapCanvas.isPickFromActiveLayer = value
+  }
+
   private get width() {
     return this.xCount * this.gridWidth
   }
