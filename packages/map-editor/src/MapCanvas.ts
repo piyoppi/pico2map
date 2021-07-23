@@ -29,6 +29,7 @@ export class MapCanvas implements EditorCanvas {
   private _mapChipPickerEnabled = true
   private _mapChipPicker: MapChipPicker | null = null
   private _pickedCallback: PickedCallbackFn | null = null
+  private _isPickFromActiveLayer = false
 
   constructor(
   ) {
@@ -70,6 +71,14 @@ export class MapCanvas implements EditorCanvas {
 
   get canvases() {
     return this._canvases
+  }
+
+  get isPickFromActiveLayer() {
+    return this._isPickFromActiveLayer
+  }
+
+  set isPickFromActiveLayer(value) {
+    this._isPickFromActiveLayer = value
   }
 
   hasActiveAutoTile() {
@@ -267,7 +276,8 @@ export class MapCanvas implements EditorCanvas {
   }
 
   private pick(x: number, y: number) {
-    const picked = this._mapChipPicker?.pick(x, y) || null
+    if (!this._mapChipPicker) return;
+    const picked = this._isPickFromActiveLayer ? this._mapChipPicker?.pick(x, y, this._activeLayerIndex) : this._mapChipPicker?.pick(x, y)
 
     if (isAutoTileMapChip(picked)) {
       const autoTile = this.project.tiledMap.autoTiles.fromId(picked.autoTileId)
