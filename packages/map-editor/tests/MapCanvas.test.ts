@@ -28,15 +28,27 @@ describe('#setActiveLayer', () => {
     const tiledMap = new TiledMap(30, 30, 32, 32)
     const project = Projects.add(tiledMap)
     const mapCanvas = new MapCanvas()
+
+    const brush = new EmptyBrush()
+    const arrangement = new DummyAutoTileArrangement()
+    brush.setArrangement = jest.fn()
+    arrangement.setTiledMapData = jest.fn()
+    mapCanvas.setBrush(brush)
+    mapCanvas.setArrangement(arrangement)
+
     mapCanvas.setProject(project)
     
     tiledMap.addLayer()
 
     mapCanvas.setActiveLayer(1)
+
     expect(mapCanvas.activeLayer).toEqual(1)
 
     // Layer 2 is out of range.
     expect(() => mapCanvas.setActiveLayer(2)).toThrow()
+
+    expect(brush.setArrangement).toBeCalled()
+    expect(arrangement.setTiledMapData).toBeCalled()
   })
 })
 
