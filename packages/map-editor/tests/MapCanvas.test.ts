@@ -115,7 +115,6 @@ describe('#setCanvases', () => {
   })
 
   it('Should not call rendering function when projectId is not given.', async () => {
-    const tiledMap = new TiledMap(30, 30, 32, 32)
     const mapCanvas = new MapCanvas()
     mapCanvas.renderAll = jest.fn()
 
