@@ -161,6 +161,8 @@ export class MapCanvas implements EditorCanvas {
     }
 
     this._activeLayerIndex = index
+
+    this._setupBrush()
   }
 
   setMapChipPickerEnabled(value: boolean) {
