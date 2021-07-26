@@ -168,11 +168,23 @@ describe('#clone', () => {
     const data = new MapPaletteMatrix(3, 3, source)
 
     const cloned = data.clone()
-    expect(data).not.toEqual(cloned)
     expect(data.width).toEqual(cloned.width)
     expect(data.height).toEqual(cloned.height)
     expect(data.values.items).toEqual(cloned.values.items)
     expect(data.palette).toEqual(cloned.palette)
+  })
+
+  it('Should not be changed some properties when the property of cloned item is changed', () => {
+    const source = [
+      c[1], c[0], c[2],
+      c[2], c[2], c[1],
+      c[1], null, c[1],
+    ]
+    const data = new MapPaletteMatrix(3, 3, source)
+
+    const cloned = data.clone()
+    data.put(c[1], 1, 2)
+    expect(data).not.toEqual(cloned)
   })
 })
 

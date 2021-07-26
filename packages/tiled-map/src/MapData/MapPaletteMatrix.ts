@@ -54,8 +54,8 @@ export class MapPaletteMatrix<T> {
   setValuePalette(values: Array<number>, palette: Array<MapPaletteMatrixItem<T>>) {
     if (values.length !== this._values.items.length) throw new Error()
 
-    this._values.set(values)
-    this._palette = palette
+    this._values.set([...values])
+    this._palette = [...palette]
 
     this._paletteIndexes.clear()
     this._palette.forEach((paletteItem, index) => {
