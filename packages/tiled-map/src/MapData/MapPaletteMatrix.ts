@@ -56,6 +56,13 @@ export class MapPaletteMatrix<T> {
 
     this._values.set(values)
     this._palette = palette
+
+    this._paletteIndexes.clear()
+    this._palette.forEach((paletteItem, index) => {
+      if (!paletteItem) return
+
+      this._paletteIndexes.set(paletteItem.identifyKey, index)
+    })
   }
 
   transferFromTiledMapData(src: MapPaletteMatrix<T>, srcX: number, srcY: number, width: number, height: number, destX: number, destY: number) {

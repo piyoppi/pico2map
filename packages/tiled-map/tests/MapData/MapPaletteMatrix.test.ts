@@ -194,6 +194,9 @@ describe('#setValuePalette', () => {
       0, -1, 0
     ])
     expect(data.palette).toEqual([c[1], c[0], c[2]])
+    expect(data.getPaletteIndex(c[0])).toEqual(1)
+    expect(data.getPaletteIndex(c[1])).toEqual(0)
+    expect(data.getPaletteIndex(c[2])).toEqual(2)
   })
 })
 
