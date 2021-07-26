@@ -104,10 +104,16 @@ export class MapPaletteMatrix<T> {
     if (removePaletteId < 0) return false
 
     this.palette.splice(removePaletteId, 1)
+
     this.values.items.forEach((paletteIndex, valueIndex) => {
       if (paletteIndex === removePaletteId) this.values.items[valueIndex] = -1
       if (paletteIndex > removePaletteId) this.values.items[valueIndex] = this.values.items[valueIndex] - 1
     })
+
+    for (const [k, v] of this._paletteIndexes.entries()) {
+      if (v > removePaletteId) this._paletteIndexes.set(k, v - 1)
+    }
+
     this._paletteIndexes.delete(target.identifyKey)
 
     return true

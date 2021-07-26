@@ -299,15 +299,17 @@ describe('#remove', () => {
     const data = new MapPaletteMatrix(3, 3)
     data.set([
       c[1], null, c[2],
-      c[2], c[2], c[1],
-      c[1], null, c[3],
+      c[2], c[4], c[1],
+      c[0], null, c[3],
     ])
 
-    data.remove(c[2])
-    expect(data.palette).toEqual([c[1], c[3]])
+    data.remove(c[4])
+    expect(data.palette).toEqual([c[1], c[2], c[0], c[3]])
+    expect(data.getPaletteIndex(c[0])).toEqual(2)
     expect(data.getPaletteIndex(c[1])).toEqual(0)
-    expect(data.getPaletteIndex(c[2])).toEqual(undefined)
-    expect(data.getPaletteIndex(c[3])).toEqual(1)
+    expect(data.getPaletteIndex(c[2])).toEqual(1)
+    expect(data.getPaletteIndex(c[3])).toEqual(3)
+    expect(data.getPaletteIndex(c[4])).toEqual(undefined)
   })
 
   it('Should be able to put items in the removed area', () => {
