@@ -48,7 +48,7 @@ export class MapPaletteMatrix<T> {
   set(items: Array<MapPaletteMatrixItem<T>>) {
     if (items.length !== this._values.items.length) throw new Error()
 
-    this._values.set(items.map(value => this._getPaletteIndexFromValue(value)))
+    this._values.set(items.map(value => this._getOrGeneratePaletteIndex(value)))
   }
 
   setValuePalette(values: Array<number>, palette: Array<MapPaletteMatrixItem<T>>) {
@@ -64,13 +64,13 @@ export class MapPaletteMatrix<T> {
       src.width, src.height, this.width, this.height,
       (pickupX, pickupY, putX, putY) => {
         const item = src.getFromChipPosition(pickupX, pickupY)
-        this._values.put(this._getPaletteIndexFromValue(item), putX, putY)
+        this._values.put(this._getOrGeneratePaletteIndex(item), putX, putY)
       }
     )
   }
 
   resize(chipCountX: number, chipCountY: number, emptyValue: MapPaletteMatrixItem<T>) {
-    this._values.resize(chipCountX, chipCountY, this._getPaletteIndexFromValue(emptyValue))
+    this._values.resize(chipCountX, chipCountY, this._getOrGeneratePaletteIndex(emptyValue))
   }
 
   getFromChipPosition(x: number, y: number): MapPaletteMatrixItem<T> {
@@ -80,7 +80,7 @@ export class MapPaletteMatrix<T> {
   }
 
   put(item: MapPaletteMatrixItem<T>, x: number, y: number) {
-    this._values.put(this._getPaletteIndexFromValue(item), x, y)
+    this._values.put(this._getOrGeneratePaletteIndex(item), x, y)
   }
 
   clone() {
@@ -113,10 +113,16 @@ export class MapPaletteMatrix<T> {
     return true
   }
 
-  private _getPaletteIndexFromValue(value: MapPaletteMatrixItem<T>): number {
+  getPaletteIndex(value: MapPaletteMatrixItem<T>) {
     if (value === null) return -1
 
-    const index = this._paletteIndexes.get(value.identifyKey)
+    return this._paletteIndexes.get(value.identifyKey)
+  }
+
+  private _getOrGeneratePaletteIndex(value: MapPaletteMatrixItem<T>): number {
+    if (value === null) return -1
+
+    const index = this.getPaletteIndex(value)
     if (index !== undefined) return index
 
     this._palette.push(value)

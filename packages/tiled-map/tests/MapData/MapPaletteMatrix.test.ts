@@ -295,6 +295,21 @@ describe('#remove', () => {
     ])
   })
 
+  it('Should rebuild the palette index', () => {
+    const data = new MapPaletteMatrix(3, 3)
+    data.set([
+      c[1], null, c[2],
+      c[2], c[2], c[1],
+      c[1], null, c[3],
+    ])
+
+    data.remove(c[2])
+    expect(data.palette).toEqual([c[1], c[3]])
+    expect(data.getPaletteIndex(c[1])).toEqual(0)
+    expect(data.getPaletteIndex(c[2])).toEqual(undefined)
+    expect(data.getPaletteIndex(c[3])).toEqual(1)
+  })
+
   it('Should be able to put items in the removed area', () => {
     const data = new MapPaletteMatrix(3, 3)
     data.set([
