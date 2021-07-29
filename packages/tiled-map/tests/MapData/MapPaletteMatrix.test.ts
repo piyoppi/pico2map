@@ -209,6 +209,38 @@ describe('#setValuePalette', () => {
     expect(data.getPaletteIndex(c[0])).toEqual(1)
     expect(data.getPaletteIndex(c[1])).toEqual(0)
     expect(data.getPaletteIndex(c[2])).toEqual(2)
+    expect(data.items).toEqual([
+      c[1], c[0], c[2],
+      c[2], c[2], c[1],
+      c[1], null, c[1],
+    ])
+  })
+
+  it('Should set values and the palette when the palette has duplicate items', () => {
+    const data = new MapPaletteMatrix(3, 3)
+    data.setValuePalette(
+      [
+        1,  0, 2,
+        3,  2, 0,
+        0, -1, 0
+      ],
+      [c[1], c[2], c[0], c[2]]
+    )
+
+    expect(data.values.items).toEqual([
+        0,  1, 2,
+        0,  2, 1,
+        1, -1, 1
+    ])
+    expect(data.palette).toEqual([c[2], c[1], c[0]])
+    expect(data.getPaletteIndex(c[0])).toEqual(2)
+    expect(data.getPaletteIndex(c[1])).toEqual(1)
+    expect(data.getPaletteIndex(c[2])).toEqual(0)
+    expect(data.items).toEqual([
+      c[2], c[1], c[0],
+      c[2], c[0], c[1],
+      c[1], null, c[1],
+    ])
   })
 })
 
