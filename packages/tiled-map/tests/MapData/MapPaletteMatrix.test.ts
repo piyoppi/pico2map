@@ -168,11 +168,23 @@ describe('#clone', () => {
     const data = new MapPaletteMatrix(3, 3, source)
 
     const cloned = data.clone()
-    expect(data).not.toEqual(cloned)
     expect(data.width).toEqual(cloned.width)
     expect(data.height).toEqual(cloned.height)
     expect(data.values.items).toEqual(cloned.values.items)
     expect(data.palette).toEqual(cloned.palette)
+  })
+
+  it('Should not be changed some properties when the property of cloned item is changed', () => {
+    const source = [
+      c[1], c[0], c[2],
+      c[2], c[2], c[1],
+      c[1], null, c[1],
+    ]
+    const data = new MapPaletteMatrix(3, 3, source)
+
+    const cloned = data.clone()
+    data.put(c[1], 1, 2)
+    expect(data).not.toEqual(cloned)
   })
 })
 
@@ -194,6 +206,41 @@ describe('#setValuePalette', () => {
       0, -1, 0
     ])
     expect(data.palette).toEqual([c[1], c[0], c[2]])
+    expect(data.getPaletteIndex(c[0])).toEqual(1)
+    expect(data.getPaletteIndex(c[1])).toEqual(0)
+    expect(data.getPaletteIndex(c[2])).toEqual(2)
+    expect(data.items).toEqual([
+      c[1], c[0], c[2],
+      c[2], c[2], c[1],
+      c[1], null, c[1],
+    ])
+  })
+
+  it('Should set values and the palette when the palette has duplicate items', () => {
+    const data = new MapPaletteMatrix(3, 3)
+    data.setValuePalette(
+      [
+        1,  0, 2,
+        3,  2, 0,
+        0, -1, 0
+      ],
+      [c[1], c[2], c[0], c[2]]
+    )
+
+    expect(data.values.items).toEqual([
+        0,  1, 2,
+        0,  2, 1,
+        1, -1, 1
+    ])
+    expect(data.palette).toEqual([c[2], c[1], c[0]])
+    expect(data.getPaletteIndex(c[0])).toEqual(2)
+    expect(data.getPaletteIndex(c[1])).toEqual(1)
+    expect(data.getPaletteIndex(c[2])).toEqual(0)
+    expect(data.items).toEqual([
+      c[2], c[1], c[0],
+      c[2], c[0], c[1],
+      c[1], null, c[1],
+    ])
   })
 })
 
@@ -293,6 +340,23 @@ describe('#remove', () => {
        0,  0, -1,
       -1, -1,  1
     ])
+  })
+
+  it('Should rebuild the palette index', () => {
+    const data = new MapPaletteMatrix(3, 3)
+    data.set([
+      c[1], null, c[2],
+      c[2], c[4], c[1],
+      c[0], null, c[3],
+    ])
+
+    data.remove(c[4])
+    expect(data.palette).toEqual([c[1], c[2], c[0], c[3]])
+    expect(data.getPaletteIndex(c[0])).toEqual(2)
+    expect(data.getPaletteIndex(c[1])).toEqual(0)
+    expect(data.getPaletteIndex(c[2])).toEqual(1)
+    expect(data.getPaletteIndex(c[3])).toEqual(3)
+    expect(data.getPaletteIndex(c[4])).toEqual(undefined)
   })
 
   it('Should be able to put items in the removed area', () => {
