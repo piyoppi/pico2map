@@ -86,7 +86,6 @@ describe('import', () => {
   })
 
   it('A unique id should be assigned to AutoTile', () => {
-    const strategy = new DummyAutoTileImportStrategy(mapChipImage1)
     const autoTiles = new AutoTiles()
 
     autoTiles.fromObject({
@@ -96,7 +95,12 @@ describe('import', () => {
       ]
     })
 
-    const imported = autoTiles.import(strategy)
-    expect(imported[0].id).toEqual(4)
+    const imported1 = autoTiles.import(new DummyAutoTileImportStrategy(mapChipImage1))
+    expect(imported1[0].id).toEqual(4)
+
+    autoTiles.push(new AutoTile([c2], 5))
+
+    const imported2 = autoTiles.import(new DummyAutoTileImportStrategy(mapChipImage2))
+    expect(imported2[0].id).toEqual(6)
   })
 })
