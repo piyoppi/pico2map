@@ -16,6 +16,7 @@ export class AutoTiles {
 
   push(item: AutoTile) {
     this._autoTiles.set(item.id, item)
+    this._maxId = Math.max(this._maxId, item.id)
   }
 
   remove(item: AutoTile) {
@@ -64,7 +65,9 @@ export class AutoTiles {
     this._autoTiles.clear()
 
     val.autoTiles.forEach(objectedAutoTile => {
-      this.push(AutoTile.fromObject(objectedAutoTile))
+      const autoTile = AutoTile.fromObject(objectedAutoTile)
+      this.push(autoTile)
+      this._maxId = Math.max(this._maxId, autoTile.id)
     })
   }
 }
