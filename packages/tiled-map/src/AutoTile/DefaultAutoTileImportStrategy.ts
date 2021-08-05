@@ -14,11 +14,16 @@ export class DefaultAutoTileImportStrategy implements AutoTileImportStrategy {
   }
 
   getMapChipFragments() {
+    const heightChipCountPerUnit = 5
     const countX = Math.floor(this._mapChipImage.image.width / this._chipWidth)
-    const countY = Math.floor(this._mapChipImage.image.height / this._chipHeight)
+    const countY = Math.floor(
+      Math.floor(this._mapChipImage.image.height / this._chipHeight) / heightChipCountPerUnit
+    )
     const mapChipFragmentGroups: MapChipFragmentGroups = []
 
-    for (let y = 0; y < countY; y += 5) {
+    for (let cy = 0; cy < countY; cy++) {
+      const y = cy * heightChipCountPerUnit
+
       for (let x = 0; x < countX; x++) {
         const mapChipFragments: MapChipFragments = []
         mapChipFragments.push(new MapChipFragment(x, y, this._mapChipImage.id))
