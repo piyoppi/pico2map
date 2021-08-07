@@ -30,6 +30,7 @@ export class MapCanvas implements EditorCanvas {
   private _mapChipPicker: MapChipPicker | null = null
   private _pickedCallback: PickedCallbackFn | null = null
   private _isPickFromActiveLayer = false
+  private _isRenderOnlyActiveLayer = false
 
   constructor(
   ) {
@@ -81,6 +82,14 @@ export class MapCanvas implements EditorCanvas {
     this._isPickFromActiveLayer = value
   }
 
+  get isRenderOnlyActiveLayer() {
+    return this._isRenderOnlyActiveLayer
+  }
+
+  set isRenderOnlyActiveLayer(value: boolean) {
+    this._isRenderOnlyActiveLayer = value
+  }
+
   hasActiveAutoTile() {
     return !!this._selectedAutoTile
   }
@@ -102,7 +111,11 @@ export class MapCanvas implements EditorCanvas {
   renderAll() {
     if (!this.renderable) return
     const renderer = this.renderer
-    this._canvasContexts.forEach((ctx, index) => renderer.renderLayer(index, ctx))
+    this._canvasContexts.forEach((ctx, index) => {
+      if (this._isRenderOnlyActiveLayer && index !== this._activeLayerIndex) return
+
+      renderer.renderLayer(index, ctx)
+    })
   }
 
   setCanvases(canvases: Array<HTMLCanvasElement>, secondaryCanvas: HTMLCanvasElement) {
