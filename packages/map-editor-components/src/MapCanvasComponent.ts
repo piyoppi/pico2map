@@ -45,12 +45,6 @@ export class MapCanvasComponent extends LitElement {
 
     this.setInactiveCanvasStyle()
 
-    if (value > 0 && this._mapCanvas.isRenderOnlyActiveLayer) {
-      this._mapCanvas.renderAll()
-    }
-
-    this._mapCanvas.isRenderOnlyActiveLayer = (value === 0)
-
     this.requestUpdate('inactiveLayerOpacity', oldValue);
   }
 
