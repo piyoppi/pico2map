@@ -127,8 +127,6 @@ describe('#setCanvases', () => {
 describe('#renderAll', () => {
   it('Should call rendering function each layers', async () => {
     const tiledMap = new TiledMap(30, 30, 32, 32)
-    tiledMap.addLayer()
-
     const project = Projects.add(tiledMap)
     const mapCanvas = new MapCanvas()
     await mapCanvas.setProject(project)
@@ -141,28 +139,6 @@ describe('#renderAll', () => {
     mapCanvas.renderAll()
 
     expect(mapCanvas.renderer.renderLayer).toBeCalledTimes(2)
-  })
-
-  it('Should call rendering function only active layer', async () => {
-    const tiledMap = new TiledMap(30, 30, 32, 32)
-    tiledMap.addLayer()
-
-    const project = Projects.add(tiledMap)
-
-    const mapCanvas = new MapCanvas()
-    await mapCanvas.setProject(project)
-    mapCanvas.isRenderOnlyActiveLayer = true
-    mapCanvas.setActiveLayer(1)
-
-    mapCanvas.renderer.renderLayer = jest.fn()
-    mapCanvas.setCanvases([mockedCanvas, mockedCanvasLayer1] as any, mockedSecondaryCanvas as any)
-
-    // Reset renderLayer mock because renderAll is invoked by `mapCanvas.setCanvases`
-    mapCanvas.renderer.renderLayer = jest.fn()
-    mapCanvas.renderAll()
-
-    expect(mapCanvas.renderer.renderLayer).toBeCalledTimes(1)
-    expect(mapCanvas.renderer.renderLayer).toBeCalledWith(1, expect.anything())
   })
 })
 
