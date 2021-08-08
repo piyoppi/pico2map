@@ -120,6 +120,8 @@ export class AutoTileSelectorComponent extends LitElement {
       this._indexImage.height = imageSize.height
       this._autoTileSelector.generateIndexImage(this._indexImage)
       this.indexImageSrc = this._indexImage.toDataURL()
+    } else {
+      this.reset()
     }
   }
 
