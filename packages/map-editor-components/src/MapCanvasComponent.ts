@@ -191,6 +191,8 @@ export class MapCanvasComponent extends LitElement {
   private setupCanvas(canvas: HTMLCanvasElement) {
     canvas.width = this.width
     canvas.height = this.height
+    const ctx = canvas.getContext('2d')
+    ctx?.clearRect(0, 0, this.width, this.height)
   }
 
   private addCanvasToDOMTree(): HTMLCanvasElement {
