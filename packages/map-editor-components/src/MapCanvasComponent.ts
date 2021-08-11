@@ -11,6 +11,7 @@ export class MapCanvasComponent extends LitElement {
   private _canvasesOuterElement : HTMLCanvasElement | null = null
   private _autoTileIdAttributeValue: number = -1
   private _inactiveLayerOpacity = 1.0
+  private _appendedLayerCanvases: Array<HTMLCanvasElement> = []
 
   private _documentMouseMoveEventCallee: ((e: MouseEvent) => void) | null = null
   private _documentMouseUpEventCallee: ((e: MouseEvent) => void) | null = null
@@ -181,22 +182,35 @@ export class MapCanvasComponent extends LitElement {
 
   private createCanvas() {
     const canvas = document.createElement('canvas')
+    this.setupCanvas(canvas)
     canvas.width = this.width
     canvas.height = this.height
     return canvas
   }
 
+  private setupCanvas(canvas: HTMLCanvasElement) {
+    canvas.width = this.width
+    canvas.height = this.height
+    const ctx = canvas.getContext('2d')
+    ctx?.clearRect(0, 0, this.width, this.height)
+  }
+
   private addCanvasToDOMTree(): HTMLCanvasElement {
     if (!this._canvasesOuterElement) throw new Error()
+
     const canvas = this.createCanvas()
     this._canvasesOuterElement.appendChild(canvas)
+    this._appendedLayerCanvases.push(canvas)
+
     return canvas
   }
 
-  private _createCanvases(): Array<HTMLCanvasElement> {
-    if (!this._project || !this._canvasesOuterElement) throw new Error()
+  private removeCanvasToDOMTree(index: number) {
+    if (!this._canvasesOuterElement) throw new Error()
 
-    return this._project.tiledMap.datas.map(_ => this.addCanvasToDOMTree())
+    const canvas = this._appendedLayerCanvases[index]
+    this._canvasesOuterElement.removeChild(canvas)
+    this._appendedLayerCanvases.splice(index, 1)
   }
 
   private setActiveAutoTile(forced: boolean = false) {
@@ -213,9 +227,23 @@ export class MapCanvasComponent extends LitElement {
     if (!this._project || !this._secondaryCanvasElement || !this._canvasesOuterElement) return
 
     this._mapCanvas.setProject(this._project)
-    if (this._canvasesOuterElement.childNodes.length === 0) {
-      this._mapCanvas.setCanvases(this._createCanvases(), this._secondaryCanvasElement)
+
+    const diffCanvasCount = this._project.tiledMap.datas.length - this._appendedLayerCanvases.length
+
+    this._appendedLayerCanvases.forEach(canvas => this.setupCanvas(canvas))
+
+    if (diffCanvasCount > 0) {
+      for (let i = 0; i < diffCanvasCount; i++) {
+        this.addCanvasToDOMTree()
+      }
+    } else if (diffCanvasCount < 0) {
+      const layerCanvasesLength = this._appendedLayerCanvases.length
+      for (let i = layerCanvasesLength - 1; i > -diffCanvasCount; i--) {
+        this.removeCanvasToDOMTree(i)
+      }
     }
+
+    this._mapCanvas.setCanvases(this._appendedLayerCanvases, this._secondaryCanvasElement)
 
     this._mapCanvas.setBrushFromName(this._brushName)
     this._mapCanvas.setArrangementFromName(this._arrangementName)
