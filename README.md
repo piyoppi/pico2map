@@ -4,6 +4,8 @@ Map editor for game development that runs in a browser.
 
 example: https://garakuta-toolbox.com/pico2map/simple_map_editor/
 
+This library is still under development and will be upgraded frequently.
+
 ## Install
 
 To get packages from github, you should edit `.npmrc` file. Show an example below.
