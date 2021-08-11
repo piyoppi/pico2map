@@ -1,6 +1,6 @@
 {
   "name": "pico2map",
-  "version": "0.0.48",
+  "version": "0.0.49",
   "description": "",
   "main": "src/main.js",
   "workspaces": [
