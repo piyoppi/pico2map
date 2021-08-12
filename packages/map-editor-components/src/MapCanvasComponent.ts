@@ -58,7 +58,7 @@ export class MapCanvasComponent extends LitElement {
     const oldValue = this._projectId
     this._projectId = value
 
-    this.setupProject(true)
+    this.setupProject()
 
     this.requestUpdate('projectId', oldValue);
   }
@@ -161,8 +161,8 @@ export class MapCanvasComponent extends LitElement {
     return this._project?.tiledMap.chipHeight || 0 
   }
 
-  private setupProject(forced: boolean = false) {
-    if (!this._project || forced) {
+  private setupProject() {
+    if (!this._project || this._project.projectId !== this._projectId) {
       this._project = Projects.fromProjectId(this._projectId)
       if (!this._project) return
       this._mapCanvas.setProject(this._project)
