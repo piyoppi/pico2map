@@ -66,14 +66,15 @@ describe('#setProject', () => {
 
   it('Should re-create MapRenderer when project was set again', () => {
     const tiledMap = new TiledMap(30, 30, 32, 32)
-    const project = Projects.add(tiledMap)
+    const project1 = Projects.add(tiledMap)
+    const project2 = Projects.add(tiledMap)
     const mapCanvas = new MapCanvas()
 
-    mapCanvas.setProject(project)
+    mapCanvas.setProject(project1)
     const previousRenderer = mapCanvas.renderer
     expect(mapCanvas.renderer).toBe(previousRenderer)
 
-    mapCanvas.setProject(project)
+    mapCanvas.setProject(project2)
     expect(mapCanvas.renderer).not.toBe(previousRenderer)
   })
 
@@ -98,6 +99,16 @@ describe('#setProject', () => {
     await mapCanvas.setProject(project)
 
     expect(mapCanvas.renderAll).not.toBeCalledTimes(1)
+  })
+
+  it('Should throw a error when project has already been set', async () => {
+    const tiledMap = new TiledMap(30, 30, 32, 32)
+    const project = Projects.add(tiledMap)
+    const mapCanvas = new MapCanvas()
+
+    await mapCanvas.setProject(project)
+
+    await expect(() => mapCanvas.setProject(project)).rejects.toThrow('This project has already been set.')
   })
 })
 
