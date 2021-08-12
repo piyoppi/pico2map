@@ -110,6 +110,24 @@ describe('#setProject', () => {
 
     await expect(() => mapCanvas.setProject(project)).rejects.toThrow('This project has already been set.')
   })
+
+  it('Set up brush and arrangement', async () => {
+    const tiledMap = new TiledMap(30, 30, 32, 32)
+    const project = Projects.add(tiledMap)
+    const mapCanvas = new MapCanvas()
+    const brush = new EmptyBrush()
+    const arrangement = new DummyAutoTileArrangement()
+
+    brush.setArrangement = jest.fn()
+    mapCanvas.setBrush(brush)
+    mapCanvas.setArrangement(arrangement)
+
+    expect(brush.setArrangement).not.toBeCalled()
+
+    await mapCanvas.setProject(project)
+
+    expect(brush.setArrangement).toBeCalled()
+  })
 })
 
 describe('#setCanvases', () => {

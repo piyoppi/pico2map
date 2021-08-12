@@ -90,6 +90,7 @@ export class MapCanvas implements EditorCanvas {
     this._project = project
     this._renderer = new MapRenderer(this._project.tiledMap)
     this._mapChipPicker = new MapChipPicker(this._project.tiledMap)
+    this._setupBrush()
 
     this._project.registerRenderAllCallback(() => this.renderAll())
 
