@@ -161,6 +161,14 @@ export class MapCanvasComponent extends LitElement {
     return this._project?.tiledMap.chipHeight || 0 
   }
 
+  get mapCanvas() {
+    return this._mapCanvas
+  }
+
+  set mapCanvas(value: MapCanvas) {
+    this._mapCanvas = value
+  }
+
   private setupProject() {
     if (!this._project || this._project.projectId !== this._projectId) {
       this._project = Projects.fromProjectId(this._projectId)
