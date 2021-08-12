@@ -31,26 +31,21 @@ function setProjectId(id: number) {
   coliderCanvas.setAttribute('projectId', id.toString())
 }
 
-async function setMapChip(tiledMap: TiledMap, chipSize: {width: number, height: number}) {
+async function initialize() {
   const mapChipImage = new MapChipImage("images/chip.png", 1)
   const autoTileImage = new MapChipImage("images/auto-tile-sample.png", 2)
-
   await mapChipImage.waitWhileLoading()
   await autoTileImage.waitWhileLoading()
 
-  tiledMap.mapChipsCollection.push(mapChipImage)
-  tiledMap.mapChipsCollection.push(autoTileImage)
-
-  tiledMap.autoTiles.import(new DefaultAutoTileImportStrategy(autoTileImage, chipSize.width, chipSize.height))
-}
-
-async function initialize() {
   const chipSize = { width: 32, height: 32 }
   let tiledMap = new TiledMap(30, 30, chipSize.width, chipSize.height)
   tiledMap.addLayer()
   tiledMap.addLayer()
 
-  await setMapChip(tiledMap, chipSize)
+  // import MapChipImage and setup AutoTiles
+  tiledMap.mapChipsCollection.push(mapChipImage)
+  tiledMap.mapChipsCollection.push(autoTileImage)
+  tiledMap.autoTiles.import(new DefaultAutoTileImportStrategy(autoTileImage, chipSize.width, chipSize.height))
 
   const project = Projects.add(tiledMap)
   setProjectId(project.projectId)
@@ -60,6 +55,9 @@ async function initialize() {
     const serializedData = localStorage.getItem('mapData')
     if (!serializedData) return
     tiledMap = TiledMap.fromObject(JSON.parse(serializedData))
+    // The image needs to be set again
+    tiledMap.mapChipsCollection.push(mapChipImage)
+    tiledMap.mapChipsCollection.push(autoTileImage)
     const newProject = Projects.add(tiledMap)
     setProjectId(newProject.projectId)
   }
