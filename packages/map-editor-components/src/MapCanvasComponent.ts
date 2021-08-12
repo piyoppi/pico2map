@@ -72,7 +72,7 @@ export class MapCanvasComponent extends LitElement {
     const oldValue = this._brushName
     this._brushName = value
 
-    this.setupMapCanvas()
+    this._mapCanvas.setBrushFromName(this._brushName)
 
     this.requestUpdate('brush', oldValue);
   }
@@ -86,7 +86,7 @@ export class MapCanvasComponent extends LitElement {
     const oldValue = this._arrangementName
     this._arrangementName = value
 
-    this.setupMapCanvas()
+    this._mapCanvas.setArrangementFromName(this._arrangementName)
 
     this.requestUpdate('arrangement', oldValue);
   }
@@ -165,6 +165,7 @@ export class MapCanvasComponent extends LitElement {
     if (!this._project || forced) {
       this._project = Projects.fromProjectId(this._projectId)
       if (!this._project) return
+      this._mapCanvas.setProject(this._project)
       this.setupMapCanvas()
       this.setActiveAutoTile()
       this.requestUpdate()
@@ -226,8 +227,6 @@ export class MapCanvasComponent extends LitElement {
   private setupMapCanvas() {
     if (!this._project || !this._secondaryCanvasElement || !this._canvasesOuterElement) return
 
-    this._mapCanvas.setProject(this._project)
-
     const diffCanvasCount = this._project.tiledMap.datas.length - this._appendedLayerCanvases.length
 
     this._appendedLayerCanvases.forEach(canvas => this.setupCanvas(canvas))
@@ -244,9 +243,6 @@ export class MapCanvasComponent extends LitElement {
     }
 
     this._mapCanvas.setCanvases(this._appendedLayerCanvases, this._secondaryCanvasElement)
-
-    this._mapCanvas.setBrushFromName(this._brushName)
-    this._mapCanvas.setArrangementFromName(this._arrangementName)
   }
 
   private setInactiveCanvasStyle() {
