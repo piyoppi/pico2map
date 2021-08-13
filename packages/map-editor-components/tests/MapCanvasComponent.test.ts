@@ -41,6 +41,24 @@ test('The component should set Project to MapCanvas', async () => {
   expect(component.mapCanvas.setProject).toBeCalledWith(project)
 })
 
+test('Should set Project to MapCanvas when the project is registered after ProjectId', async () => {
+  const tiledMap = new TiledMap(30, 30, 32, 32)
+  const component = await setComponent('')
+  const projectId = 12345
+
+  component.mapCanvas.setProject = jest.fn()
+  component.setAttribute('projectId', projectId.toString())
+  await component.updateComplete
+
+  expect(component.mapCanvas.setProject).not.toBeCalled()
+
+  const project = Projects.add(tiledMap, projectId)
+  await component.updateComplete
+
+  expect(component.mapCanvas.setProject).toBeCalledTimes(1)
+  expect(component.mapCanvas.setProject).toBeCalledWith(project)
+})
+
 test('The component should set brush name to MapCanvas', async () => {
   const tiledMap = new TiledMap(30, 30, 32, 32)
   const project = Projects.add(tiledMap)
