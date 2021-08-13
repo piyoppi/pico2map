@@ -24,6 +24,11 @@ test('Create layer canvases', async () => {
   // 3 layers + 1 sub-cnavas = 4 canvases
   expect(component.shadowRoot?.innerHTML.match(/<canvas/g)?.length).toEqual(4)  
 
+  tiledMap.addLayer()
+  await component.updateComplete
+  // 4 layers + 1 sub-cnavas = 5 canvases
+  expect(component.shadowRoot?.innerHTML.match(/<canvas/g)?.length).toEqual(5)
+
   const tiledMap2 = new TiledMap(10, 15, 32, 32)
   const project2 = Projects.add(tiledMap2)
   component.setAttribute('projectId', project2.projectId.toString())
