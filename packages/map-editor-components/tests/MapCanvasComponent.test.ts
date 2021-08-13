@@ -21,9 +21,26 @@ test('Create layer canvases', async () => {
   tiledMap.addLayer()
   const project = Projects.add(tiledMap)
   const component = await setComponent(`projectId=${project.projectId}`)
-
   // 3 layers + 1 sub-cnavas = 4 canvases
   expect(component.shadowRoot?.innerHTML.match(/<canvas/g)?.length).toEqual(4)  
+
+  const tiledMap2 = new TiledMap(10, 15, 32, 32)
+  const project2 = Projects.add(tiledMap2)
+  component.setAttribute('projectId', project2.projectId.toString())
+  await component.updateComplete
+  // 1 layer + 1 sub-cnavas = 2 canvases
+  expect(component.shadowRoot?.innerHTML.match(/<canvas/g)?.length).toEqual(2)
+
+  const tiledMap3 = new TiledMap(15, 20, 32, 32)
+  tiledMap3.addLayer()
+  tiledMap3.addLayer()
+  tiledMap3.addLayer()
+  tiledMap3.addLayer()
+  const project3 = Projects.add(tiledMap3)
+  component.setAttribute('projectId', project3.projectId.toString())
+  await component.updateComplete
+  // 5 layer + 1 sub-cnavas = 6 canvases
+  expect(component.shadowRoot?.innerHTML.match(/<canvas/g)?.length).toEqual(6)
 })
 
 test('The component should set Project to MapCanvas', async () => {

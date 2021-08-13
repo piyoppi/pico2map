@@ -104,7 +104,7 @@ export class MapCanvas implements EditorCanvas {
   renderAll() {
     if (!this.renderable) return
     const renderer = this.renderer
-    this._canvasContexts.forEach((ctx, index) => renderer.renderLayer(index, ctx))
+    this._canvasContexts.forEach((ctx, index) => (this.project.tiledMap.datas.length > index) && renderer.renderLayer(index, ctx))
   }
 
   setCanvases(canvases: Array<HTMLCanvasElement>, secondaryCanvas: HTMLCanvasElement) {

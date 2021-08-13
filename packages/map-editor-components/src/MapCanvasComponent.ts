@@ -245,7 +245,7 @@ export class MapCanvasComponent extends LitElement {
       }
     } else if (diffCanvasCount < 0) {
       const layerCanvasesLength = this._appendedLayerCanvases.length
-      for (let i = layerCanvasesLength - 1; i > -diffCanvasCount; i--) {
+      for (let i = layerCanvasesLength - 1; i >= layerCanvasesLength + diffCanvasCount; i--) {
         this.removeCanvasToDOMTree(i)
       }
     }
