@@ -60,6 +60,9 @@ async function initialize() {
     tiledMap.mapChipsCollection.push(autoTileImage)
     const newProject = Projects.add(tiledMap)
     setProjectId(newProject.projectId)
+
+    layerSelector.innerHTML = ''
+    tiledMap.datas.forEach((_, index) => layerSelector.appendChild(new Option(index.toString(), index.toString())))
   }
 
   // Serialize a tiled-map data and set to the localStorage
