@@ -1,4 +1,5 @@
-import { LitElement, html, css, customElement, property } from 'lit-element'
+import { LitElement, html, css } from 'lit'
+import { property } from 'lit/decorators.js'
 import { GridImageGenerator, MapChipSelector, Projects, Project } from '@piyoppi/pico2map-editor'
 import { MapChipImage } from '@piyoppi/pico2map-tiled'
 import { CursorPositionCalculator } from './Helpers/CursorPositionCalculator'
