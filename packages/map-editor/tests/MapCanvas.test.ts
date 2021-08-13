@@ -156,6 +156,7 @@ describe('#setCanvases', () => {
 describe('#renderAll', () => {
   it('Should call rendering function each layers', async () => {
     const tiledMap = new TiledMap(30, 30, 32, 32)
+    tiledMap.addLayer()
     const project = Projects.add(tiledMap)
     const mapCanvas = new MapCanvas()
     await mapCanvas.setProject(project)
