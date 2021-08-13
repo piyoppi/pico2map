@@ -1,4 +1,5 @@
-import { LitElement, html, css, property } from 'lit-element'
+import { LitElement, html, css } from 'lit'
+import { property } from 'lit/decorators.js'
 import { CursorPositionCalculator } from './Helpers/CursorPositionCalculator'
 import { MapCanvas, Projects, Project } from '@piyoppi/pico2map-editor'
 import { MapChipFragment, MapChipFragmentProperties } from '@piyoppi/pico2map-tiled'
