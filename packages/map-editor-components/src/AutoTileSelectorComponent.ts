@@ -61,6 +61,10 @@ export class AutoTileSelectorComponent extends LitElement {
   @property({type: Number}) selectedChipX = -1
   @property({type: String}) indexImageSrc = ''
 
+  get project() {
+    return this._project
+  }
+
   get gridWidth() {
     return this._project?.tiledMap.chipWidth || 0 
   }
@@ -84,6 +88,8 @@ export class AutoTileSelectorComponent extends LitElement {
   }
 
   private _setupProject(projectId: number) {
+    if (this._project?.projectId === projectId) return
+
     this._project = Projects.fromProjectId(projectId)
     if (!this._project) {
       this.reset()

@@ -1,7 +1,6 @@
 import { MapCanvasComponent } from '../src/MapCanvasComponent'
 import { Projects } from '@piyoppi/pico2map-editor'
 import { TiledMap } from '@piyoppi/pico2map-tiled'
-import { LitElement } from 'lit-element'
 
 customElements.define('map-canvas-component', MapCanvasComponent)
 
