@@ -19,7 +19,6 @@ export class MapCanvas implements EditorCanvas {
   private _arrangement: Arrangement<TiledMapDataItem> = new DefaultArrangement()
   private _lastMapChipPosition = {x: -1, y: -1}
   private _renderer: MapRenderer | null = null
-  private _canvases: Array<HTMLCanvasElement> = []
   private _canvasContexts: Array<CanvasRenderingContext2D> = []
   private secondaryCanvas: HTMLCanvasElement | null = null
   private _project: Project | null = null
@@ -69,10 +68,6 @@ export class MapCanvas implements EditorCanvas {
     return this._mapChipPickerEnabled
   }
 
-  get canvases() {
-    return this._canvases
-  }
-
   get isPickFromActiveLayer() {
     return this._isPickFromActiveLayer
   }
@@ -104,12 +99,11 @@ export class MapCanvas implements EditorCanvas {
   renderAll() {
     if (!this.renderable) return
     const renderer = this.renderer
-    this._canvasContexts.forEach((ctx, index) => renderer.renderLayer(index, ctx))
+    this._canvasContexts.forEach((ctx, index) => (this.project.tiledMap.datas.length > index) && renderer.renderLayer(index, ctx))
   }
 
   setCanvases(canvases: Array<HTMLCanvasElement>, secondaryCanvas: HTMLCanvasElement) {
-    this._canvases = canvases
-    this._canvasContexts = this._canvases.map(canvas => canvas.getContext('2d') as CanvasRenderingContext2D)
+    this._canvasContexts = canvases.map(canvas => canvas.getContext('2d') as CanvasRenderingContext2D)
     this.secondaryCanvas = secondaryCanvas
     this._secondaryCanvasCtx = this.secondaryCanvas.getContext('2d') as CanvasRenderingContext2D
 
@@ -119,7 +113,6 @@ export class MapCanvas implements EditorCanvas {
   }
 
   addCanvas(canvas: HTMLCanvasElement) {
-    this._canvases.push(canvas)
     this._canvasContexts.push(canvas.getContext('2d') as CanvasRenderingContext2D)
   }
 

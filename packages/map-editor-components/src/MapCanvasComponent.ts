@@ -180,7 +180,7 @@ export class MapCanvasComponent extends LitElement {
       this._project.addBeforeAddLayerCallback(() => this._mapCanvas.addCanvas(this.addCanvasToDOMTree()))
       this._project.addAfterResizedMapCallback(() => {
         this.requestUpdate()
-        this._mapCanvas.canvases.forEach(canvas => {
+        this._appendedLayerCanvases.forEach(canvas => {
           canvas.width = this.width
           canvas.height = this.height
         })
@@ -245,7 +245,7 @@ export class MapCanvasComponent extends LitElement {
       }
     } else if (diffCanvasCount < 0) {
       const layerCanvasesLength = this._appendedLayerCanvases.length
-      for (let i = layerCanvasesLength - 1; i > -diffCanvasCount; i--) {
+      for (let i = layerCanvasesLength - 1; i >= layerCanvasesLength + diffCanvasCount; i--) {
         this.removeCanvasToDOMTree(i)
       }
     }
