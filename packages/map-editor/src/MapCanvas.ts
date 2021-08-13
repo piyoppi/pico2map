@@ -86,9 +86,11 @@ export class MapCanvas implements EditorCanvas {
   }
 
   async setProject(project: Project) {
+    if (this._project === project) throw new Error('This project has already been set.')
     this._project = project
     this._renderer = new MapRenderer(this._project.tiledMap)
     this._mapChipPicker = new MapChipPicker(this._project.tiledMap)
+    this._setupBrush()
 
     this._project.registerRenderAllCallback(() => this.renderAll())
 

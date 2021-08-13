@@ -26,22 +26,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build colision-detector
-        run: npm run build
-        working-directory: ./packages/tiled-colision-detector
-        
-      - name: Build tiled-map
-        run: npm run build
-        working-directory: ./packages/tiled-map
+      - name: Build
+        run: npm run build-ci
 
-      - name: Build map-editor
-        run: npm run build
-        working-directory: ./packages/map-editor
-
-      - name: Test tiled-map
+      - name: Test all packages
         run: npm test
-        working-directory: ./packages/tiled-map
-
-      - name: Test map-editor
-        run: npm test
-        working-directory: ./packages/map-editor
