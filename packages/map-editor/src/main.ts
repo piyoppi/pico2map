@@ -1,4 +1,5 @@
 export { GridImageGenerator } from './GridImageGenerator'
+export { CallbackItem } from './CallbackItem'
 export { MapCanvas } from './MapCanvas'
 export { Projects, Project } from './Projects'
 export { ColiderCanvas } from './ColiderCanvas'
