@@ -131,6 +131,7 @@ export class ColiderMarkerComponent extends LitElement {
     if (!this._project || !this._secondaryCanvasElement || !this._coliderCanvasElement) return
 
     this._coliderCanvas.setProject(this._project)
+    if (!this._coliderCanvas.isSubscribedProjectEvent) this._coliderCanvas.subscribeProjectEvent()
     this._coliderCanvas.setCanvas(this._coliderCanvasElement, this._secondaryCanvasElement)
     this._coliderCanvas.setBrushFromName(this._brushName)
   }

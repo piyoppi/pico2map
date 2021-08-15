@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit'
 import { property } from 'lit/decorators.js'
-import { GridImageGenerator, MapChipSelector, Projects, Project } from '@piyoppi/pico2map-editor'
+import { GridImageGenerator, MapChipSelector, Projects, Project, CallbackItem } from '@piyoppi/pico2map-editor'
 import { MapChipImage } from '@piyoppi/pico2map-tiled'
 import { CursorPositionCalculator } from './Helpers/CursorPositionCalculator'
 
@@ -11,6 +11,7 @@ export class MapChipSelectorComponent extends LitElement {
   private _project: Project | null = null
   private _mapChipSelector : MapChipSelector | null = null
   private _imageSrc: string = ''
+  private _afterReplacedMapChipImageCallbackItem: CallbackItem | null = null
 
   @property({type: String})
   get gridColor(): string {
@@ -32,7 +33,7 @@ export class MapChipSelectorComponent extends LitElement {
     const oldValue = this._projectId
     this._projectId = value
 
-    this._setupProject(value)
+    this._setupProject()
 
     if (this._project) {
       this.setupMapChipSelector()
@@ -85,11 +86,19 @@ export class MapChipSelectorComponent extends LitElement {
     }
   }
 
-  private _setupProject(projectId: number) {
-    this._project = Projects.fromProjectId(projectId)
+  private _setupProject() {
+    this._project = Projects.fromProjectId(this._projectId)
     if (!this._project) return
 
-    this._project.addAfterReplacedMapChipImageCallback(() => this.setupMapChipSelector())
+    this.subscribeProjectEvent()
+  }
+
+  private subscribeProjectEvent() {
+    if (!this._project || this._afterReplacedMapChipImageCallbackItem) return
+
+    this._afterReplacedMapChipImageCallbackItem = this._project.setCallback('afterReplacedMapChipImage', () => this.setupMapChipSelector())
+  }
+
   }
 
   private setupMapChipSelector() {

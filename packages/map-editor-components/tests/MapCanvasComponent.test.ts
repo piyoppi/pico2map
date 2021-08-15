@@ -53,7 +53,7 @@ test('The component should set Project to MapCanvas', async () => {
   const project = Projects.add(tiledMap)
   const component = await setComponent('')
 
-  component.mapCanvas.setProject = jest.fn()
+  jest.spyOn(component.mapCanvas, 'setProject')
   component.setAttribute('projectId', project.projectId.toString())
 
   await component.updateComplete
@@ -67,7 +67,7 @@ test('Should set Project to MapCanvas when the project is registered after Proje
   const component = await setComponent('')
   const projectId = 12345
 
-  component.mapCanvas.setProject = jest.fn()
+  jest.spyOn(component.mapCanvas, 'setProject')
   component.setAttribute('projectId', projectId.toString())
   await component.updateComplete
 

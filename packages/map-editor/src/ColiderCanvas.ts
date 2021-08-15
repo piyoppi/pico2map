@@ -7,6 +7,7 @@ import { Brushes } from './Brushes/Brushes'
 import { Arrangement, isColiderTypesRequired } from './Brushes/Arrangements/Arrangement'
 import { ColiderArrangement } from './Brushes/Arrangements/ColiderArrangement'
 import { EditorCanvas } from './EditorCanvas'
+import { CallbackItem } from './CallbackItem'
 
 export class ColiderCanvas implements EditorCanvas {
   private _coliderCtx: CanvasRenderingContext2D | null = null
@@ -20,6 +21,7 @@ export class ColiderCanvas implements EditorCanvas {
   private _lastMapChipPosition = {x: -1, y: -1}
   private _selectedColiderType: ColiderTypes = 0
   private _selectedSubColiderType: ColiderTypes = 0
+  private _renderAllCallbackItem: CallbackItem | null = null
 
   constructor() {
     this._brush = new Pen()
@@ -72,18 +74,28 @@ export class ColiderCanvas implements EditorCanvas {
     return !!this._coliderCtx && !!this._coliderRenderer
   }
 
+  get isSubscribedProjectEvent() {
+    return !!this._renderAllCallbackItem
+  }
+
   setProject(project: Project) {
     this._project = project
     this._coliderRenderer = new ColiderRenderer(this._project.tiledMap)
 
-    this._project.registerRenderAllCallback(() => {
+    if (this.renderable && this._coliderCtx) {
+      this.coliderRenderer.renderAll(this._coliderCtx)
+    }
+  }
+
+  subscribeProjectEvent() {
+    if (this._renderAllCallbackItem) throw new Error('Project Event is already subscribed')
+    if (!this._project) throw new Error('Project is not set')
+
+    this._renderAllCallbackItem = this._project.setCallback('renderAll', () => {
       if (!this.renderable || !this._coliderCtx) return
       this.coliderRenderer.renderAll(this._coliderCtx)
     })
 
-    if (this.renderable && this._coliderCtx) {
-      this.coliderRenderer.renderAll(this._coliderCtx)
-    }
   }
 
   setCanvas(canvas: HTMLCanvasElement, secondaryCanvas: HTMLCanvasElement) {

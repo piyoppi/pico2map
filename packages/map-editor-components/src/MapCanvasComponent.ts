@@ -174,12 +174,15 @@ export class MapCanvasComponent extends LitElement {
     if (!this._project || this._project.projectId !== this._projectId) {
       this._project = Projects.fromProjectId(this._projectId)
       if (!this._project) return
+
       this._mapCanvas.setProject(this._project)
+      if (!this._mapCanvas.isSubscribedProjectEvent) this._mapCanvas.subscribeProjectEvent()
+      this._mapCanvas.firstRenderAll()
       this.setupMapCanvas()
       this.setActiveAutoTile()
       this.requestUpdate()
-      this._project.addBeforeAddLayerCallback(() => this._mapCanvas.addCanvas(this.addCanvasToDOMTree()))
-      this._project.addAfterResizedMapCallback(() => {
+      this._project.setCallback('beforeAddLayer', () => this._mapCanvas.addCanvas(this.addCanvasToDOMTree()))
+      this._project.setCallback('afterResizedMap', () => {
         this.requestUpdate()
         this._appendedLayerCanvases.forEach(canvas => {
           canvas.width = this.width
