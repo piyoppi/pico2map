@@ -105,6 +105,12 @@ export class MapCanvas implements EditorCanvas {
     this._renderAllCallbackItem = this._project.setCallback('renderAll', () => this.renderAll())
   }
 
+  unsubscribeProjectEvent() {
+    if (this._project && this._renderAllCallbackItem) this._project.removeCallback('renderAll', this._renderAllCallbackItem)
+
+    this._renderAllCallbackItem = null
+  }
+
   async firstRenderAll() {
     if (!this._project) return
 

@@ -122,6 +122,18 @@ export class AutoTileSelectorComponent extends LitElement {
     if (!this._afterReplacedMapChipImageCallbackItem) this._afterReplacedMapChipImageCallbackItem = this._project.setCallback('afterReplacedMapChipImage', () => this.setupMapChipSelector())
   }
 
+  private _unsubscribeProjectEvent() {
+    if (!this._project) return
+
+    if (this._afterAddAutoTileCallbackItem) this._project.removeCallback('afterAddAutoTile', this._afterAddAutoTileCallbackItem)
+    if (this._afterRemoveAutoTileCallbackItem) this._project.removeCallback('afterRemoveAutoTile', this._afterRemoveAutoTileCallbackItem)
+    if (this._afterReplacedMapChipImageCallbackItem) this._project.removeCallback('afterReplacedMapChipImage', this._afterReplacedMapChipImageCallbackItem)
+
+    this._afterAddAutoTileCallbackItem = null
+    this._afterRemoveAutoTileCallbackItem = null
+    this._afterReplacedMapChipImageCallbackItem = null
+  }
+
   private reset() {
     this.indexImageSrc = ''
   }
@@ -257,5 +269,17 @@ export class AutoTileSelectorComponent extends LitElement {
         user-select: none;
       }
     `
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback()
+
+    this._unsubscribeProjectEvent()
+  }
+
+  connectedCallback() {
+    super.connectedCallback()
+
+    this._subscribeProjectEvent()
   }
 }

@@ -99,6 +99,12 @@ export class MapChipSelectorComponent extends LitElement {
     this._afterReplacedMapChipImageCallbackItem = this._project.setCallback('afterReplacedMapChipImage', () => this.setupMapChipSelector())
   }
 
+  private _unsubscribeProjectEvent() {
+    if (!this._project) return
+
+    if (this._afterReplacedMapChipImageCallbackItem) this._project.removeCallback('afterReplacedMapChipImage', this._afterReplacedMapChipImageCallbackItem)
+
+    this._afterReplacedMapChipImageCallbackItem = null
   }
 
   private setupMapChipSelector() {
@@ -249,5 +255,17 @@ export class MapChipSelectorComponent extends LitElement {
         user-select: none;
       }
     `
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback()
+
+    this._unsubscribeProjectEvent()
+  }
+
+  connectedCallback() {
+    super.connectedCallback()
+
+    this.subscribeProjectEvent()
   }
 }

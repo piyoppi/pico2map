@@ -365,4 +365,17 @@ export class MapCanvasComponent extends LitElement {
       }
     `
   }
+
+
+  disconnectedCallback() {
+    super.disconnectedCallback()
+
+    this._mapCanvas.unsubscribeProjectEvent()
+  }
+
+  connectedCallback() {
+    super.connectedCallback()
+
+    if (this._mapCanvas.hasProject && !this._mapCanvas.isSubscribedProjectEvent) this._mapCanvas.subscribeProjectEvent()
+  }
 }

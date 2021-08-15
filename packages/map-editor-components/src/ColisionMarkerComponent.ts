@@ -257,4 +257,16 @@ export class ColiderMarkerComponent extends LitElement {
       }
     `
   }
+
+  disconnectedCallback() {
+    super.disconnectedCallback()
+
+    this._coliderCanvas.unsubscribeProjectEvent()
+  }
+
+  connectedCallback() {
+    super.connectedCallback()
+
+    if (this._project && !this._coliderCanvas.isSubscribedProjectEvent) this._coliderCanvas.subscribeProjectEvent()
+  }
 }

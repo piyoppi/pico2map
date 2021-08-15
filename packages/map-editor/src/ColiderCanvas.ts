@@ -95,7 +95,12 @@ export class ColiderCanvas implements EditorCanvas {
       if (!this.renderable || !this._coliderCtx) return
       this.coliderRenderer.renderAll(this._coliderCtx)
     })
+  }
 
+  unsubscribeProjectEvent() {
+    if (this._project && this._renderAllCallbackItem) this._project.removeCallback('renderAll', this._renderAllCallbackItem)
+
+    this._renderAllCallbackItem = null
   }
 
   setCanvas(canvas: HTMLCanvasElement, secondaryCanvas: HTMLCanvasElement) {
