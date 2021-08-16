@@ -1,9 +1,18 @@
+import { CallbackItem } from './CallbackItem'
+
 export class CallbackCaller {
   private _items: Array<CallbackItem> = []
+  private _maxId = 1
 
-  add(proc: () => void) {
-    const callbackItem = new CallbackItem(proc)
+  has(callbackItem: CallbackItem) {
+    return !!this._items.find(item => item === callbackItem)
+  }
+
+  add(proc: () => void): CallbackItem {
+    const callbackItem = new CallbackItem(proc, this._maxId++)
     this._items.push(callbackItem)
+
+    return callbackItem
   }
 
   call() {
@@ -16,20 +25,5 @@ export class CallbackCaller {
     if (index < 0) throw Error('CallbackCaller is not found')
 
     this._items.splice(index, 1)
-  }
-}
-
-export class CallbackItem {
-  private _caller: any = null
-
-  constructor(
-    private _proc: () => void
-  ) {
-  }
-
-  call() {
-    if (!this._proc) new Error('Callback function is not set')
-
-    this._proc?.call(this._caller)
   }
 }

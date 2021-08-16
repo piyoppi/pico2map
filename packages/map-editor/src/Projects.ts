@@ -1,14 +1,19 @@
 import { TiledMap } from '@piyoppi/pico2map-tiled'
-import { CallbackCaller } from './Callbacks'
+import { CallbackCaller } from './CallbackCaller'
+import { CallbackCallers } from './CallbackCallers'
+import { CallbackItem } from './CallbackItem'
 import { Injector } from './Injector'
 
+export type ProjectCallbackKeys =
+  'renderAll' |
+  'beforeAddLayer' |
+  'afterAddAutoTile' |
+  'afterRemoveAutoTile' |
+  'afterReplacedMapChipImage' |
+  'afterResizedMap'
+
 export class Project {
-  private _renderAllFunction: Array<(() => void)> = []
-  private _beforeAddLayerCallbacks = new CallbackCaller()
-  private _afterAddAutoTileCallbacks = new CallbackCaller()
-  private _afterRemoveAutoTileCallbacks = new CallbackCaller()
-  private _afterReplacedMapChipImageCallbacks = new CallbackCaller()
-  private _afterResizedMapCallbacks = new CallbackCaller()
+  private _callbacks = new CallbackCallers()
 
   constructor(
     private _tiledMap: TiledMap,
@@ -30,52 +35,36 @@ export class Project {
     return this._tiledMap
   }
 
-  addBeforeAddLayerCallback(callback: () => void) {
-    this._beforeAddLayerCallbacks.add(callback)
-  }
-
-  addAfterAddAutoTileCallback(callback: () => void) {
-    this._afterAddAutoTileCallbacks.add(callback)
-  }
-
-  addAfterRemoveAutoTileCallback(callback: () => void) {
-    this._afterRemoveAutoTileCallbacks.add(callback)
-  }
-
-  addAfterReplacedMapChipImageCallback(callback: () => void) {
-    this._afterReplacedMapChipImageCallbacks.add(callback)
-  }
-
-  addAfterResizedMapCallback(callback: () => void) {
-    this._afterResizedMapCallbacks.add(callback)
-  }
-
   requestRenderAll() {
-    this._renderAllFunction.forEach(fn => fn())
+    this._callbacks.call('renderAll')
   }
 
-  registerRenderAllCallback(fn: () => void) {
-    this._renderAllFunction.push(fn)
+  setCallback(key: ProjectCallbackKeys, callback: () => void) {
+    return this._callbacks.add(key, callback)
+  }
+
+  removeCallback(key: ProjectCallbackKeys, callbackItem: CallbackItem) {
+    this._callbacks.remove(key, callbackItem)
   }
 
   private _beforeAddLayerHandler() {
-    this._beforeAddLayerCallbacks.call()
+    this._callbacks.call('beforeAddLayer')
   }
 
   private _afterAddAutoTileHandler() {
-    this._afterAddAutoTileCallbacks.call()
+    this._callbacks.call('afterAddAutoTile')
   }
 
   private _afterRemoveAutoTileHandler() {
-    this._afterRemoveAutoTileCallbacks.call()
+    this._callbacks.call('afterRemoveAutoTile')
   }
 
   private _afterReplacedMapChipImageHandler() {
-    this._afterReplacedMapChipImageCallbacks.call()
+    this._callbacks.call('afterReplacedMapChipImage')
   }
 
   private _afterResizedMapHandler() {
-    this._afterResizedMapCallbacks.call()
+    this._callbacks.call('afterResizedMap')
   }
 }
 

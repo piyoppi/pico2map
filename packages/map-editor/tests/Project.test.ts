@@ -6,7 +6,7 @@ describe('When add a layer', () => {
     const tiledMap = new TiledMap(30, 30, 32, 32)
     const project = Projects.add(tiledMap, 1)
     const mockFn = jest.fn()
-    project.addBeforeAddLayerCallback(mockFn)
+    project.setCallback('beforeAddLayer', mockFn)
 
     tiledMap.addLayer()
     expect(mockFn).toBeCalled()
@@ -20,7 +20,7 @@ describe('When add an autoTile', () => {
     const autoTile = new AutoTile([], 1)
 
     const mockFn = jest.fn()
-    project.addAfterAddAutoTileCallback(mockFn)
+    project.setCallback('afterAddAutoTile', mockFn)
 
     tiledMap.autoTiles.push(autoTile)
     expect(mockFn).toBeCalled()
@@ -35,7 +35,7 @@ describe('When remove an autoTile', () => {
     tiledMap.autoTiles.push(autoTile)
 
     const mockFn = jest.fn()
-    project.addAfterRemoveAutoTileCallback(mockFn)
+    project.setCallback('afterRemoveAutoTile', mockFn)
 
     tiledMap.autoTiles.remove(autoTile)
     expect(mockFn).toBeCalled()
@@ -51,7 +51,7 @@ describe('When replace a MapChipImage', () => {
     tiledMap.mapChipsCollection.push(mapChipImage1)
 
     const mockFn = jest.fn()
-    project.addAfterReplacedMapChipImageCallback(mockFn)
+    project.setCallback('afterReplacedMapChipImage', mockFn)
 
     tiledMap.mapChipsCollection.replace(mapChipImageReplaced)
 
@@ -65,7 +65,7 @@ describe('When the map is resized', () => {
     const project = Projects.add(tiledMap, 1)
 
     const mockFn = jest.fn()
-    project.addAfterResizedMapCallback(mockFn)
+    project.setCallback('afterResizedMap', mockFn)
 
     tiledMap.resize(10, 10)
 

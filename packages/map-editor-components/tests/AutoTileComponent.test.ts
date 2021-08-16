@@ -25,3 +25,16 @@ test('Should set Project to MapCanvas', async () => {
 
   expect(component.project).toEqual(project)
 })
+
+test('Unsubscribe project event when the component is removed', async () => {
+  const tiledMap = new TiledMap(30, 30, 32, 32)
+  const project = Projects.add(tiledMap)
+  const component = await setComponent(`projectId=${project.projectId}`)
+
+  expect(component.subscribedProjectEvent).toEqual(true)
+
+  document.body.innerHTML = ''
+  await component.updateComplete
+
+  expect(component.subscribedProjectEvent).toEqual(false)
+})

@@ -78,18 +78,6 @@ describe('#setProject', () => {
     expect(mapCanvas.renderer).not.toBe(previousRenderer)
   })
 
-  it('Should call renderAll function', async () => {
-    const tiledMap = new TiledMap(30, 30, 32, 32)
-    const project = Projects.add(tiledMap)
-    const mapCanvas = new MapCanvas()
-    mapCanvas.renderAll = jest.fn()
-
-    mapCanvas.setCanvases([mockedCanvas, mockedCanvasLayer1] as any, mockedSecondaryCanvas as any)
-    await mapCanvas.setProject(project)
-
-    expect(mapCanvas.renderAll).toBeCalledTimes(1)
-  })
-
   it('Should not call renderAll function when canvases are not set', async () => {
     const tiledMap = new TiledMap(30, 30, 32, 32)
     const project = Projects.add(tiledMap)
@@ -108,7 +96,7 @@ describe('#setProject', () => {
 
     await mapCanvas.setProject(project)
 
-    await expect(() => mapCanvas.setProject(project)).rejects.toThrow('This project has already been set.')
+    await expect(() => mapCanvas.setProject(project)).toThrow('This project has already been set.')
   })
 
   it('Set up brush and arrangement', async () => {
@@ -324,5 +312,57 @@ describe('#mouseDown', () => {
     expect(mapCanvas.selectedMapChipFragments).toEqual([])
     expect(mapCanvas.selectedAutoTile).toEqual(null)
     expect(pickedEventHandler).toBeCalledWith(null)
+  })
+})
+
+describe('#subscribeProjectEvent', () => {
+  it('Should subscribes to project-event', () => {
+    const tiledMap = new TiledMap(30, 30, 32, 32)
+    const project = Projects.add(tiledMap)
+    const mapCanvas = new MapCanvas()
+    mapCanvas.setProject(project)
+    mapCanvas.subscribeProjectEvent()
+
+    expect(mapCanvas.isSubscribedProjectEvent).toEqual(true)
+
+    mapCanvas.renderAll = jest.fn()
+    project.requestRenderAll()
+    expect(mapCanvas.renderAll).toBeCalledTimes(1)
+  })
+
+  it('Should throw an error when mapCanvas do not have a project', () => {
+    const mapCanvas = new MapCanvas()
+
+    expect(() => mapCanvas.subscribeProjectEvent()).toThrow('Project is not set')
+  })
+
+  it('Should throw an error when mapCanvas is already subscribed to project-event', () => {
+    const tiledMap = new TiledMap(30, 30, 32, 32)
+    const project = Projects.add(tiledMap)
+    const mapCanvas = new MapCanvas()
+    mapCanvas.setProject(project)
+    mapCanvas.subscribeProjectEvent()
+
+    expect(() => mapCanvas.subscribeProjectEvent()).toThrow('Project Event is already subscribed')
+  })
+})
+
+describe('#unsubscribeProjectEvent', () => {
+  it('Should unsubscribes from project-event', () => {
+    const tiledMap = new TiledMap(30, 30, 32, 32)
+    const project = Projects.add(tiledMap)
+    const mapCanvas = new MapCanvas()
+    mapCanvas.setProject(project)
+    mapCanvas.subscribeProjectEvent()
+
+    expect(mapCanvas.isSubscribedProjectEvent).toEqual(true)
+
+    mapCanvas.unsubscribeProjectEvent()
+
+    expect(mapCanvas.isSubscribedProjectEvent).toEqual(false)
+
+    mapCanvas.renderAll = jest.fn()
+    project.requestRenderAll()
+    expect(mapCanvas.renderAll).not.toBeCalled()
   })
 })

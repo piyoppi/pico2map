@@ -13,6 +13,7 @@ export class MapCanvasComponent extends LitElement {
   private _autoTileIdAttributeValue: number = -1
   private _inactiveLayerOpacity = 1.0
   private _appendedLayerCanvases: Array<HTMLCanvasElement> = []
+  private _canvasMaxIds = 1
 
   private _documentMouseMoveEventCallee: ((e: MouseEvent) => void) | null = null
   private _documentMouseUpEventCallee: ((e: MouseEvent) => void) | null = null
@@ -174,12 +175,15 @@ export class MapCanvasComponent extends LitElement {
     if (!this._project || this._project.projectId !== this._projectId) {
       this._project = Projects.fromProjectId(this._projectId)
       if (!this._project) return
+
       this._mapCanvas.setProject(this._project)
+      if (!this._mapCanvas.isSubscribedProjectEvent) this._mapCanvas.subscribeProjectEvent()
+      this._mapCanvas.firstRenderAll()
       this.setupMapCanvas()
       this.setActiveAutoTile()
       this.requestUpdate()
-      this._project.addBeforeAddLayerCallback(() => this._mapCanvas.addCanvas(this.addCanvasToDOMTree()))
-      this._project.addAfterResizedMapCallback(() => {
+      this._project.setCallback('beforeAddLayer', () => this._mapCanvas.addCanvas(this.addCanvasToDOMTree()))
+      this._project.setCallback('afterResizedMap', () => {
         this.requestUpdate()
         this._appendedLayerCanvases.forEach(canvas => {
           canvas.width = this.width
@@ -209,6 +213,7 @@ export class MapCanvasComponent extends LitElement {
     if (!this._canvasesOuterElement) throw new Error()
 
     const canvas = this.createCanvas()
+    canvas.id = `layer_canvas_${this._canvasMaxIds++}`
     this._canvasesOuterElement.appendChild(canvas)
     this._appendedLayerCanvases.push(canvas)
 
@@ -361,5 +366,18 @@ export class MapCanvasComponent extends LitElement {
         left: 0;
       }
     `
+  }
+
+
+  disconnectedCallback() {
+    super.disconnectedCallback()
+
+    this._mapCanvas.unsubscribeProjectEvent()
+  }
+
+  connectedCallback() {
+    super.connectedCallback()
+
+    if (this._mapCanvas.hasProject && !this._mapCanvas.isSubscribedProjectEvent) this._mapCanvas.subscribeProjectEvent()
   }
 }

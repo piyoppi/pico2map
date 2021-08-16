@@ -9,6 +9,7 @@ import { DefaultArrangement } from './Brushes/Arrangements/DefaultArrangement'
 import { EditorCanvas } from './EditorCanvas'
 import { MapChipPicker } from './MapChipPicker'
 import { convertFromCursorPositionToChipPosition } from './CursorPositionConverter'
+import { CallbackItem } from './CallbackItem'
 
 type PickedCallbackFn = (picked: TiledMapDataItem) => void
 
@@ -18,17 +19,18 @@ export class MapCanvas implements EditorCanvas {
   private _brush: Brush<TiledMapDataItem> = new Pen()
   private _arrangement: Arrangement<TiledMapDataItem> = new DefaultArrangement()
   private _lastMapChipPosition = {x: -1, y: -1}
-  private _renderer: MapRenderer | null = null
   private _canvasContexts: Array<CanvasRenderingContext2D> = []
   private secondaryCanvas: HTMLCanvasElement | null = null
   private _project: Project | null = null
+  private _renderer: MapRenderer | null = null
   private _selectedAutoTile: AutoTile | null = null
   private _selectedMapChipFragments: Array<MapChipFragment> = []
   private _activeLayerIndex: number = 0
   private _mapChipPickerEnabled = true
   private _mapChipPicker: MapChipPicker | null = null
-  private _pickedCallback: PickedCallbackFn | null = null
   private _isPickFromActiveLayer = false
+  private _pickedCallback: PickedCallbackFn | null = null
+  private _renderAllCallbackItem: CallbackItem | null = null
 
   constructor(
   ) {
@@ -45,6 +47,10 @@ export class MapCanvas implements EditorCanvas {
   get project() {
     if (!this._project) throw new Error('Project is not set')
     return this._project
+  }
+
+  get hasProject() {
+    return !!this._project
   }
 
   get renderer() {
@@ -76,18 +82,37 @@ export class MapCanvas implements EditorCanvas {
     this._isPickFromActiveLayer = value
   }
 
+  get isSubscribedProjectEvent() {
+    return !!this._renderAllCallbackItem
+  }
+
   hasActiveAutoTile() {
     return !!this._selectedAutoTile
   }
 
-  async setProject(project: Project) {
+  setProject(project: Project) {
     if (this._project === project) throw new Error('This project has already been set.')
     this._project = project
     this._renderer = new MapRenderer(this._project.tiledMap)
     this._mapChipPicker = new MapChipPicker(this._project.tiledMap)
     this._setupBrush()
+  }
 
-    this._project.registerRenderAllCallback(() => this.renderAll())
+  subscribeProjectEvent() {
+    if (this._renderAllCallbackItem) throw new Error('Project Event is already subscribed')
+    if (!this._project) throw new Error('Project is not set')
+
+    this._renderAllCallbackItem = this._project.setCallback('renderAll', () => this.renderAll())
+  }
+
+  unsubscribeProjectEvent() {
+    if (this._project && this._renderAllCallbackItem) this._project.removeCallback('renderAll', this._renderAllCallbackItem)
+
+    this._renderAllCallbackItem = null
+  }
+
+  async firstRenderAll() {
+    if (!this._project) return
 
     await this._project.tiledMap.mapChipsCollection.waitWhileLoading()
 

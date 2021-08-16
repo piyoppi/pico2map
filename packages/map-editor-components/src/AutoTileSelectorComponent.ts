@@ -1,15 +1,18 @@
 import { LitElement, html, css } from 'lit'
 import { property } from 'lit/decorators.js'
 import { CursorPositionCalculator } from './Helpers/CursorPositionCalculator'
-import { GridImageGenerator, Projects, Project, AutoTileSelector } from '@piyoppi/pico2map-editor'
+import { GridImageGenerator, Projects, Project, AutoTileSelector, CallbackItem } from '@piyoppi/pico2map-editor'
 
 export class AutoTileSelectorComponent extends LitElement {
   private _gridImageSrc = ''
   private gridImageGenerator = new GridImageGenerator()
   private cursorPositionCalculator = new CursorPositionCalculator()
-  private _project: Project | null = null
   private _indexImage: HTMLCanvasElement = document.createElement('canvas')
+  private _project: Project | null = null
   private _autoTileSelector: AutoTileSelector | null = null
+  private _afterAddAutoTileCallbackItem: CallbackItem | null = null
+  private _afterRemoveAutoTileCallbackItem: CallbackItem | null = null
+  private _afterReplacedMapChipImageCallbackItem: CallbackItem | null = null
 
   static readonly Format = {
     width: 1,
@@ -35,7 +38,7 @@ export class AutoTileSelectorComponent extends LitElement {
   set projectId(value: number) {
     const oldValue = this._projectId
     this._projectId = value
-    this._setupProject(value)
+    this._setupProject()
 
     this.setupMapChipSelector()
 
@@ -88,18 +91,20 @@ export class AutoTileSelectorComponent extends LitElement {
     }
   }
 
-  private _setupProject(projectId: number) {
-    if (this._project?.projectId === projectId) return
+  get subscribedProjectEvent() {
+    return !!this._afterAddAutoTileCallbackItem && !!this._afterRemoveAutoTileCallbackItem && !!this._afterReplacedMapChipImageCallbackItem
+  }
 
-    this._project = Projects.fromProjectId(projectId)
+  private _setupProject() {
+    if (this._project?.projectId === this._projectId) return
+
+    this._project = Projects.fromProjectId(this._projectId)
     if (!this._project) {
       this.reset()
       return
     }
 
-    this._project.addAfterAddAutoTileCallback(() => this.setupMapChipSelector())
-    this._project.addAfterRemoveAutoTileCallback(() => this.setupMapChipSelector())
-    this._project.addAfterReplacedMapChipImageCallback(() => this.setupMapChipSelector())
+    this._subscribeProjectEvent()
 
     this._autoTileSelector = new AutoTileSelector(
       this.width,
@@ -111,6 +116,26 @@ export class AutoTileSelectorComponent extends LitElement {
 
     this.selectedChipX = -1
     this.selectedChipY = -1
+  }
+
+  private _subscribeProjectEvent() {
+    if (!this._project) return
+
+    if (!this._afterAddAutoTileCallbackItem) this._afterAddAutoTileCallbackItem = this._project.setCallback('afterAddAutoTile', () => this.setupMapChipSelector())
+    if (!this._afterRemoveAutoTileCallbackItem) this._afterRemoveAutoTileCallbackItem = this._project.setCallback('afterRemoveAutoTile', () => this.setupMapChipSelector())
+    if (!this._afterReplacedMapChipImageCallbackItem) this._afterReplacedMapChipImageCallbackItem = this._project.setCallback('afterReplacedMapChipImage', () => this.setupMapChipSelector())
+  }
+
+  private _unsubscribeProjectEvent() {
+    if (!this._project) return
+
+    if (this._afterAddAutoTileCallbackItem) this._project.removeCallback('afterAddAutoTile', this._afterAddAutoTileCallbackItem)
+    if (this._afterRemoveAutoTileCallbackItem) this._project.removeCallback('afterRemoveAutoTile', this._afterRemoveAutoTileCallbackItem)
+    if (this._afterReplacedMapChipImageCallbackItem) this._project.removeCallback('afterReplacedMapChipImage', this._afterReplacedMapChipImageCallbackItem)
+
+    this._afterAddAutoTileCallbackItem = null
+    this._afterRemoveAutoTileCallbackItem = null
+    this._afterReplacedMapChipImageCallbackItem = null
   }
 
   private reset() {
@@ -248,5 +273,17 @@ export class AutoTileSelectorComponent extends LitElement {
         user-select: none;
       }
     `
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback()
+
+    this._unsubscribeProjectEvent()
+  }
+
+  connectedCallback() {
+    super.connectedCallback()
+
+    this._subscribeProjectEvent()
   }
 }

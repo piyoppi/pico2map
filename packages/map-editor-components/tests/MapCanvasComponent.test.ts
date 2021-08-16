@@ -6,7 +6,11 @@ customElements.define('map-canvas-component', MapCanvasComponent)
 
 async function setComponent(attributes: string): Promise<MapCanvasComponent> {
   document.body.innerHTML = `
-    <map-canvas-component ${attributes}></map-canvas-component>
+    <div id="container">
+      <map-canvas-component ${attributes}></map-canvas-component>
+    </div>
+    <div id="secondary-container">
+    </div>
   `
 
   const component = document.getElementsByTagName('map-canvas-component')[0] as MapCanvasComponent
@@ -53,13 +57,17 @@ test('The component should set Project to MapCanvas', async () => {
   const project = Projects.add(tiledMap)
   const component = await setComponent('')
 
-  component.mapCanvas.setProject = jest.fn()
+  jest.spyOn(component.mapCanvas, 'setProject')
+  jest.spyOn(component.mapCanvas, 'firstRenderAll')
+  jest.spyOn(component.mapCanvas, 'subscribeProjectEvent')
   component.setAttribute('projectId', project.projectId.toString())
 
   await component.updateComplete
 
   expect(component.mapCanvas.setProject).toBeCalledTimes(1)
   expect(component.mapCanvas.setProject).toBeCalledWith(project)
+  expect(component.mapCanvas.firstRenderAll).toBeCalled()
+  expect(component.mapCanvas.subscribeProjectEvent).toBeCalledTimes(1)
 })
 
 test('Should set Project to MapCanvas when the project is registered after ProjectId', async () => {
@@ -67,7 +75,9 @@ test('Should set Project to MapCanvas when the project is registered after Proje
   const component = await setComponent('')
   const projectId = 12345
 
-  component.mapCanvas.setProject = jest.fn()
+  jest.spyOn(component.mapCanvas, 'setProject')
+  jest.spyOn(component.mapCanvas, 'firstRenderAll')
+  jest.spyOn(component.mapCanvas, 'subscribeProjectEvent')
   component.setAttribute('projectId', projectId.toString())
   await component.updateComplete
 
@@ -78,6 +88,8 @@ test('Should set Project to MapCanvas when the project is registered after Proje
 
   expect(component.mapCanvas.setProject).toBeCalledTimes(1)
   expect(component.mapCanvas.setProject).toBeCalledWith(project)
+  expect(component.mapCanvas.firstRenderAll).toBeCalled()
+  expect(component.mapCanvas.subscribeProjectEvent).toBeCalledTimes(1)
 })
 
 test('The component should set brush name to MapCanvas', async () => {
@@ -104,4 +116,48 @@ test('The component should set arrangement name to MapCanvas', async () => {
   await component.updateComplete
 
   expect(component.mapCanvas.setArrangementFromName).toBeCalledWith('TestArrangement')
+})
+
+test('Resize canvases when the size of tiled-map is changed', async () => {
+  const tiledMap = new TiledMap(10, 2, 32, 32)
+  const project = Projects.add(tiledMap)
+  const component = await setComponent(`projectId=${project.projectId}`)
+  const canavs = component.shadowRoot?.getElementById('layer_canvas_1') as HTMLCanvasElement
+
+  expect(canavs.width).toEqual(320)
+  expect(canavs.height).toEqual(64)
+
+  tiledMap.resize(3, 4)
+
+  expect(canavs.width).toEqual(96)
+  expect(canavs.height).toEqual(128)
+})
+
+test('Unsubscribe project event when the component is removed', async () => {
+  const tiledMap = new TiledMap(30, 30, 32, 32)
+  const project = Projects.add(tiledMap)
+  const component = await setComponent(`projectId=${project.projectId}`)
+
+  expect(component.mapCanvas.isSubscribedProjectEvent).toEqual(true)
+
+  component.mapCanvas.unsubscribeProjectEvent = jest.fn()
+
+  document.body.innerHTML = ''
+
+  expect(component.mapCanvas.unsubscribeProjectEvent).toBeCalled()
+})
+
+test('Unsubscribe / subscribe project event when the component is moved', async () => {
+  const tiledMap = new TiledMap(30, 30, 32, 32)
+  const project = Projects.add(tiledMap)
+  const component = await setComponent(`projectId=${project.projectId}`)
+
+  jest.spyOn(component.mapCanvas, 'subscribeProjectEvent')
+  jest.spyOn(component.mapCanvas, 'unsubscribeProjectEvent')
+
+  const container = document.getElementById('secondary-container') as HTMLDivElement
+  container.appendChild(component)
+
+  expect(component.mapCanvas.unsubscribeProjectEvent).toBeCalledTimes(1)
+  expect(component.mapCanvas.subscribeProjectEvent).toBeCalledTimes(1)
 })
