@@ -1,6 +1,6 @@
 {
   "name": "@piyoppi/pico2map-tiled-colision-detector",
-  "version": "0.0.50",
+  "version": "0.0.51",
   "description": "",
   "main": "dist/main.js",
   "repository": {
