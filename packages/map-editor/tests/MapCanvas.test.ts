@@ -314,3 +314,55 @@ describe('#mouseDown', () => {
     expect(pickedEventHandler).toBeCalledWith(null)
   })
 })
+
+describe('#subscribeProjectEvent', () => {
+  it('Should subscribes to project-event', () => {
+    const tiledMap = new TiledMap(30, 30, 32, 32)
+    const project = Projects.add(tiledMap)
+    const mapCanvas = new MapCanvas()
+    mapCanvas.setProject(project)
+    mapCanvas.subscribeProjectEvent()
+
+    expect(mapCanvas.isSubscribedProjectEvent).toEqual(true)
+
+    mapCanvas.renderAll = jest.fn()
+    project.requestRenderAll()
+    expect(mapCanvas.renderAll).toBeCalledTimes(1)
+  })
+
+  it('Should throw an error when mapCanvas do not have a project', () => {
+    const mapCanvas = new MapCanvas()
+
+    expect(() => mapCanvas.subscribeProjectEvent()).toThrow('Project is not set')
+  })
+
+  it('Should throw an error when mapCanvas is already subscribed to project-event', () => {
+    const tiledMap = new TiledMap(30, 30, 32, 32)
+    const project = Projects.add(tiledMap)
+    const mapCanvas = new MapCanvas()
+    mapCanvas.setProject(project)
+    mapCanvas.subscribeProjectEvent()
+
+    expect(() => mapCanvas.subscribeProjectEvent()).toThrow('Project Event is already subscribed')
+  })
+})
+
+describe('#unsubscribeProjectEvent', () => {
+  it('Should unsubscribes from project-event', () => {
+    const tiledMap = new TiledMap(30, 30, 32, 32)
+    const project = Projects.add(tiledMap)
+    const mapCanvas = new MapCanvas()
+    mapCanvas.setProject(project)
+    mapCanvas.subscribeProjectEvent()
+
+    expect(mapCanvas.isSubscribedProjectEvent).toEqual(true)
+
+    mapCanvas.unsubscribeProjectEvent()
+
+    expect(mapCanvas.isSubscribedProjectEvent).toEqual(false)
+
+    mapCanvas.renderAll = jest.fn()
+    project.requestRenderAll()
+    expect(mapCanvas.renderAll).not.toBeCalled()
+  })
+})

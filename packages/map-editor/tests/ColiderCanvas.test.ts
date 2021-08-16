@@ -116,3 +116,57 @@ describe('#mouseDown', () => {
     expect(arrangement.setColiderTypes).toHaveBeenCalledWith(0)
   })
 })
+
+describe('#subscribeProjectEvent', () => {
+  it('Should subscribes to project-event', () => {
+    const tiledMap = new TiledMap(30, 30, 32, 32)
+    const project = Projects.add(tiledMap)
+    const coliderCanvas = new ColiderCanvas()
+    coliderCanvas.setCanvas(createMockedCanvas() as any, createMockedCanvas() as any)
+    coliderCanvas.setProject(project)
+    coliderCanvas.subscribeProjectEvent()
+
+    expect(coliderCanvas.isSubscribedProjectEvent).toEqual(true)
+
+    coliderCanvas.coliderRenderer.renderAll = jest.fn()
+    project.requestRenderAll()
+    expect(coliderCanvas.coliderRenderer.renderAll).toBeCalledTimes(1)
+  })
+
+  it('Should throw an error when coliderCanvas do not have a project', () => {
+    const coliderCanvas = new ColiderCanvas()
+
+    expect(() => coliderCanvas.subscribeProjectEvent()).toThrow('Project is not set')
+  })
+
+  it('Should throw an error when coliderCanvas is already subscribed to project-event', () => {
+    const tiledMap = new TiledMap(30, 30, 32, 32)
+    const project = Projects.add(tiledMap)
+    const coliderCanvas = new ColiderCanvas()
+    coliderCanvas.setProject(project)
+    coliderCanvas.subscribeProjectEvent()
+
+    expect(() => coliderCanvas.subscribeProjectEvent()).toThrow('Project Event is already subscribed')
+  })
+})
+
+describe('#unsubscribeProjectEvent', () => {
+  it('Should unsubscribes from project-event', () => {
+    const tiledMap = new TiledMap(30, 30, 32, 32)
+    const project = Projects.add(tiledMap)
+    const coliderCanvas = new ColiderCanvas()
+    coliderCanvas.setCanvas(createMockedCanvas() as any, createMockedCanvas() as any)
+    coliderCanvas.setProject(project)
+    coliderCanvas.subscribeProjectEvent()
+
+    expect(coliderCanvas.isSubscribedProjectEvent).toEqual(true)
+
+    coliderCanvas.unsubscribeProjectEvent()
+
+    expect(coliderCanvas.isSubscribedProjectEvent).toEqual(false)
+
+    coliderCanvas.coliderRenderer.renderAll = jest.fn()
+    project.requestRenderAll()
+    expect(coliderCanvas.coliderRenderer.renderAll).not.toBeCalled()
+  })
+})
