@@ -42,6 +42,10 @@ export class ColiderCanvas implements EditorCanvas {
     return this._project
   }
 
+  get hasProject() {
+    return !!this._project
+  }
+
   get coliderCtx() {
     if (!this._coliderCtx) throw new Error('A canvas is not set')
 

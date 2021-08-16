@@ -118,6 +118,10 @@ export class ColiderMarkerComponent extends LitElement {
     }
   }
 
+  get coliderCanvas() {
+    return this._coliderCanvas
+  }
+
   private setupProject(forced: boolean = false) {
     if (!this._project || forced) {
       this._project = Projects.fromProjectId(this._projectId)
@@ -267,6 +271,6 @@ export class ColiderMarkerComponent extends LitElement {
   connectedCallback() {
     super.connectedCallback()
 
-    if (this._project && !this._coliderCanvas.isSubscribedProjectEvent) this._coliderCanvas.subscribeProjectEvent()
+    if (this._coliderCanvas.hasProject && !this._coliderCanvas.isSubscribedProjectEvent) this._coliderCanvas.subscribeProjectEvent()
   }
 }

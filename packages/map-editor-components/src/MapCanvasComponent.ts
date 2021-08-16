@@ -13,6 +13,7 @@ export class MapCanvasComponent extends LitElement {
   private _autoTileIdAttributeValue: number = -1
   private _inactiveLayerOpacity = 1.0
   private _appendedLayerCanvases: Array<HTMLCanvasElement> = []
+  private _canvasMaxIds = 1
 
   private _documentMouseMoveEventCallee: ((e: MouseEvent) => void) | null = null
   private _documentMouseUpEventCallee: ((e: MouseEvent) => void) | null = null
@@ -212,6 +213,7 @@ export class MapCanvasComponent extends LitElement {
     if (!this._canvasesOuterElement) throw new Error()
 
     const canvas = this.createCanvas()
+    canvas.id = `layer_canvas_${this._canvasMaxIds++}`
     this._canvasesOuterElement.appendChild(canvas)
     this._appendedLayerCanvases.push(canvas)
 

@@ -86,14 +86,18 @@ export class MapChipSelectorComponent extends LitElement {
     }
   }
 
+  get subscribedProjectEvent() {
+    return !!this._afterReplacedMapChipImageCallbackItem
+  }
+
   private _setupProject() {
     this._project = Projects.fromProjectId(this._projectId)
     if (!this._project) return
 
-    this.subscribeProjectEvent()
+    this._subscribeProjectEvent()
   }
 
-  private subscribeProjectEvent() {
+  private _subscribeProjectEvent() {
     if (!this._project || this._afterReplacedMapChipImageCallbackItem) return
 
     this._afterReplacedMapChipImageCallbackItem = this._project.setCallback('afterReplacedMapChipImage', () => this.setupMapChipSelector())
@@ -119,6 +123,8 @@ export class MapChipSelectorComponent extends LitElement {
 
     this._mapChipSelector = new MapChipSelector(this._project.tiledMap, chipImage)
     this._imageSrc = this._mapChipSelector.chipImage.src
+
+    this.requestUpdate()
   }
 
   private reset() {
@@ -266,6 +272,6 @@ export class MapChipSelectorComponent extends LitElement {
   connectedCallback() {
     super.connectedCallback()
 
-    this.subscribeProjectEvent()
+    this._subscribeProjectEvent()
   }
 }

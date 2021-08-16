@@ -91,6 +91,10 @@ export class AutoTileSelectorComponent extends LitElement {
     }
   }
 
+  get subscribedProjectEvent() {
+    return !!this._afterAddAutoTileCallbackItem && !!this._afterRemoveAutoTileCallbackItem && !!this._afterReplacedMapChipImageCallbackItem
+  }
+
   private _setupProject() {
     if (this._project?.projectId === this._projectId) return
 
