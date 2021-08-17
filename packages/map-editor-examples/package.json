@@ -23,5 +23,5 @@
     "watch": "webpack -w"
   },
   "author": "piyoppi",
-  "license": "MIT"
+  "license": "BSD-3-Clause"
 }
