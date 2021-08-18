@@ -99,6 +99,35 @@ describe('#setProject', () => {
     await expect(() => mapCanvas.setProject(project)).toThrow('This project has already been set.')
   })
 
+  it('Should throw a error when project-event is already subscribed', async () => {
+    const tiledMap = new TiledMap(30, 30, 32, 32)
+    const project = Projects.add(tiledMap)
+    const mapCanvas = new MapCanvas()
+
+    await mapCanvas.setProject(project)
+    mapCanvas.subscribeProjectEvent()
+
+    const tiledMap2 = new TiledMap(30, 30, 32, 32)
+    const project2 = Projects.add(tiledMap2)
+
+    await expect(() => mapCanvas.setProject(project2)).toThrow('This map-canvas is subscribed to the project event. You need to unsubscribe.')
+  })
+
+  it('Should not throw a error when project-event is unsubscribed and change to the other project', async () => {
+    const tiledMap = new TiledMap(30, 30, 32, 32)
+    const project = Projects.add(tiledMap)
+    const mapCanvas = new MapCanvas()
+
+    await mapCanvas.setProject(project)
+    mapCanvas.subscribeProjectEvent()
+
+    const tiledMap2 = new TiledMap(30, 30, 32, 32)
+    mapCanvas.unsubscribeProjectEvent()
+    const project2 = Projects.add(tiledMap2)
+
+    await expect(() => mapCanvas.setProject(project2)).not.toThrow()
+  })
+
   it('Set up brush and arrangement', async () => {
     const tiledMap = new TiledMap(30, 30, 32, 32)
     const project = Projects.add(tiledMap)

@@ -38,3 +38,24 @@ test('Unsubscribe project event when the component is removed', async () => {
 
   expect(component.subscribedProjectEvent).toEqual(false)
 })
+
+test('Reset subscription of project event when projectId is changed', async () => {
+  const tiledMap = new TiledMap(30, 30, 32, 32)
+  const project = Projects.add(tiledMap)
+  const component = await setComponent(`projectId=${project.projectId}`)
+
+  expect(project.callbacks.getCallbackCaller('afterAddAutoTile')?.length).toEqual(1)
+  expect(project.callbacks.getCallbackCaller('afterRemoveAutoTile')?.length).toEqual(1)
+  expect(project.callbacks.getCallbackCaller('afterReplacedMapChipImage')?.length).toEqual(1)
+
+  const tiledMap2 = new TiledMap(10, 10, 32, 32)
+  const project2 = Projects.add(tiledMap2)
+  component.setAttribute('projectId', project2.projectId.toString())
+
+  expect(project.callbacks.getCallbackCaller('afterAddAutoTile')?.length).toEqual(0)
+  expect(project.callbacks.getCallbackCaller('afterRemoveAutoTile')?.length).toEqual(0)
+  expect(project.callbacks.getCallbackCaller('afterReplacedMapChipImage')?.length).toEqual(0)
+  expect(project2.callbacks.getCallbackCaller('afterAddAutoTile')?.length).toEqual(1)
+  expect(project2.callbacks.getCallbackCaller('afterRemoveAutoTile')?.length).toEqual(1)
+  expect(project2.callbacks.getCallbackCaller('afterReplacedMapChipImage')?.length).toEqual(1)
+})

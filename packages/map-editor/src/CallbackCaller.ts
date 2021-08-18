@@ -4,6 +4,10 @@ export class CallbackCaller {
   private _items: Array<CallbackItem> = []
   private _maxId = 1
 
+  get length() {
+    return this._items.length
+  }
+
   has(callbackItem: CallbackItem) {
     return !!this._items.find(item => item === callbackItem)
   }

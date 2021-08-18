@@ -4,6 +4,10 @@ import { CallbackItem } from './CallbackItem'
 export class CallbackCallers<T> {
   private _callers = new Map<T, CallbackCaller>()
 
+  getCallbackCaller(key: T) {
+    return this._callers.get(key)
+  }
+
   has(key: T, callbackItem: CallbackItem) {
     return !!this._callers.get(key)?.has(callbackItem)
   }

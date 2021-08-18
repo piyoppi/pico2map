@@ -61,6 +61,35 @@ describe('#setProject', () => {
     const mockedRendererInstance = mocked(ColiderRenderer).mock.instances[0]
     expect(mockedRendererInstance.renderAll).not.toBeCalled()
   })
+
+  it('Should throw a error when project-event is already subscribed', async () => {
+    const tiledMap = new TiledMap(30, 30, 32, 32)
+    const project = Projects.add(tiledMap)
+    const coliderCanvas = new ColiderCanvas()
+
+    await coliderCanvas.setProject(project)
+    coliderCanvas.subscribeProjectEvent()
+
+    const tiledMap2 = new TiledMap(30, 30, 32, 32)
+    const project2 = Projects.add(tiledMap2)
+
+    await expect(() => coliderCanvas.setProject(project2)).toThrow('This colider-canvas is subscribed to the project event. You need to unsubscribe.')
+  })
+
+  it('Should not throw a error when project-event is unsubscribed and change to the other project', async () => {
+    const tiledMap = new TiledMap(30, 30, 32, 32)
+    const project = Projects.add(tiledMap)
+    const coliderCanvas = new ColiderCanvas()
+
+    await coliderCanvas.setProject(project)
+    coliderCanvas.subscribeProjectEvent()
+
+    const tiledMap2 = new TiledMap(30, 30, 32, 32)
+    coliderCanvas.unsubscribeProjectEvent()
+    const project2 = Projects.add(tiledMap2)
+
+    await expect(() => coliderCanvas.setProject(project2)).not.toThrow()
+  })
 })
 
 describe('setCanvas', () => {

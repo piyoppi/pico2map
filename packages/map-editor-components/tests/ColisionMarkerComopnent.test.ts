@@ -48,6 +48,22 @@ test('Unsubscribe / subscribe project event when the component is moved', async 
   expect(component.coliderCanvas.subscribeProjectEvent).toBeCalled()
 })
 
+test('Reset subscription of project event when projectId is changed', async () => {
+  const tiledMap = new TiledMap(30, 30, 32, 32)
+  const project = Projects.add(tiledMap)
+  const component = await setComponent(`projectId=${project.projectId}`)
+
+  jest.spyOn(component.coliderCanvas, 'subscribeProjectEvent')
+  jest.spyOn(component.coliderCanvas, 'unsubscribeProjectEvent')
+
+  const tiledMap2 = new TiledMap(10, 10, 32, 32)
+  const project2 = Projects.add(tiledMap2)
+  component.setAttribute('projectId', project2.projectId.toString())
+
+  expect(component.coliderCanvas.unsubscribeProjectEvent).toBeCalledTimes(1)
+  expect(component.coliderCanvas.subscribeProjectEvent).toBeCalledTimes(1)
+})
+
 test('Canvas size is set', async () => {
   const tiledMap = new TiledMap(10, 2, 32, 32)
   const project = Projects.add(tiledMap)

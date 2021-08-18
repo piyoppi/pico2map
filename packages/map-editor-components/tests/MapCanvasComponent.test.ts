@@ -161,3 +161,20 @@ test('Unsubscribe / subscribe project event when the component is moved', async 
   expect(component.mapCanvas.unsubscribeProjectEvent).toBeCalledTimes(1)
   expect(component.mapCanvas.subscribeProjectEvent).toBeCalledTimes(1)
 })
+
+test('Reset subscription of project event when projectId is changed', async () => {
+  const tiledMap = new TiledMap(30, 30, 32, 32)
+  const project = Projects.add(tiledMap)
+  const component = await setComponent(`projectId=${project.projectId}`)
+
+  const tiledMap2 = new TiledMap(30, 30, 32, 32)
+  const project2 = Projects.add(tiledMap2)
+
+  jest.spyOn(component.mapCanvas, 'subscribeProjectEvent')
+  jest.spyOn(component.mapCanvas, 'unsubscribeProjectEvent')
+
+  component.setAttribute('projectId', project2.projectId.toString())
+
+  expect(component.mapCanvas.unsubscribeProjectEvent).toBeCalledTimes(1)
+  expect(component.mapCanvas.subscribeProjectEvent).toBeCalledTimes(1)
+})
