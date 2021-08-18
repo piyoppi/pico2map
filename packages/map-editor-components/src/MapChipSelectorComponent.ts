@@ -91,6 +91,10 @@ export class MapChipSelectorComponent extends LitElement {
   }
 
   private _setupProject() {
+    if (this._project) {
+      this._unsubscribeProjectEvent()
+    }
+
     this._project = Projects.fromProjectId(this._projectId)
     if (!this._project) return
 

@@ -124,6 +124,10 @@ export class ColiderMarkerComponent extends LitElement {
 
   private setupProject(forced: boolean = false) {
     if (!this._project || forced) {
+      if (this._project) {
+        this._coliderCanvas.unsubscribeProjectEvent()
+      }
+
       this._project = Projects.fromProjectId(this._projectId)
       if (!this._project) return
       this.setupMapCanvas()
