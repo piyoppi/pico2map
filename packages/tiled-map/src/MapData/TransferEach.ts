@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright (c) 2021 piyoppi.
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
 export function transferEach(
   srcX: number,
   srcY: number,

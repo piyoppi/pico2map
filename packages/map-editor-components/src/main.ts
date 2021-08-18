@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright (c) 2021 piyoppi.
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
 import { MapChipSelectorComponent } from './MapChipSelectorComponent'
 import { MapCanvasComponent } from './MapCanvasComponent'
 import { AutoTileSelectorComponent } from  './AutoTileSelectorComponent'

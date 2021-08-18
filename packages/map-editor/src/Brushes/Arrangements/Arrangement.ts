@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright (c) 2021 piyoppi.
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
 import { MapChipFragment, TiledMapData, AutoTile, AutoTiles } from '@piyoppi/pico2map-tiled'
 import { ColiderTypes } from '@piyoppi/pico2map-tiled-colision-detector'
 import { BrushPaint } from './../Brush'

@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright (c) 2021 piyoppi.
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
 import { TiledMapDataItem, MapChipFragment, MapChip, AutoTile, MapRenderer, isAutoTileMapChip } from '@piyoppi/pico2map-tiled'
 import { Project } from './Projects'
 import { Pen } from './Brushes/Pen'

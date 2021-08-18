@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright (c) 2021 piyoppi.
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
 import { ColiderTypes } from '@piyoppi/pico2map-tiled-colision-detector'
 import { Arrangement, ArrangementPaint, ArrangementDescription, ColiderTypesRequired } from './Arrangement'
 import { BrushPaint } from './../Brush'

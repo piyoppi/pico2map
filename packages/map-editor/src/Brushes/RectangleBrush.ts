@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright (c) 2021 piyoppi.
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
 import { Brush, BrushPaint, BrushDescription } from './Brush'
 import { Arrangement, ArrangementPaint } from './Arrangements/Arrangement'
 import { DefaultArrangement } from './Arrangements/DefaultArrangement'

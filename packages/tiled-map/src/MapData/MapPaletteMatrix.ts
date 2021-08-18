@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright (c) 2021 piyoppi.
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
 import { transferEach } from './TransferEach'
 import { MapMatrix } from './MapMatrix'
 import { MapChipComparable } from '../MapChip'

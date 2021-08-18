@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright (c) 2021 piyoppi.
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
 import { DefaultArrangementDescription } from './DefaultArrangement'
 import { AutoTileArrangementDescription } from './AutoTileArrangement'
 import { DefaultEraseArrangementDescription } from './DefaultEraseArrangement'

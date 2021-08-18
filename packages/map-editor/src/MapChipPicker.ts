@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright (c) 2021 piyoppi.
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
 import { TiledMap, TiledMapDataItem } from '@piyoppi/pico2map-tiled'
 
 export class MapChipPicker {

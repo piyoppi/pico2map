@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright (c) 2021 piyoppi.
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
 import { MapChip, MapChipProperties, AutoTileMapChipProperties, isAutoTileMapChipProperties, AutoTileMapChip } from './../MapChip'
 import { MapChipImage } from '../MapChipImage'
 import { MapPaletteMatrix } from './MapPaletteMatrix'

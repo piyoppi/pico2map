@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright (c) 2021 piyoppi.
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
 import { Arrangement, ArrangementPaint, ArrangementDescription, TiledMapDataRequired, AutoTileRequired, MapChipFragmentRequired } from './Arrangement';
 import { BrushPaint } from './../Brush'
 import { MapChipFragment, AutoTileMapChip, isAutoTileMapChip, TiledMapData, TiledMapDataItem, AutoTile } from '@piyoppi/pico2map-tiled'

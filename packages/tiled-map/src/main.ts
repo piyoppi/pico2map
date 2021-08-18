@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright (c) 2021 piyoppi.
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
 export { TiledMap, TiledMapProperties } from './TiledMap'
 export { TiledMapData, TiledMapDataItem, TiledMapDataProperties } from './MapData/TiledMapData'
 export { MapChipImage, MapChipImageProperties } from './MapChipImage'

@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright (c) 2021 piyoppi.
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
 import { Projects, defineComponent } from '@piyoppi/pico2map-ui-components'
 import { TiledMap } from '@piyoppi/pico2map-tiled'
 import { TiledColisionDetector } from '@piyoppi/pico2map-tiled-colision-detector'

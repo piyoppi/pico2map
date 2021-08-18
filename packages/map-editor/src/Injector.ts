@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright (c) 2021 piyoppi.
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
 export class Injector {
   inject(calledObject: any, method: (... _: any) => any, before: (() => void) | null, after: (() => void) | null) {
     const original = calledObject[method.name]

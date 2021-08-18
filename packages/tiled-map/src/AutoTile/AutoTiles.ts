@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright (c) 2021 piyoppi.
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
 import { MapChipImage } from '../MapChipImage'
 import { AutoTileImportStrategy } from './ImportStrategy'
 import { AutoTileProperties, AutoTile } from './AutoTile'
