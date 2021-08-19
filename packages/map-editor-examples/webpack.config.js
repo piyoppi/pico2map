@@ -2,6 +2,7 @@ const path = require('path');
 
 module.exports = {
   mode: 'development',
+  devtool: "source-map",
   entry: {
     autotile: './autotile/src/autotile.ts',
     minimum_example: './minimum_example/src/minimum_example.ts',
