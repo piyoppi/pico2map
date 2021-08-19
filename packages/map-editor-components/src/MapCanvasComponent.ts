@@ -173,6 +173,10 @@ export class MapCanvasComponent extends LitElement {
 
   private setupProject() {
     if (!this._project || this._project.projectId !== this._projectId) {
+      if (this._project) {
+        this._mapCanvas.unsubscribeProjectEvent()
+      }
+
       this._project = Projects.fromProjectId(this._projectId)
       if (!this._project) return
 

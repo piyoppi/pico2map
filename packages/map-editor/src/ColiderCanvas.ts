@@ -83,6 +83,8 @@ export class ColiderCanvas implements EditorCanvas {
   }
 
   setProject(project: Project) {
+    if (this.isSubscribedProjectEvent) throw new Error('This colider-canvas is subscribed to the project event. You need to unsubscribe.')
+
     this._project = project
     this._coliderRenderer = new ColiderRenderer(this._project.tiledMap)
 

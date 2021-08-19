@@ -92,6 +92,8 @@ export class MapCanvas implements EditorCanvas {
 
   setProject(project: Project) {
     if (this._project === project) throw new Error('This project has already been set.')
+    if (this.isSubscribedProjectEvent) throw new Error('This map-canvas is subscribed to the project event. You need to unsubscribe.')
+
     this._project = project
     this._renderer = new MapRenderer(this._project.tiledMap)
     this._mapChipPicker = new MapChipPicker(this._project.tiledMap)

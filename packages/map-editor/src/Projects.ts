@@ -27,6 +27,10 @@ export class Project {
     injector.inject(_tiledMap.mapChipsCollection, _tiledMap.mapChipsCollection.replace, null, () => this._afterReplacedMapChipImageHandler())
   }
 
+  get callbacks() {
+    return this._callbacks
+  }
+
   get projectId() {
     return this._projectId
   }
