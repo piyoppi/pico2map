@@ -3180,6 +3180,9 @@ class AutoTileSelectorComponent extends lit__WEBPACK_IMPORTED_MODULE_0__.LitElem
         var _a;
         if (((_a = this._project) === null || _a === void 0 ? void 0 : _a.projectId) === this._projectId)
             return;
+        if (this._project) {
+            this._unsubscribeProjectEvent();
+        }
         this._project = _piyoppi_pico2map_editor__WEBPACK_IMPORTED_MODULE_3__.Projects.fromProjectId(this._projectId);
         if (!this._project) {
             this.reset();
@@ -3498,6 +3501,9 @@ class ColiderMarkerComponent extends lit__WEBPACK_IMPORTED_MODULE_0__.LitElement
     }
     setupProject(forced = false) {
         if (!this._project || forced) {
+            if (this._project) {
+                this._coliderCanvas.unsubscribeProjectEvent();
+            }
             this._project = _piyoppi_pico2map_editor__WEBPACK_IMPORTED_MODULE_3__.Projects.fromProjectId(this._projectId);
             if (!this._project)
                 return;
@@ -3885,6 +3891,9 @@ class MapCanvasComponent extends lit__WEBPACK_IMPORTED_MODULE_0__.LitElement {
     }
     setupProject() {
         if (!this._project || this._project.projectId !== this._projectId) {
+            if (this._project) {
+                this._mapCanvas.unsubscribeProjectEvent();
+            }
             this._project = _piyoppi_pico2map_editor__WEBPACK_IMPORTED_MODULE_3__.Projects.fromProjectId(this._projectId);
             if (!this._project)
                 return;
@@ -4207,6 +4216,9 @@ class MapChipSelectorComponent extends lit__WEBPACK_IMPORTED_MODULE_0__.LitEleme
         return !!this._afterReplacedMapChipImageCallbackItem;
     }
     _setupProject() {
+        if (this._project) {
+            this._unsubscribeProjectEvent();
+        }
         this._project = _piyoppi_pico2map_editor__WEBPACK_IMPORTED_MODULE_2__.Projects.fromProjectId(this._projectId);
         if (!this._project)
             return;
@@ -5440,6 +5452,9 @@ class CallbackCaller {
         this._items = [];
         this._maxId = 1;
     }
+    get length() {
+        return this._items.length;
+    }
     has(callbackItem) {
         return !!this._items.find(item => item === callbackItem);
     }
@@ -5477,6 +5492,9 @@ __webpack_require__.r(__webpack_exports__);
 class CallbackCallers {
     constructor() {
         this._callers = new Map();
+    }
+    getCallbackCaller(key) {
+        return this._callers.get(key);
     }
     has(key, callbackItem) {
         var _a;
@@ -5612,6 +5630,8 @@ class ColiderCanvas {
         return !!this._renderAllCallbackItem;
     }
     setProject(project) {
+        if (this.isSubscribedProjectEvent)
+            throw new Error('This colider-canvas is subscribed to the project event. You need to unsubscribe.');
         this._project = project;
         this._coliderRenderer = new _ColiderRenderer__WEBPACK_IMPORTED_MODULE_0__.ColiderRenderer(this._project.tiledMap);
         if (this.renderable && this._coliderCtx) {
@@ -5979,6 +5999,8 @@ class MapCanvas {
     setProject(project) {
         if (this._project === project)
             throw new Error('This project has already been set.');
+        if (this.isSubscribedProjectEvent)
+            throw new Error('This map-canvas is subscribed to the project event. You need to unsubscribe.');
         this._project = project;
         this._renderer = new _piyoppi_pico2map_tiled__WEBPACK_IMPORTED_MODULE_0__.MapRenderer(this._project.tiledMap);
         this._mapChipPicker = new _MapChipPicker__WEBPACK_IMPORTED_MODULE_6__.MapChipPicker(this._project.tiledMap);
@@ -6335,6 +6357,9 @@ class Project {
         injector.inject(_tiledMap.autoTiles, _tiledMap.autoTiles.push, null, () => this._afterAddAutoTileHandler());
         injector.inject(_tiledMap.autoTiles, _tiledMap.autoTiles.remove, null, () => this._afterRemoveAutoTileHandler());
         injector.inject(_tiledMap.mapChipsCollection, _tiledMap.mapChipsCollection.replace, null, () => this._afterReplacedMapChipImageHandler());
+    }
+    get callbacks() {
+        return this._callbacks;
     }
     get projectId() {
         return this._projectId;
