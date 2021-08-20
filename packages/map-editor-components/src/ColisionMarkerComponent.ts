@@ -46,7 +46,7 @@ export class ColiderMarkerComponent extends LitElement {
     const oldValue = this._projectId
     this._projectId = value
 
-    this.setupProject(true)
+    this.setupProject()
 
     this.requestUpdate('projectId', oldValue);
   }
@@ -60,7 +60,7 @@ export class ColiderMarkerComponent extends LitElement {
     const oldValue = this._brushName
     this._brushName = value
 
-    this.setupMapCanvas()
+    this._coliderCanvas.setBrushFromName(this._brushName)
 
     this.requestUpdate('brush', oldValue);
   }
@@ -122,26 +122,20 @@ export class ColiderMarkerComponent extends LitElement {
     return this._coliderCanvas
   }
 
-  private setupProject(forced: boolean = false) {
-    if (!this._project || forced) {
-      if (this._project) {
-        this._coliderCanvas.unsubscribeProjectEvent()
-      }
+  private setupProject() {
+    if (this._project && this._project.projectId === this._projectId) return
 
-      this._project = Projects.fromProjectId(this._projectId)
-      if (!this._project) return
-      this.setupMapCanvas()
-      this.requestUpdate()
+    if (this._project) {
+      this._coliderCanvas.unsubscribeProjectEvent()
     }
-  }
 
-  private setupMapCanvas() {
-    if (!this._project || !this._secondaryCanvasElement || !this._coliderCanvasElement) return
+    this._project = Projects.fromProjectId(this._projectId)
+    if (!this._project) return
 
     this._coliderCanvas.setProject(this._project)
     if (!this._coliderCanvas.isSubscribedProjectEvent) this._coliderCanvas.subscribeProjectEvent()
-    this._coliderCanvas.setCanvas(this._coliderCanvasElement, this._secondaryCanvasElement)
-    this._coliderCanvas.setBrushFromName(this._brushName)
+
+    this.requestUpdate()
   }
 
   firstUpdated() {
@@ -151,7 +145,9 @@ export class ColiderMarkerComponent extends LitElement {
     this._coliderCanvasElement = this.shadowRoot?.getElementById('colider-canvas') as HTMLCanvasElement
     this._secondaryCanvasElement = this.shadowRoot?.getElementById('secondary-canvas') as HTMLCanvasElement
 
-    this.setupMapCanvas()
+    if (this._secondaryCanvasElement && this._coliderCanvasElement) {
+      this._coliderCanvas.setCanvas(this._coliderCanvasElement, this._secondaryCanvasElement)
+    }
   }
 
   mouseMove(e: MouseEvent) {
