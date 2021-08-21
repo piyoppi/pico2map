@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
+
 import { MapChip } from './MapChip'
 import { MapChipsCollection, MapChipCollectionProperties } from './MapChipsCollection'
 import { AutoTiles, AutoTilesProperties } from './AutoTile/AutoTiles'

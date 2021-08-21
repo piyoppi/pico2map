@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
+
 import { PenDescription } from './Pen'
 import { RectangleBrushDescription } from './RectangleBrush'
 import { Brush } from './Brush'

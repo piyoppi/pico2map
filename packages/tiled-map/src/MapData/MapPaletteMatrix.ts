@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
+
 import { transferEach } from './TransferEach'
 import { MapMatrix } from './MapMatrix'
 import { MapChipComparable } from '../MapChip'

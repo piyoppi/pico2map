@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
+
 export interface TiledColisionDetectable {
   getFromChipPosition: (x: number, y: number) => ColiderTypes
 }

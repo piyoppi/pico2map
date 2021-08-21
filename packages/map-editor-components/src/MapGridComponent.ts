@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
+
 import { LitElement, html, css } from 'lit'
 import { property } from 'lit/decorators.js'
 import { CursorPositionCalculator } from './Helpers/CursorPositionCalculator'

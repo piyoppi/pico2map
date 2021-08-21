@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
+
 export { GridImageGenerator } from './GridImageGenerator'
 export { CallbackItem } from './CallbackItem'
 export { MapCanvas } from './MapCanvas'

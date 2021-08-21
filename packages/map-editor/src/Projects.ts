@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
+
 import { TiledMap } from '@piyoppi/pico2map-tiled'
 import { CallbackCaller } from './CallbackCaller'
 import { CallbackCallers } from './CallbackCallers'

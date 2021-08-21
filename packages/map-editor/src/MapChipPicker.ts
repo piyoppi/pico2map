@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
+
 import { TiledMap, TiledMapDataItem } from '@piyoppi/pico2map-tiled'
 
 export class MapChipPicker {

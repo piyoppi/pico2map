@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
+
 import { Brush, BrushPaint, BrushDescription } from './Brush'
 import { Arrangement, ArrangementPaint } from './Arrangements/Arrangement'
 import { DefaultArrangement } from './Arrangements/DefaultArrangement'

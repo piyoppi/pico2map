@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
+
 import { ColiderTypes } from '@piyoppi/pico2map-tiled-colision-detector'
 import { Arrangement, ArrangementPaint, ArrangementDescription, ColiderTypesRequired } from './Arrangement'
 import { BrushPaint } from './../Brush'

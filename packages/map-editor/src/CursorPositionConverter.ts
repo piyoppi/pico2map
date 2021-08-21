@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
+
 export function convertFromCursorPositionToChipPosition(x: number, y: number, chipWidth: number, chipHeight: number, chipCountX: number, chipCountY: number) {
   return {
     x: Math.max(0, Math.min(Math.floor(x / chipWidth), chipCountX - 1)),
