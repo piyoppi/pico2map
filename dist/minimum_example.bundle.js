@@ -3440,7 +3440,7 @@ class ColiderMarkerComponent extends lit__WEBPACK_IMPORTED_MODULE_0__.LitElement
     set projectId(value) {
         const oldValue = this._projectId;
         this._projectId = value;
-        this.setupProject(true);
+        this.setupProject();
         this.requestUpdate('projectId', oldValue);
     }
     get brush() {
@@ -3449,7 +3449,7 @@ class ColiderMarkerComponent extends lit__WEBPACK_IMPORTED_MODULE_0__.LitElement
     set brush(value) {
         const oldValue = this._brushName;
         this._brushName = value;
-        this.setupMapCanvas();
+        this._coliderCanvas.setBrushFromName(this._brushName);
         this.requestUpdate('brush', oldValue);
     }
     get coliderType() {
@@ -3499,26 +3499,19 @@ class ColiderMarkerComponent extends lit__WEBPACK_IMPORTED_MODULE_0__.LitElement
     get coliderCanvas() {
         return this._coliderCanvas;
     }
-    setupProject(forced = false) {
-        if (!this._project || forced) {
-            if (this._project) {
-                this._coliderCanvas.unsubscribeProjectEvent();
-            }
-            this._project = _piyoppi_pico2map_editor__WEBPACK_IMPORTED_MODULE_3__.Projects.fromProjectId(this._projectId);
-            if (!this._project)
-                return;
-            this.setupMapCanvas();
-            this.requestUpdate();
+    setupProject() {
+        if (this._project && this._project.projectId === this._projectId)
+            return;
+        if (this._project) {
+            this._coliderCanvas.unsubscribeProjectEvent();
         }
-    }
-    setupMapCanvas() {
-        if (!this._project || !this._secondaryCanvasElement || !this._coliderCanvasElement)
+        this._project = _piyoppi_pico2map_editor__WEBPACK_IMPORTED_MODULE_3__.Projects.fromProjectId(this._projectId);
+        if (!this._project)
             return;
         this._coliderCanvas.setProject(this._project);
         if (!this._coliderCanvas.isSubscribedProjectEvent)
             this._coliderCanvas.subscribeProjectEvent();
-        this._coliderCanvas.setCanvas(this._coliderCanvasElement, this._secondaryCanvasElement);
-        this._coliderCanvas.setBrushFromName(this._brushName);
+        this.requestUpdate();
     }
     firstUpdated() {
         var _a, _b, _c;
@@ -3527,7 +3520,9 @@ class ColiderMarkerComponent extends lit__WEBPACK_IMPORTED_MODULE_0__.LitElement
             this._cursorPositionCalculator.setElement(element);
         this._coliderCanvasElement = (_b = this.shadowRoot) === null || _b === void 0 ? void 0 : _b.getElementById('colider-canvas');
         this._secondaryCanvasElement = (_c = this.shadowRoot) === null || _c === void 0 ? void 0 : _c.getElementById('secondary-canvas');
-        this.setupMapCanvas();
+        if (this._secondaryCanvasElement && this._coliderCanvasElement) {
+            this._coliderCanvas.setCanvas(this._coliderCanvasElement, this._secondaryCanvasElement);
+        }
     }
     mouseMove(e) {
         const mouseCursorPosition = this._cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY);
@@ -3771,6 +3766,8 @@ class MapCanvasComponent extends lit__WEBPACK_IMPORTED_MODULE_0__.LitElement {
         this._inactiveLayerOpacity = 1.0;
         this._appendedLayerCanvases = [];
         this._canvasMaxIds = 1;
+        this._beforeAddLayerCallbackItem = null;
+        this._afterResizedMapCallbackItem = null;
         this._documentMouseMoveEventCallee = null;
         this._documentMouseUpEventCallee = null;
         this.gridCursorHidden = false;
@@ -3886,34 +3883,54 @@ class MapCanvasComponent extends lit__WEBPACK_IMPORTED_MODULE_0__.LitElement {
     get mapCanvas() {
         return this._mapCanvas;
     }
+    get isSubscribedProjectEvent() {
+        return !!this._beforeAddLayerCallbackItem && !!this._afterResizedMapCallbackItem;
+    }
     set mapCanvas(value) {
         this._mapCanvas = value;
     }
     setupProject() {
-        if (!this._project || this._project.projectId !== this._projectId) {
-            if (this._project) {
-                this._mapCanvas.unsubscribeProjectEvent();
-            }
-            this._project = _piyoppi_pico2map_editor__WEBPACK_IMPORTED_MODULE_3__.Projects.fromProjectId(this._projectId);
-            if (!this._project)
-                return;
-            this._mapCanvas.setProject(this._project);
-            if (!this._mapCanvas.isSubscribedProjectEvent)
-                this._mapCanvas.subscribeProjectEvent();
-            this._mapCanvas.firstRenderAll();
-            this.setupMapCanvas();
-            this.setActiveAutoTile();
-            this.requestUpdate();
-            this._project.setCallback('beforeAddLayer', () => this._mapCanvas.addCanvas(this.addCanvasToDOMTree()));
-            this._project.setCallback('afterResizedMap', () => {
-                this.requestUpdate();
-                this._appendedLayerCanvases.forEach(canvas => {
-                    canvas.width = this.width;
-                    canvas.height = this.height;
-                });
-                this._mapCanvas.renderAll();
-            });
+        if (this._project && this._project.projectId === this._projectId)
+            return;
+        if (this._project) {
+            this._mapCanvas.unsubscribeProjectEvent();
+            this._unsubscribeProjectEvent();
         }
+        this._project = _piyoppi_pico2map_editor__WEBPACK_IMPORTED_MODULE_3__.Projects.fromProjectId(this._projectId);
+        if (!this._project)
+            return;
+        this._mapCanvas.setProject(this._project);
+        if (!this._mapCanvas.isSubscribedProjectEvent)
+            this._mapCanvas.subscribeProjectEvent();
+        if (!this.isSubscribedProjectEvent)
+            this._subscribeProjectEvent();
+        this._mapCanvas.firstRenderAll();
+        this.setupMapCanvas();
+        this.setActiveAutoTile();
+        this.requestUpdate();
+    }
+    _subscribeProjectEvent() {
+        if (!this._project || this.isSubscribedProjectEvent)
+            return;
+        this._beforeAddLayerCallbackItem = this._project.setCallback('beforeAddLayer', () => this._mapCanvas.addCanvas(this.addCanvasToDOMTree()));
+        this._afterResizedMapCallbackItem = this._project.setCallback('afterResizedMap', () => {
+            this.requestUpdate();
+            this._appendedLayerCanvases.forEach(canvas => {
+                canvas.width = this.width;
+                canvas.height = this.height;
+            });
+            this._mapCanvas.renderAll();
+        });
+    }
+    _unsubscribeProjectEvent() {
+        if (!this._project)
+            return;
+        if (this._beforeAddLayerCallbackItem)
+            this._project.removeCallback('beforeAddLayer', this._beforeAddLayerCallbackItem);
+        if (this._afterResizedMapCallbackItem)
+            this._project.removeCallback('afterResizedMap', this._afterResizedMapCallbackItem);
+        this._beforeAddLayerCallbackItem = null;
+        this._afterResizedMapCallbackItem = null;
     }
     createCanvas() {
         const canvas = document.createElement('canvas');
@@ -4074,11 +4091,14 @@ class MapCanvasComponent extends lit__WEBPACK_IMPORTED_MODULE_0__.LitElement {
     disconnectedCallback() {
         super.disconnectedCallback();
         this._mapCanvas.unsubscribeProjectEvent();
+        this._unsubscribeProjectEvent();
     }
     connectedCallback() {
         super.connectedCallback();
         if (this._mapCanvas.hasProject && !this._mapCanvas.isSubscribedProjectEvent)
             this._mapCanvas.subscribeProjectEvent();
+        if (this._project && !this.isSubscribedProjectEvent)
+            this._subscribeProjectEvent();
     }
 }
 __decorate([
@@ -5454,6 +5474,9 @@ class CallbackCaller {
     }
     get length() {
         return this._items.length;
+    }
+    get items() {
+        return this._items;
     }
     has(callbackItem) {
         return !!this._items.find(item => item === callbackItem);
