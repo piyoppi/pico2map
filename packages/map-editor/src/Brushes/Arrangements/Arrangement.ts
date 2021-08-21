@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
+
 import { MapChipFragment, TiledMapData, AutoTile, AutoTiles } from '@piyoppi/pico2map-tiled'
 import { ColiderTypes } from '@piyoppi/pico2map-tiled-colision-detector'
 import { BrushPaint } from './../Brush'

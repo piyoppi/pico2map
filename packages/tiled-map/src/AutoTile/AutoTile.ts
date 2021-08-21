@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
+
 import { MapChipFragment, MapChipFragmentProperties } from './../MapChip'
 
 export type AutoTileProperties = {

@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
+
 import { CallbackCaller } from './CallbackCaller'
 import { CallbackItem } from './CallbackItem'
 

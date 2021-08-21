@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
+
 import { AutoTiles } from './AutoTile/AutoTiles'
 
 export interface MapChipComparable {

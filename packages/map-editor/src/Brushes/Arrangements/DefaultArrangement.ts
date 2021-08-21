@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
+
 import { MapChipFragment, MapChip, TiledMapDataItem } from '@piyoppi/pico2map-tiled'
 import { Arrangement, ArrangementPaint, ArrangementDescription, MapChipFragmentRequired } from './Arrangement'
 import { BrushPaint } from './../Brush'

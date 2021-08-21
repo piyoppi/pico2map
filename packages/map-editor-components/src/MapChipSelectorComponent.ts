@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
+
 import { LitElement, html, css } from 'lit'
 import { property } from 'lit/decorators.js'
 import { GridImageGenerator, MapChipSelector, Projects, Project, CallbackItem } from '@piyoppi/pico2map-editor'

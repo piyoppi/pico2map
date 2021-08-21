@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
+
 import { Arrangement, ArrangementPaint } from './Arrangements/Arrangement';
 import { MapChip } from '@piyoppi/pico2map-tiled'
 

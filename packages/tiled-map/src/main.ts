@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
+
 export { TiledMap, TiledMapProperties } from './TiledMap'
 export { TiledMapData, TiledMapDataItem, TiledMapDataProperties } from './MapData/TiledMapData'
 export { MapChipImage, MapChipImageProperties } from './MapChipImage'
