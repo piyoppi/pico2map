@@ -81,3 +81,38 @@ test('Canvas size is set', async () => {
   expect(canavs.width).toEqual(96)
   expect(canavs.height).toEqual(128)
 })
+
+test('Should set brush name to ColiderCanvas', async () => {
+  const tiledMap = new TiledMap(30, 30, 32, 32)
+  const project = Projects.add(tiledMap)
+  const component = await setComponent(`projectId=${project.projectId}`)
+
+  component.coliderCanvas.setBrushFromName = jest.fn()
+  component.setAttribute('brush', 'TestBrush')
+
+  await component.updateComplete
+
+  expect(component.coliderCanvas.setBrushFromName).toBeCalledWith('TestBrush')
+})
+
+test('Should change projects when projectId attribute is changed', async () => {
+  const tiledMap = new TiledMap(30, 30, 32, 32)
+  const project = Projects.add(tiledMap)
+  const tiledMap2 = new TiledMap(10, 10, 32, 32)
+  const project2 = Projects.add(tiledMap2)
+  const component = await setComponent(`projectId=${project.projectId}`)
+
+  expect(component.coliderCanvas.project).toEqual(project)
+
+  component.setAttribute('projectId', project2.projectId.toString())
+  await component.updateComplete
+
+  expect(component.coliderCanvas.project).toEqual(project2)
+})
+
+test('Should set canvases to ColiderCanvas', async () => {
+  const component = await setComponent('')
+
+  expect(component.coliderCanvas.coliderCtx).not.toBeNull()
+  expect(component.coliderCanvas.secondaryCanvasCtx).not.toBeNull()
+})

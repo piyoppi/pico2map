@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit'
 import { property } from 'lit/decorators.js'
 import { CursorPositionCalculator } from './Helpers/CursorPositionCalculator'
-import { MapCanvas, Projects, Project } from '@piyoppi/pico2map-editor'
+import { MapCanvas, Projects, Project, CallbackItem } from '@piyoppi/pico2map-editor'
 import { MapChipFragment, MapChipFragmentProperties } from '@piyoppi/pico2map-tiled'
 
 export class MapCanvasComponent extends LitElement {
@@ -14,6 +14,8 @@ export class MapCanvasComponent extends LitElement {
   private _inactiveLayerOpacity = 1.0
   private _appendedLayerCanvases: Array<HTMLCanvasElement> = []
   private _canvasMaxIds = 1
+  private _beforeAddLayerCallbackItem: CallbackItem | null = null
+  private _afterResizedMapCallbackItem: CallbackItem | null = null
 
   private _documentMouseMoveEventCallee: ((e: MouseEvent) => void) | null = null
   private _documentMouseUpEventCallee: ((e: MouseEvent) => void) | null = null
@@ -167,35 +169,59 @@ export class MapCanvasComponent extends LitElement {
     return this._mapCanvas
   }
 
+  get isSubscribedProjectEvent() {
+    return !!this._beforeAddLayerCallbackItem && !!this._afterResizedMapCallbackItem
+  }
+
   set mapCanvas(value: MapCanvas) {
     this._mapCanvas = value
   }
 
   private setupProject() {
-    if (!this._project || this._project.projectId !== this._projectId) {
-      if (this._project) {
-        this._mapCanvas.unsubscribeProjectEvent()
-      }
+    if (this._project && this._project.projectId === this._projectId) return
 
-      this._project = Projects.fromProjectId(this._projectId)
-      if (!this._project) return
-
-      this._mapCanvas.setProject(this._project)
-      if (!this._mapCanvas.isSubscribedProjectEvent) this._mapCanvas.subscribeProjectEvent()
-      this._mapCanvas.firstRenderAll()
-      this.setupMapCanvas()
-      this.setActiveAutoTile()
-      this.requestUpdate()
-      this._project.setCallback('beforeAddLayer', () => this._mapCanvas.addCanvas(this.addCanvasToDOMTree()))
-      this._project.setCallback('afterResizedMap', () => {
-        this.requestUpdate()
-        this._appendedLayerCanvases.forEach(canvas => {
-          canvas.width = this.width
-          canvas.height = this.height
-        })
-        this._mapCanvas.renderAll()
-      })
+    if (this._project) {
+      this._mapCanvas.unsubscribeProjectEvent()
+      this._unsubscribeProjectEvent()
     }
+
+    this._project = Projects.fromProjectId(this._projectId)
+    if (!this._project) return
+
+    this._mapCanvas.setProject(this._project)
+
+    if (!this._mapCanvas.isSubscribedProjectEvent) this._mapCanvas.subscribeProjectEvent()
+    if (!this.isSubscribedProjectEvent) this._subscribeProjectEvent()
+
+    this._mapCanvas.firstRenderAll()
+    this.setupMapCanvas()
+    this.setActiveAutoTile()
+
+    this.requestUpdate()
+  }
+
+  private _subscribeProjectEvent() {
+    if (!this._project || this.isSubscribedProjectEvent) return
+
+    this._beforeAddLayerCallbackItem = this._project.setCallback('beforeAddLayer', () => this._mapCanvas.addCanvas(this.addCanvasToDOMTree()))
+    this._afterResizedMapCallbackItem = this._project.setCallback('afterResizedMap', () => {
+      this.requestUpdate()
+      this._appendedLayerCanvases.forEach(canvas => {
+        canvas.width = this.width
+        canvas.height = this.height
+      })
+      this._mapCanvas.renderAll()
+    })
+  }
+
+  private _unsubscribeProjectEvent() {
+    if (!this._project) return
+
+    if (this._beforeAddLayerCallbackItem) this._project.removeCallback('beforeAddLayer', this._beforeAddLayerCallbackItem)
+    if (this._afterResizedMapCallbackItem) this._project.removeCallback('afterResizedMap', this._afterResizedMapCallbackItem)
+
+    this._beforeAddLayerCallbackItem = null
+    this._afterResizedMapCallbackItem = null
   }
 
   private createCanvas() {
@@ -372,16 +398,17 @@ export class MapCanvasComponent extends LitElement {
     `
   }
 
-
   disconnectedCallback() {
     super.disconnectedCallback()
 
     this._mapCanvas.unsubscribeProjectEvent()
+    this._unsubscribeProjectEvent()
   }
 
   connectedCallback() {
     super.connectedCallback()
 
     if (this._mapCanvas.hasProject && !this._mapCanvas.isSubscribedProjectEvent) this._mapCanvas.subscribeProjectEvent()
+    if (this._project && !this.isSubscribedProjectEvent) this._subscribeProjectEvent()
   }
 }

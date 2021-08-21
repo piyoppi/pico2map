@@ -8,6 +8,10 @@ export class CallbackCaller {
     return this._items.length
   }
 
+  get items() {
+    return this._items
+  }
+
   has(callbackItem: CallbackItem) {
     return !!this._items.find(item => item === callbackItem)
   }
