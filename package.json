@@ -1,8 +1,7 @@
 {
   "name": "pico2map",
   "version": "0.0.52",
-  "description": "",
-  "main": "src/main.js",
+  "description": "2D Tiled map editor for RPG / Action game",
   "workspaces": [
     "packages/*"
   ],
@@ -11,6 +10,5 @@
     "build-ci": "(cd packages/tiled-colision-detector && npm run build) && (cd packages/tiled-map && npm run build) && (cd packages/map-editor && npm run build) && (cd packages/map-editor-components && npm run build)",
     "test": "(cd packages/tiled-colision-detector && npm test) && (cd packages/tiled-map && npm test) && (cd packages/map-editor && npm test) && (cd packages/map-editor-components && npm test)"
   },
-  "author": "piyoppi",
-  "license": "MIT"
+  "author": "piyoppi"
 }
