@@ -139,12 +139,14 @@ test('Unsubscribe project event when the component is removed', async () => {
   const component = await setComponent(`projectId=${project.projectId}`)
 
   expect(component.mapCanvas.isSubscribedProjectEvent).toEqual(true)
+  expect(component.isSubscribedProjectEvent).toEqual(true)
 
   component.mapCanvas.unsubscribeProjectEvent = jest.fn()
 
   document.body.innerHTML = ''
 
   expect(component.mapCanvas.unsubscribeProjectEvent).toBeCalled()
+  expect(component.isSubscribedProjectEvent).toEqual(false)
 })
 
 test('Unsubscribe / subscribe project event when the component is moved', async () => {
@@ -155,17 +157,26 @@ test('Unsubscribe / subscribe project event when the component is moved', async 
   jest.spyOn(component.mapCanvas, 'subscribeProjectEvent')
   jest.spyOn(component.mapCanvas, 'unsubscribeProjectEvent')
 
+  const beforeAddLayerCallback = project.callbacks.getCallbackCaller('beforeAddLayer')?.items[0]
+  const afterResizedMapCallback = project.callbacks.getCallbackCaller('afterResizedMap')?.items[0]
+
   const container = document.getElementById('secondary-container') as HTMLDivElement
   container.appendChild(component)
 
   expect(component.mapCanvas.unsubscribeProjectEvent).toBeCalledTimes(1)
   expect(component.mapCanvas.subscribeProjectEvent).toBeCalledTimes(1)
+  expect(component.isSubscribedProjectEvent).toEqual(true)
+  expect(Object.is(project.callbacks.getCallbackCaller('beforeAddLayer')?.items[0], beforeAddLayerCallback)).toEqual(false)
+  expect(Object.is(project.callbacks.getCallbackCaller('afterResizedMap')?.items[0], afterResizedMapCallback)).toEqual(false)
 })
 
 test('Reset subscription of project event when projectId is changed', async () => {
   const tiledMap = new TiledMap(30, 30, 32, 32)
   const project = Projects.add(tiledMap)
   const component = await setComponent(`projectId=${project.projectId}`)
+
+  expect(project.callbacks.getCallbackCaller('beforeAddLayer')?.length).toEqual(1)
+  expect(project.callbacks.getCallbackCaller('afterResizedMap')?.length).toEqual(1)
 
   const tiledMap2 = new TiledMap(30, 30, 32, 32)
   const project2 = Projects.add(tiledMap2)
@@ -177,4 +188,8 @@ test('Reset subscription of project event when projectId is changed', async () =
 
   expect(component.mapCanvas.unsubscribeProjectEvent).toBeCalledTimes(1)
   expect(component.mapCanvas.subscribeProjectEvent).toBeCalledTimes(1)
+  expect(project.callbacks.getCallbackCaller('beforeAddLayer')?.length).toEqual(0)
+  expect(project.callbacks.getCallbackCaller('afterResizedMap')?.length).toEqual(0)
+  expect(project2.callbacks.getCallbackCaller('beforeAddLayer')?.length).toEqual(1)
+  expect(project2.callbacks.getCallbackCaller('afterResizedMap')?.length).toEqual(1)
 })
