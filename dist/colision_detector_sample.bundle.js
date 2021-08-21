@@ -3093,6 +3093,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var lit_decorators_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lit/decorators.js */ "../../node_modules/lit/decorators.js");
 /* harmony import */ var _Helpers_CursorPositionCalculator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Helpers/CursorPositionCalculator */ "../map-editor-components/dist/Helpers/CursorPositionCalculator.js");
 /* harmony import */ var _piyoppi_pico2map_editor__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @piyoppi/pico2map-editor */ "../map-editor/dist/main.js");
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -3397,6 +3402,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var lit_decorators_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lit/decorators.js */ "../../node_modules/lit/decorators.js");
 /* harmony import */ var _Helpers_CursorPositionCalculator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Helpers/CursorPositionCalculator */ "../map-editor-components/dist/Helpers/CursorPositionCalculator.js");
 /* harmony import */ var _piyoppi_pico2map_editor__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @piyoppi/pico2map-editor */ "../map-editor/dist/main.js");
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -3678,6 +3688,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "AutoTileSelectedEvent": () => (/* binding */ AutoTileSelectedEvent),
 /* harmony export */   "PickedMapChipEvent": () => (/* binding */ PickedMapChipEvent)
 /* harmony export */ });
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 class MapChipSelectedEvent extends CustomEvent {
     constructor(detail) {
         super('mapchip-selected', { detail });
@@ -3707,6 +3722,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "CursorPositionCalculator": () => (/* binding */ CursorPositionCalculator)
 /* harmony export */ });
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 class CursorPositionCalculator {
     constructor() {
         this._element = null;
@@ -3743,6 +3763,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Helpers_CursorPositionCalculator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Helpers/CursorPositionCalculator */ "../map-editor-components/dist/Helpers/CursorPositionCalculator.js");
 /* harmony import */ var _piyoppi_pico2map_editor__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @piyoppi/pico2map-editor */ "../map-editor/dist/main.js");
 /* harmony import */ var _piyoppi_pico2map_tiled__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @piyoppi/pico2map-tiled */ "../tiled-map/dist/main.js");
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -4152,6 +4177,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var lit_decorators_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lit/decorators.js */ "../../node_modules/lit/decorators.js");
 /* harmony import */ var _piyoppi_pico2map_editor__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @piyoppi/pico2map-editor */ "../map-editor/dist/main.js");
 /* harmony import */ var _Helpers_CursorPositionCalculator__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Helpers/CursorPositionCalculator */ "../map-editor-components/dist/Helpers/CursorPositionCalculator.js");
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -4443,6 +4473,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var lit_decorators_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lit/decorators.js */ "../../node_modules/lit/decorators.js");
 /* harmony import */ var _Helpers_CursorPositionCalculator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Helpers/CursorPositionCalculator */ "../map-editor-components/dist/Helpers/CursorPositionCalculator.js");
 /* harmony import */ var _piyoppi_pico2map_editor__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @piyoppi/pico2map-editor */ "../map-editor/dist/main.js");
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -4602,6 +4637,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "PickedArrangementSelector": () => (/* binding */ PickedArrangementSelector)
 /* harmony export */ });
 /* harmony import */ var _piyoppi_pico2map_tiled__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @piyoppi/pico2map-tiled */ "../tiled-map/dist/main.js");
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 
 function PickedArrangementSelector(detail) {
     if ((0,_piyoppi_pico2map_tiled__WEBPACK_IMPORTED_MODULE_0__.isAutoTileMapChip)(detail.picked)) {
@@ -4641,6 +4681,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _piyoppi_pico2map_editor__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @piyoppi/pico2map-editor */ "../map-editor/dist/main.js");
 /* harmony import */ var _Events__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Events */ "../map-editor-components/dist/Events.js");
 /* harmony import */ var _PickedArrangementSelector__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./PickedArrangementSelector */ "../map-editor-components/dist/PickedArrangementSelector.js");
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 
 
 
@@ -4670,6 +4715,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "AutoTileSelector": () => (/* binding */ AutoTileSelector)
 /* harmony export */ });
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 class AutoTileSelector {
     constructor(_canvasWidth, _chipWidth, _chipHeight, _autoTiles, _mapChipsCollection) {
         this._canvasWidth = _canvasWidth;
@@ -4753,6 +4803,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "isAutoTilesRequired": () => (/* binding */ isAutoTilesRequired),
 /* harmony export */   "isColiderTypesRequired": () => (/* binding */ isColiderTypesRequired)
 /* harmony export */ });
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 function isMapChipFragmentRequired(obj) {
     return typeof obj.setMapChips === 'function';
 }
@@ -4785,6 +4840,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _DefaultArrangement__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./DefaultArrangement */ "../map-editor/dist/Brushes/Arrangements/DefaultArrangement.js");
 /* harmony import */ var _AutoTileArrangement__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AutoTileArrangement */ "../map-editor/dist/Brushes/Arrangements/AutoTileArrangement.js");
 /* harmony import */ var _DefaultEraseArrangement__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./DefaultEraseArrangement */ "../map-editor/dist/Brushes/Arrangements/DefaultEraseArrangement.js");
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 
 
 
@@ -4813,6 +4873,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "AutoTileArrangement": () => (/* binding */ AutoTileArrangement)
 /* harmony export */ });
 /* harmony import */ var _piyoppi_pico2map_tiled__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @piyoppi/pico2map-tiled */ "../tiled-map/dist/main.js");
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 
 const AutoTileArrangementDescription = {
     name: 'AutoTileArrangement',
@@ -5086,6 +5151,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _AutoTileArrangement__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AutoTileArrangement */ "../map-editor/dist/Brushes/Arrangements/AutoTileArrangement.js");
 /* harmony import */ var _piyoppi_pico2map_tiled__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @piyoppi/pico2map-tiled */ "../tiled-map/dist/main.js");
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 
 
 const AutoTileEraseArrangementDescription = {
@@ -5171,6 +5241,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "ColiderArrangementDescription": () => (/* binding */ ColiderArrangementDescription),
 /* harmony export */   "ColiderArrangement": () => (/* binding */ ColiderArrangement)
 /* harmony export */ });
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 const ColiderArrangementDescription = {
     name: 'ColiderArrangement',
     create: () => new ColiderArrangement()
@@ -5202,6 +5277,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "DefaultArrangement": () => (/* binding */ DefaultArrangement)
 /* harmony export */ });
 /* harmony import */ var _piyoppi_pico2map_tiled__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @piyoppi/pico2map-tiled */ "../tiled-map/dist/main.js");
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 
 const DefaultArrangementDescription = {
     name: 'DefaultArrangement',
@@ -5246,6 +5326,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _EraseArrangement__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./EraseArrangement */ "../map-editor/dist/Brushes/Arrangements/EraseArrangement.js");
 /* harmony import */ var _AutoTileEraseArrangement__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AutoTileEraseArrangement */ "../map-editor/dist/Brushes/Arrangements/AutoTileEraseArrangement.js");
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 
 
 const DefaultEraseArrangementDescription = {
@@ -5297,6 +5382,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "EraseArrangementDescription": () => (/* binding */ EraseArrangementDescription),
 /* harmony export */   "EraseArrangement": () => (/* binding */ EraseArrangement)
 /* harmony export */ });
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 const EraseArrangementDescription = {
     name: 'EraseArrangement',
     create: () => new EraseArrangement()
@@ -5322,6 +5412,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _Pen__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Pen */ "../map-editor/dist/Brushes/Pen.js");
 /* harmony import */ var _RectangleBrush__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./RectangleBrush */ "../map-editor/dist/Brushes/RectangleBrush.js");
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 
 
 const registeredBrushDescriptions = [
@@ -5347,6 +5442,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "PenDescription": () => (/* binding */ PenDescription),
 /* harmony export */   "Pen": () => (/* binding */ Pen)
 /* harmony export */ });
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 const PenDescription = {
     name: 'Pen',
     create: () => new Pen()
@@ -5407,6 +5507,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "RectangleBrushDescription": () => (/* binding */ RectangleBrushDescription),
 /* harmony export */   "RectangleBrush": () => (/* binding */ RectangleBrush)
 /* harmony export */ });
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 const RectangleBrushDescription = {
     name: 'RectangleBrush',
     create: () => new RectangleBrush()
@@ -5466,6 +5571,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "CallbackCaller": () => (/* binding */ CallbackCaller)
 /* harmony export */ });
 /* harmony import */ var _CallbackItem__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CallbackItem */ "../map-editor/dist/CallbackItem.js");
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 
 class CallbackCaller {
     constructor() {
@@ -5511,6 +5621,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "CallbackCallers": () => (/* binding */ CallbackCallers)
 /* harmony export */ });
 /* harmony import */ var _CallbackCaller__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CallbackCaller */ "../map-editor/dist/CallbackCaller.js");
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 
 class CallbackCallers {
     constructor() {
@@ -5554,6 +5669,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "CallbackItem": () => (/* binding */ CallbackItem)
 /* harmony export */ });
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 class CallbackItem {
     constructor(_proc, _id = -1) {
         this._proc = _proc;
@@ -5588,6 +5708,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Brushes_Brushes__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Brushes/Brushes */ "../map-editor/dist/Brushes/Brushes.js");
 /* harmony import */ var _Brushes_Arrangements_Arrangement__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Brushes/Arrangements/Arrangement */ "../map-editor/dist/Brushes/Arrangements/Arrangement.js");
 /* harmony import */ var _Brushes_Arrangements_ColiderArrangement__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Brushes/Arrangements/ColiderArrangement */ "../map-editor/dist/Brushes/Arrangements/ColiderArrangement.js");
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 
 
 
@@ -5777,6 +5902,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "ColiderRenderer": () => (/* binding */ ColiderRenderer)
 /* harmony export */ });
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 class ColiderRenderer {
     constructor(_tiledMap) {
         this._tiledMap = _tiledMap;
@@ -5825,6 +5955,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "convertFromCursorPositionToChipPosition": () => (/* binding */ convertFromCursorPositionToChipPosition)
 /* harmony export */ });
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 function convertFromCursorPositionToChipPosition(x, y, chipWidth, chipHeight, chipCountX, chipCountY) {
     return {
         x: Math.max(0, Math.min(Math.floor(x / chipWidth), chipCountX - 1)),
@@ -5845,6 +5980,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "GridImageGenerator": () => (/* binding */ GridImageGenerator)
 /* harmony export */ });
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 class GridImageGenerator {
     constructor() {
         this._width = 0;
@@ -5913,6 +6053,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Injector": () => (/* binding */ Injector)
 /* harmony export */ });
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 class Injector {
     inject(calledObject, method, before, after) {
         const original = calledObject[method.name];
@@ -5948,6 +6093,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Brushes_Arrangements_DefaultArrangement__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Brushes/Arrangements/DefaultArrangement */ "../map-editor/dist/Brushes/Arrangements/DefaultArrangement.js");
 /* harmony import */ var _MapChipPicker__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./MapChipPicker */ "../map-editor/dist/MapChipPicker.js");
 /* harmony import */ var _CursorPositionConverter__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./CursorPositionConverter */ "../map-editor/dist/CursorPositionConverter.js");
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 
 
 
@@ -6220,6 +6370,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "MapChipPicker": () => (/* binding */ MapChipPicker)
 /* harmony export */ });
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 class MapChipPicker {
     constructor(_tiledMap) {
         this._tiledMap = _tiledMap;
@@ -6251,6 +6406,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "MapChipSelector": () => (/* binding */ MapChipSelector)
 /* harmony export */ });
 /* harmony import */ var _piyoppi_pico2map_tiled__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @piyoppi/pico2map-tiled */ "../tiled-map/dist/main.js");
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 
 class MapChipSelector {
     constructor(_tiledMap, _chipImage) {
@@ -6367,6 +6527,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _CallbackCallers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CallbackCallers */ "../map-editor/dist/CallbackCallers.js");
 /* harmony import */ var _Injector__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Injector */ "../map-editor/dist/Injector.js");
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 
 
 class Project {
@@ -6472,6 +6637,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _AutoTileSelector__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./AutoTileSelector */ "../map-editor/dist/AutoTileSelector.js");
 /* harmony import */ var _MapChipSelector__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./MapChipSelector */ "../map-editor/dist/MapChipSelector.js");
 /* harmony import */ var _CursorPositionConverter__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./CursorPositionConverter */ "../map-editor/dist/CursorPositionConverter.js");
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 
 
 
@@ -6494,6 +6664,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "TiledColisionDetector": () => (/* binding */ TiledColisionDetector)
 /* harmony export */ });
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 class TiledColisionDetector {
     constructor(_data, _chipWidth, _chipHeight) {
         this._data = _data;
@@ -6601,6 +6776,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "TiledColisionDetector": () => (/* reexport safe */ _TiledColisionDetector__WEBPACK_IMPORTED_MODULE_0__.TiledColisionDetector)
 /* harmony export */ });
 /* harmony import */ var _TiledColisionDetector__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TiledColisionDetector */ "../tiled-colision-detector/dist/TiledColisionDetector.js");
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 
 //# sourceMappingURL=main.js.map
 
@@ -6617,6 +6797,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "AutoTile": () => (/* binding */ AutoTile)
 /* harmony export */ });
 /* harmony import */ var _MapChip__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./../MapChip */ "../tiled-map/dist/MapChip.js");
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 
 class AutoTile {
     constructor(_mapChipFragments, _id) {
@@ -6659,6 +6844,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "AutoTiles": () => (/* binding */ AutoTiles)
 /* harmony export */ });
 /* harmony import */ var _AutoTile__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AutoTile */ "../tiled-map/dist/AutoTile/AutoTile.js");
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 
 class AutoTiles {
     constructor() {
@@ -6727,6 +6917,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "DefaultAutoTileImportStrategy": () => (/* binding */ DefaultAutoTileImportStrategy)
 /* harmony export */ });
 /* harmony import */ var _MapChip__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./../MapChip */ "../tiled-map/dist/MapChip.js");
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 
 class DefaultAutoTileImportStrategy {
     constructor(_mapChipImage, _chipWidth, _chipHeight) {
@@ -6772,6 +6967,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "AutoTileMapChip": () => (/* binding */ AutoTileMapChip),
 /* harmony export */   "isAutoTileMapChip": () => (/* binding */ isAutoTileMapChip)
 /* harmony export */ });
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 class MapChipFragment {
     constructor(_x, _y, _chipId, 
     /**
@@ -6955,6 +7155,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "MapChipImage": () => (/* binding */ MapChipImage)
 /* harmony export */ });
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 class MapChipImage {
     constructor(_src, _id) {
         this._src = _src;
@@ -7042,6 +7247,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "MapChipsCollection": () => (/* binding */ MapChipsCollection)
 /* harmony export */ });
 /* harmony import */ var _MapChipImage__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MapChipImage */ "../tiled-map/dist/MapChipImage.js");
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 
 class MapChipsCollection {
     constructor() {
@@ -7101,6 +7311,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "ColiderMap": () => (/* binding */ ColiderMap)
 /* harmony export */ });
 /* harmony import */ var _MapMatrix__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MapMatrix */ "../tiled-map/dist/MapData/MapMatrix.js");
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 
 class ColiderMap extends _MapMatrix__WEBPACK_IMPORTED_MODULE_0__.MapMatrix {
     toObject() {
@@ -7132,6 +7347,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "MapMatrix": () => (/* binding */ MapMatrix)
 /* harmony export */ });
 /* harmony import */ var _TransferEach__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TransferEach */ "../tiled-map/dist/MapData/TransferEach.js");
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 
 class MapMatrix {
     constructor(_chipCountX, _chipCountY, items = []) {
@@ -7217,6 +7437,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _TransferEach__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TransferEach */ "../tiled-map/dist/MapData/TransferEach.js");
 /* harmony import */ var _MapMatrix__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MapMatrix */ "../tiled-map/dist/MapData/MapMatrix.js");
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 
 
 class MapPaletteMatrix {
@@ -7348,6 +7573,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _MapChip__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./../MapChip */ "../tiled-map/dist/MapChip.js");
 /* harmony import */ var _MapPaletteMatrix__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MapPaletteMatrix */ "../tiled-map/dist/MapData/MapPaletteMatrix.js");
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 
 
 class TiledMapData extends _MapPaletteMatrix__WEBPACK_IMPORTED_MODULE_1__.MapPaletteMatrix {
@@ -7403,6 +7633,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "transferEach": () => (/* binding */ transferEach)
 /* harmony export */ });
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 function transferEach(srcX, srcY, width, height, destX, destY, srcWidth, srcHeight, destWidth, destHeight, callback) {
     for (let x = 0; x < width; x++) {
         const putX = destX + x;
@@ -7436,6 +7671,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "MapRenderer": () => (/* binding */ MapRenderer)
 /* harmony export */ });
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 class MapRenderer {
     constructor(_tiledMap) {
         this._tiledMap = _tiledMap;
@@ -7534,6 +7774,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _AutoTile_AutoTiles__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AutoTile/AutoTiles */ "../tiled-map/dist/AutoTile/AutoTiles.js");
 /* harmony import */ var _MapData_TiledMapData__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./MapData/TiledMapData */ "../tiled-map/dist/MapData/TiledMapData.js");
 /* harmony import */ var _MapData_ColiderMap__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./MapData/ColiderMap */ "../tiled-map/dist/MapData/ColiderMap.js");
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 
 
 
@@ -7658,6 +7903,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _AutoTile_DefaultAutoTileImportStrategy__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./AutoTile/DefaultAutoTileImportStrategy */ "../tiled-map/dist/AutoTile/DefaultAutoTileImportStrategy.js");
 /* harmony import */ var _MapData_ColiderMap__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./MapData/ColiderMap */ "../tiled-map/dist/MapData/ColiderMap.js");
 /* harmony import */ var _MapRenderer__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./MapRenderer */ "../tiled-map/dist/MapRenderer.js");
+/**
+ * @license
+ * Copyright 2021 piyoppi
+ * SPDX-License-Identifier: MIT
+ */
 
 
 
