@@ -1,10 +1,22 @@
 # pico2map
 
+[![ci](https://github.com/piyoppi/pico2map/actions/workflows/ci.yml/badge.svg)](https://github.com/piyoppi/pico2map/actions/workflows/ci.yml)
+
 Map editor for game development that runs in a browser.
+This repository contains the 2D tiled-map library and editor.
 
 example: https://garakuta-toolbox.com/pico2map/simple_map_editor/
 
 This library is still under development and will be upgraded frequently.
+
+## Packages
+
+| Package | Summary |
+| --- | --- |
+| [pico2map-tiled](packages/tiled-map) | A core library of the tiled-map |
+| [pico2map-tiled-colision-detector](packages/tiled-colision-detector) | A colision detection library for tiled-map |
+| [pico2map-editor](packages/map-editor) | A core libarary of the tiled-map editor |
+| [pico2map-ui-components](packages/map-editor-components) | Web components for tiled-map editor |
 
 ## Install
 
@@ -17,7 +29,7 @@ To get packages from github, you should edit `.npmrc` file. Show an example belo
 ```
 
 ```
-npm install --save @piyoppi/pico2map-editor@0.0.16
+npm install --save @piyoppi/pico2map-editor
 ```
 
 ## Sample
@@ -25,3 +37,7 @@ npm install --save @piyoppi/pico2map-editor@0.0.16
 - [Minimum Example](./packages/map-editor-examples/minimum_example/)
 - [AutoTile](./packages/map-editor-examples/autotile/)
 - [Simple Map Editor](./packages/map-editor-examples/simple_map_editor/)
+
+## License
+
+[MIT](./LICENSE)
