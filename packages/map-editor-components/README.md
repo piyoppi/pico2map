@@ -4,6 +4,25 @@ Web components for tiled-map editor.
 
 ## Usage
 
+### Project setting
+
+In order to edit a tiled-map, you need to register it with the project.
+
+```js
+const tiledMap = new TiledMap(15, 10, 32, 32)
+const mapChipImage = new MapChipImage("images/chip.png", 1)
+
+await mapChipImage.waitWhileLoading()
+tiledMap.mapChipsCollection.push(mapChipImage)
+
+tiledMap.mapChipsCollection.waitWhileLoading.then(() => {
+  // Attach tiledMap to project(projectId: 1)
+  Projects.add(tiledMap, 1)
+})
+```
+
+### Registration and placement of custom elements
+
 Register custom elements.
 
 ```js
