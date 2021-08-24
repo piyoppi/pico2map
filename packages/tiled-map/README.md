@@ -26,7 +26,7 @@ tiledMap.autoTiles.import(new DefaultAutoTileImportStrategy(mapChipImage, 32, 32
 
 ### Serialize / Deserialize
 
-```
+```js
 // Serialize
 const serialized = tiledMap.toObject()
 
