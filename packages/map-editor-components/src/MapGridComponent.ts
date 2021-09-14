@@ -59,7 +59,16 @@ export class MapGridComponent extends LitElement {
     if (this.cursorHidden) return
 
     const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY)
-    const cursor = convertFromCursorPositionToChipPosition(mouseCursorPosition.x, mouseCursorPosition.y, this.gridWidth, this.gridHeight, this.chipCountX, this.chipCountY)
+    const cursor = convertFromCursorPositionToChipPosition(
+      mouseCursorPosition.x,
+      mouseCursorPosition.y,
+      this.gridWidth,
+      this.gridHeight,
+      this.chipCountX,
+      this.chipCountY,
+      this.cursorWidth,
+      this.cursorHeight
+    )
     this.cursorX = cursor.x
     this.cursorY = cursor.y
   }

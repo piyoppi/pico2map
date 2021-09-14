@@ -25,6 +25,7 @@ export class MapCanvas implements EditorCanvas {
   private _brush: Brush<TiledMapDataItem> = new Pen()
   private _arrangement: Arrangement<TiledMapDataItem> = new DefaultArrangement()
   private _lastMapChipPosition = {x: -1, y: -1}
+  private _mapMouseDownPosition = {x: -1, y: -1}
   private _canvasContexts: Array<CanvasRenderingContext2D> = []
   private secondaryCanvas: HTMLCanvasElement | null = null
   private _project: Project | null = null
@@ -254,13 +255,18 @@ export class MapCanvas implements EditorCanvas {
 
     this._brush.mouseDown(chipPosition.x, chipPosition.y)
 
-    this._lastMapChipPosition = chipPosition
+    this._mapMouseDownPosition = this._lastMapChipPosition = chipPosition
 
     this._paint(chipPosition)
   }
 
   mouseMove(x: number, y: number): {x: number, y: number} {
-    const chipPosition = this.convertFromCursorPositionToChipPosition(x, y)
+    const cursorPosition = this.convertFromCursorPositionToChipPosition(x, y)
+
+    const chipPosition = {
+      x: Math.floor((cursorPosition.x - this._mapMouseDownPosition.x) / this._selectedMapChipFragmentBoundarySize.width) * this._selectedMapChipFragmentBoundarySize.width + this._mapMouseDownPosition.x,
+      y: Math.floor((cursorPosition.y - this._mapMouseDownPosition.y) / this._selectedMapChipFragmentBoundarySize.height) * this._selectedMapChipFragmentBoundarySize.height + this._mapMouseDownPosition.y,
+    }
 
     if (!this._isMouseDown) return chipPosition
     if (chipPosition.x === this._lastMapChipPosition.x && chipPosition.y === this._lastMapChipPosition.y) return chipPosition
@@ -286,7 +292,7 @@ export class MapCanvas implements EditorCanvas {
 
     this.clearSecondaryCanvas()
     this._brush.cleanUp()
-    this._lastMapChipPosition = {x: -1, y: -1}
+    this._mapMouseDownPosition = this._lastMapChipPosition = {x: -1, y: -1}
   }
 
   putChip(mapChip: MapChip | null, chipX: number, chipY: number) {
@@ -311,7 +317,16 @@ export class MapCanvas implements EditorCanvas {
   }
 
   public convertFromCursorPositionToChipPosition(x: number, y: number) {
-    return convertFromCursorPositionToChipPosition(x, y, this.project.tiledMap.chipWidth, this.project.tiledMap.chipHeight, this.project.tiledMap.chipCountX, this.project.tiledMap.chipCountY)
+    return convertFromCursorPositionToChipPosition(
+      x,
+      y,
+      this.project.tiledMap.chipWidth,
+      this.project.tiledMap.chipHeight,
+      this.project.tiledMap.chipCountX,
+      this.project.tiledMap.chipCountY,
+      this._selectedMapChipFragmentBoundarySize.width,
+      this._selectedMapChipFragmentBoundarySize.height
+    )
   }
 
   private pick(x: number, y: number) {

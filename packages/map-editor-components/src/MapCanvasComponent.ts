@@ -22,7 +22,7 @@ export class MapCanvasComponent extends LitElement {
   private _canvasMaxIds = 1
   private _beforeAddLayerCallbackItem: CallbackItem | null = null
   private _afterResizedMapCallbackItem: CallbackItem | null = null
-  private _selectedMapChipFragmentBoundarySize = {width: 0, height: 0}
+  private _selectedMapChipFragmentBoundarySize = {width: 1, height: 1}
 
   private _documentMouseMoveEventCallee: ((e: MouseEvent) => void) | null = null
   private _documentMouseUpEventCallee: ((e: MouseEvent) => void) | null = null
