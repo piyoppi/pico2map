@@ -31,6 +31,7 @@ export class MapCanvas implements EditorCanvas {
   private _renderer: MapRenderer | null = null
   private _selectedAutoTile: AutoTile | null = null
   private _selectedMapChipFragments: Array<MapChipFragment> = []
+  private _selectedMapChipFragmentBoundarySize = {width: 0, height: 0}
   private _activeLayerIndex: number = 0
   private _mapChipPickerEnabled = true
   private _mapChipPicker: MapChipPicker | null = null
@@ -82,6 +83,10 @@ export class MapCanvas implements EditorCanvas {
 
   get isPickFromActiveLayer() {
     return this._isPickFromActiveLayer
+  }
+
+  get selectedMapChipFragmentBoundarySize() {
+    return this._selectedMapChipFragmentBoundarySize
   }
 
   set isPickFromActiveLayer(value) {
@@ -155,6 +160,10 @@ export class MapCanvas implements EditorCanvas {
 
   setMapChipFragments(value: Array<MapChipFragment>) {
     this._selectedMapChipFragments = value
+
+    const boundary = value
+      .reduce((acc, val) => ({x1: Math.min(acc.x1, val.x), y1: Math.min(acc.y1, val.y), x2: Math.max(acc.x2, val.x), y2: Math.max(acc.y2, val.y)}), {x1: value[0].x, y1: value[0].y, x2: value[0].x, y2: value[0].y})
+    this._selectedMapChipFragmentBoundarySize = {width: boundary.x2 - boundary.x1 + 1, height: boundary.y2 - boundary.y1 + 1}
   }
 
   setPickedCallback(callbackFn: PickedCallbackFn) {

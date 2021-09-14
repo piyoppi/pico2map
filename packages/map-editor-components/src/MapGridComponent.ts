@@ -21,6 +21,8 @@ export class MapGridComponent extends LitElement {
   @property({type: Boolean}) cursorHidden = false
   @property({type: Number}) cursorX = 0
   @property({type: Number}) cursorY = 0
+  @property({type: Number}) cursorWidth = 1
+  @property({type: Number}) cursorHeight = 1
 
   @property({type: String})
   get gridColor(): string {
@@ -80,8 +82,8 @@ export class MapGridComponent extends LitElement {
         }
 
         .cursor {
-          width: ${this.gridWidth}px;
-          height: ${this.gridHeight}px;
+          width: ${this.gridWidth * this.cursorWidth}px;
+          height: ${this.gridHeight * this.cursorHeight}px;
           left: ${this.cursorPosition.x}px;
           top: ${this.cursorPosition.y}px;
         }
