@@ -16,6 +16,7 @@ export class MapGridComponent extends LitElement {
   private mapMouseDownPosition = {x: -1, y: -1}
   private lastCursor = {x: -1, y: -1}
   private isMouseDown = false
+  private mouseUpEventCallee: ((e: MouseEvent) => void) | null = null
 
   @property({type: Number}) gridWidth = 0
   @property({type: Number}) gridHeight = 0
@@ -63,6 +64,9 @@ export class MapGridComponent extends LitElement {
     const cursor = this.convertFromCursorPositionToChipPosition(mouseCursorPosition.x, mouseCursorPosition.y)
     this.mapMouseDownPosition = this.lastCursor = cursor
     this.isMouseDown = true
+
+    this.mouseUpEventCallee = () => this.mouseUp()
+    document.addEventListener('mouseup', this.mouseUpEventCallee)
   }
 
   mouseMove(e: MouseEvent) {
@@ -91,6 +95,9 @@ export class MapGridComponent extends LitElement {
 
   mouseUp() {
     this.isMouseDown = false
+    if (this.mouseUpEventCallee) document.removeEventListener('mouseup', this.mouseUpEventCallee)
+
+    this.mouseUpEventCallee = null
   }
 
   private convertFromCursorPositionToChipPosition(x: number, y: number) {
@@ -140,7 +147,6 @@ export class MapGridComponent extends LitElement {
           class="grid-image grid"
           @mousedown="${(e: MouseEvent) => this.mouseDown(e)}"
           @mousemove="${(e: MouseEvent) => this.mouseMove(e)}"
-          @mouseup="${() => this.mouseUp()}"
         ></div>
         ${!this.cursorHidden ? html`<div class="cursor"></div>` : null}
       </div>
