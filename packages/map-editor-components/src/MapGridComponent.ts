@@ -7,12 +7,15 @@
 import { LitElement, html, css } from 'lit'
 import { property } from 'lit/decorators.js'
 import { CursorPositionCalculator } from './Helpers/CursorPositionCalculator'
-import { GridImageGenerator, convertFromCursorPositionToChipPosition } from '@piyoppi/pico2map-editor'
+import { GridImageGenerator, convertFromCursorPositionToChipPosition, convertChipPositionDivisionByCursorSize } from '@piyoppi/pico2map-editor'
 
 export class MapGridComponent extends LitElement {
   private gridImageSrc = ''
   private gridImageGenerator: GridImageGenerator = new GridImageGenerator()
   private cursorPositionCalculator = new CursorPositionCalculator()
+  private mapMouseDownPosition = {x: -1, y: -1}
+  private lastCursor = {x: -1, y: -1}
+  private isMouseDown = false
 
   @property({type: Number}) gridWidth = 0
   @property({type: Number}) gridHeight = 0
@@ -55,13 +58,45 @@ export class MapGridComponent extends LitElement {
     if (element) this.cursorPositionCalculator.setElement(element)
   }
 
+  mouseDown(e: MouseEvent) {
+    const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY)
+    const cursor = this.convertFromCursorPositionToChipPosition(mouseCursorPosition.x, mouseCursorPosition.y)
+    this.mapMouseDownPosition = this.lastCursor = cursor
+    this.isMouseDown = true
+  }
+
   mouseMove(e: MouseEvent) {
     if (this.cursorHidden) return
 
     const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY)
-    const cursor = convertFromCursorPositionToChipPosition(
-      mouseCursorPosition.x,
-      mouseCursorPosition.y,
+    let cursor = this.convertFromCursorPositionToChipPosition(mouseCursorPosition.x, mouseCursorPosition.y)
+
+    if (this.isMouseDown) {
+      cursor = convertChipPositionDivisionByCursorSize(
+        cursor.x,
+        cursor.y,
+        this.mapMouseDownPosition.x,
+        this.mapMouseDownPosition.y,
+        this.cursorWidth,
+        this.cursorHeight
+      )
+    }
+
+    if (cursor.x === this.lastCursor.x && cursor.y === this.lastCursor.y) return
+    this.lastCursor = cursor
+
+    this.cursorX = cursor.x
+    this.cursorY = cursor.y
+  }
+
+  mouseUp() {
+    this.isMouseDown = false
+  }
+
+  private convertFromCursorPositionToChipPosition(x: number, y: number) {
+    return convertFromCursorPositionToChipPosition(
+      x,
+      y,
       this.gridWidth,
       this.gridHeight,
       this.chipCountX,
@@ -69,8 +104,6 @@ export class MapGridComponent extends LitElement {
       this.cursorWidth,
       this.cursorHeight
     )
-    this.cursorX = cursor.x
-    this.cursorY = cursor.y
   }
 
   render() {
@@ -105,7 +138,9 @@ export class MapGridComponent extends LitElement {
       <div id="boundary">
         <div
           class="grid-image grid"
+          @mousedown="${(e: MouseEvent) => this.mouseDown(e)}"
           @mousemove="${(e: MouseEvent) => this.mouseMove(e)}"
+          @mouseup="${() => this.mouseUp()}"
         ></div>
         ${!this.cursorHidden ? html`<div class="cursor"></div>` : null}
       </div>

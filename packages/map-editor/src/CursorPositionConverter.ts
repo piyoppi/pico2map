@@ -12,3 +12,10 @@ export function convertFromCursorPositionToChipPosition(x: number, y: number, ch
     y: Math.max(0, Math.min(Math.floor((y - offsetY) / chipHeight), chipCountY - 1))
   }
 }
+
+export function convertChipPositionDivisionByCursorSize(x: number, y: number, baseX: number, baseY: number, cursorWidth: number, cursorHeight: number) {
+  return {
+    x: Math.floor((x - baseX) / cursorWidth) * cursorWidth + baseX,
+    y: Math.floor((y - baseY) / cursorHeight) * cursorHeight + baseY,
+  }
+}

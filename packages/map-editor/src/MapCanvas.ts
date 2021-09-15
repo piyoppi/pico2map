@@ -14,7 +14,7 @@ import { Arrangement, isMapChipFragmentRequired, isTiledMapDataRequired, isAutoT
 import { DefaultArrangement } from './Brushes/Arrangements/DefaultArrangement'
 import { EditorCanvas } from './EditorCanvas'
 import { MapChipPicker } from './MapChipPicker'
-import { convertFromCursorPositionToChipPosition } from './CursorPositionConverter'
+import { convertFromCursorPositionToChipPosition, convertChipPositionDivisionByCursorSize } from './CursorPositionConverter'
 import { CallbackItem } from './CallbackItem'
 
 type PickedCallbackFn = (picked: TiledMapDataItem) => void
@@ -262,11 +262,14 @@ export class MapCanvas implements EditorCanvas {
 
   mouseMove(x: number, y: number): {x: number, y: number} {
     const cursorPosition = this.convertFromCursorPositionToChipPosition(x, y)
-
-    const chipPosition = {
-      x: Math.floor((cursorPosition.x - this._mapMouseDownPosition.x) / this._selectedMapChipFragmentBoundarySize.width) * this._selectedMapChipFragmentBoundarySize.width + this._mapMouseDownPosition.x,
-      y: Math.floor((cursorPosition.y - this._mapMouseDownPosition.y) / this._selectedMapChipFragmentBoundarySize.height) * this._selectedMapChipFragmentBoundarySize.height + this._mapMouseDownPosition.y,
-    }
+    const chipPosition = convertChipPositionDivisionByCursorSize(
+      cursorPosition.x,
+      cursorPosition.y,
+      this._mapMouseDownPosition.x,
+      this._mapMouseDownPosition.y,
+      this._selectedMapChipFragmentBoundarySize.width,
+      this._selectedMapChipFragmentBoundarySize.height
+    )
 
     if (!this._isMouseDown) return chipPosition
     if (chipPosition.x === this._lastMapChipPosition.x && chipPosition.y === this._lastMapChipPosition.y) return chipPosition
