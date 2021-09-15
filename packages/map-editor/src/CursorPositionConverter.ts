@@ -8,8 +8,8 @@ export function convertFromCursorPositionToChipPosition(x: number, y: number, ch
   const offsetX = (Math.floor(cursorWidth / 2) * chipWidth) / 2
   const offsetY = (Math.floor(cursorHeight / 2) * chipHeight) / 2
   return {
-    x: Math.max(0, Math.min(Math.floor((x - offsetX) / chipWidth), chipCountX - 1)),
-    y: Math.max(0, Math.min(Math.floor((y - offsetY) / chipHeight), chipCountY - 1))
+    x: Math.max(0, Math.min(Math.floor((x - offsetX) / chipWidth), chipCountX - cursorWidth)),
+    y: Math.max(0, Math.min(Math.floor((y - offsetY) / chipHeight), chipCountY - cursorHeight))
   }
 }
 
