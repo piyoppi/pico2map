@@ -130,7 +130,6 @@ export class MapCanvasComponent extends LitElement {
     const mapChipFragments = values.map(value => MapChipFragment.fromObject(value))
     this._mapCanvas.setMapChipFragments(mapChipFragments)
     this._selectedMapChipFragmentBoundarySize = this._mapCanvas.selectedMapChipFragmentBoundarySize
-    console.log(this._selectedMapChipFragmentBoundarySize)
   }
 
   @property({type: Number})
