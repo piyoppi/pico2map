@@ -14,7 +14,7 @@ import { Arrangement, isMapChipFragmentRequired, isTiledMapDataRequired, isAutoT
 import { DefaultArrangement } from './Brushes/Arrangements/DefaultArrangement'
 import { EditorCanvas } from './EditorCanvas'
 import { MapChipPicker } from './MapChipPicker'
-import { convertFromCursorPositionToChipPosition } from './CursorPositionConverter'
+import { convertFromCursorPositionToChipPosition, convertChipPositionDivisionByCursorSize } from './CursorPositionConverter'
 import { CallbackItem } from './CallbackItem'
 
 type PickedCallbackFn = (picked: TiledMapDataItem) => void
@@ -25,12 +25,14 @@ export class MapCanvas implements EditorCanvas {
   private _brush: Brush<TiledMapDataItem> = new Pen()
   private _arrangement: Arrangement<TiledMapDataItem> = new DefaultArrangement()
   private _lastMapChipPosition = {x: -1, y: -1}
+  private _mapMouseDownPosition = {x: -1, y: -1}
   private _canvasContexts: Array<CanvasRenderingContext2D> = []
   private secondaryCanvas: HTMLCanvasElement | null = null
   private _project: Project | null = null
   private _renderer: MapRenderer | null = null
   private _selectedAutoTile: AutoTile | null = null
   private _selectedMapChipFragments: Array<MapChipFragment> = []
+  private _selectedMapChipFragmentBoundarySize = {width: 0, height: 0}
   private _activeLayerIndex: number = 0
   private _mapChipPickerEnabled = true
   private _mapChipPicker: MapChipPicker | null = null
@@ -82,6 +84,10 @@ export class MapCanvas implements EditorCanvas {
 
   get isPickFromActiveLayer() {
     return this._isPickFromActiveLayer
+  }
+
+  get selectedMapChipFragmentBoundarySize() {
+    return this._selectedMapChipFragmentBoundarySize
   }
 
   set isPickFromActiveLayer(value) {
@@ -155,6 +161,10 @@ export class MapCanvas implements EditorCanvas {
 
   setMapChipFragments(value: Array<MapChipFragment>) {
     this._selectedMapChipFragments = value
+
+    const boundary = value
+      .reduce((acc, val) => ({x1: Math.min(acc.x1, val.x), y1: Math.min(acc.y1, val.y), x2: Math.max(acc.x2, val.x), y2: Math.max(acc.y2, val.y)}), {x1: value[0].x, y1: value[0].y, x2: value[0].x, y2: value[0].y})
+    this._selectedMapChipFragmentBoundarySize = {width: boundary.x2 - boundary.x1 + 1, height: boundary.y2 - boundary.y1 + 1}
   }
 
   setPickedCallback(callbackFn: PickedCallbackFn) {
@@ -245,13 +255,21 @@ export class MapCanvas implements EditorCanvas {
 
     this._brush.mouseDown(chipPosition.x, chipPosition.y)
 
-    this._lastMapChipPosition = chipPosition
+    this._mapMouseDownPosition = this._lastMapChipPosition = chipPosition
 
     this._paint(chipPosition)
   }
 
   mouseMove(x: number, y: number): {x: number, y: number} {
-    const chipPosition = this.convertFromCursorPositionToChipPosition(x, y)
+    const cursorPosition = this.convertFromCursorPositionToChipPosition(x, y)
+    const chipPosition = convertChipPositionDivisionByCursorSize(
+      cursorPosition.x,
+      cursorPosition.y,
+      this._mapMouseDownPosition.x,
+      this._mapMouseDownPosition.y,
+      this._selectedMapChipFragmentBoundarySize.width,
+      this._selectedMapChipFragmentBoundarySize.height
+    )
 
     if (!this._isMouseDown) return chipPosition
     if (chipPosition.x === this._lastMapChipPosition.x && chipPosition.y === this._lastMapChipPosition.y) return chipPosition
@@ -277,7 +295,7 @@ export class MapCanvas implements EditorCanvas {
 
     this.clearSecondaryCanvas()
     this._brush.cleanUp()
-    this._lastMapChipPosition = {x: -1, y: -1}
+    this._mapMouseDownPosition = this._lastMapChipPosition = {x: -1, y: -1}
   }
 
   putChip(mapChip: MapChip | null, chipX: number, chipY: number) {
@@ -302,7 +320,16 @@ export class MapCanvas implements EditorCanvas {
   }
 
   public convertFromCursorPositionToChipPosition(x: number, y: number) {
-    return convertFromCursorPositionToChipPosition(x, y, this.project.tiledMap.chipWidth, this.project.tiledMap.chipHeight, this.project.tiledMap.chipCountX, this.project.tiledMap.chipCountY)
+    return convertFromCursorPositionToChipPosition(
+      x,
+      y,
+      this.project.tiledMap.chipWidth,
+      this.project.tiledMap.chipHeight,
+      this.project.tiledMap.chipCountX,
+      this.project.tiledMap.chipCountY,
+      this._selectedMapChipFragmentBoundarySize.width,
+      this._selectedMapChipFragmentBoundarySize.height
+    )
   }
 
   private pick(x: number, y: number) {

@@ -22,6 +22,7 @@ export class MapCanvasComponent extends LitElement {
   private _canvasMaxIds = 1
   private _beforeAddLayerCallbackItem: CallbackItem | null = null
   private _afterResizedMapCallbackItem: CallbackItem | null = null
+  private _selectedMapChipFragmentBoundarySize = {width: 1, height: 1}
 
   private _documentMouseMoveEventCallee: ((e: MouseEvent) => void) | null = null
   private _documentMouseUpEventCallee: ((e: MouseEvent) => void) | null = null
@@ -128,6 +129,7 @@ export class MapCanvasComponent extends LitElement {
 
     const mapChipFragments = values.map(value => MapChipFragment.fromObject(value))
     this._mapCanvas.setMapChipFragments(mapChipFragments)
+    this._selectedMapChipFragmentBoundarySize = this._mapCanvas.selectedMapChipFragmentBoundarySize
   }
 
   @property({type: Number})
@@ -373,6 +375,8 @@ export class MapCanvasComponent extends LitElement {
             chipCountX="${this.xCount}"
             chipCountY="${this.yCount}"
             gridColor="${this.gridColor}"
+            cursorWidth="${this._selectedMapChipFragmentBoundarySize.width}"
+            cursorHeight="${this._selectedMapChipFragmentBoundarySize.height}"
           ></map-grid-component>`
         }
       </div>

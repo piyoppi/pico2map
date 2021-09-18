@@ -395,3 +395,24 @@ describe('#unsubscribeProjectEvent', () => {
     expect(mapCanvas.renderAll).not.toBeCalled()
   })
 })
+
+describe('#selectedMapChipFragmentBoundarySize', () => {
+  it('Should get the size of the boundary', () => {
+    const tiledMap = new TiledMap(30, 30, 32, 32)
+    const project = Projects.add(tiledMap)
+    const mapCanvas = new MapCanvas()
+
+    mapCanvas.setMapChipFragments([new MapChipFragment(1, 0, 0)])
+    expect(mapCanvas.selectedMapChipFragmentBoundarySize).toEqual({width: 1, height: 1})
+
+    mapCanvas.setMapChipFragments([
+      new MapChipFragment(2, 1, 0),
+      new MapChipFragment(3, 1, 0),
+      new MapChipFragment(4, 1, 0),
+      new MapChipFragment(2, 2, 0),
+      new MapChipFragment(3, 2, 0),
+      new MapChipFragment(4, 2, 0)
+    ])
+    expect(mapCanvas.selectedMapChipFragmentBoundarySize).toEqual({width: 3, height: 2})
+  })
+})
