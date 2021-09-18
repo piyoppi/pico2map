@@ -3793,6 +3793,7 @@ class MapCanvasComponent extends lit__WEBPACK_IMPORTED_MODULE_0__.LitElement {
         this._canvasMaxIds = 1;
         this._beforeAddLayerCallbackItem = null;
         this._afterResizedMapCallbackItem = null;
+        this._selectedMapChipFragmentBoundarySize = { width: 1, height: 1 };
         this._documentMouseMoveEventCallee = null;
         this._documentMouseUpEventCallee = null;
         this.gridCursorHidden = false;
@@ -3869,6 +3870,7 @@ class MapCanvasComponent extends lit__WEBPACK_IMPORTED_MODULE_0__.LitElement {
             return;
         const mapChipFragments = values.map(value => _piyoppi_pico2map_tiled__WEBPACK_IMPORTED_MODULE_4__.MapChipFragment.fromObject(value));
         this._mapCanvas.setMapChipFragments(mapChipFragments);
+        this._selectedMapChipFragmentBoundarySize = this._mapCanvas.selectedMapChipFragmentBoundarySize;
     }
     get activeLayer() {
         return this._mapCanvas.activeLayer;
@@ -4085,6 +4087,8 @@ class MapCanvasComponent extends lit__WEBPACK_IMPORTED_MODULE_0__.LitElement {
             chipCountX="${this.xCount}"
             chipCountY="${this.yCount}"
             gridColor="${this.gridColor}"
+            cursorWidth="${this._selectedMapChipFragmentBoundarySize.width}"
+            cursorHeight="${this._selectedMapChipFragmentBoundarySize.height}"
           ></map-grid-component>`}
       </div>
     `;
@@ -4494,6 +4498,10 @@ class MapGridComponent extends lit__WEBPACK_IMPORTED_MODULE_0__.LitElement {
         this.gridImageSrc = '';
         this.gridImageGenerator = new _piyoppi_pico2map_editor__WEBPACK_IMPORTED_MODULE_3__.GridImageGenerator();
         this.cursorPositionCalculator = new _Helpers_CursorPositionCalculator__WEBPACK_IMPORTED_MODULE_2__.CursorPositionCalculator();
+        this.mapMouseDownPosition = { x: -1, y: -1 };
+        this.lastCursor = { x: -1, y: -1 };
+        this.isMouseDown = false;
+        this.mouseUpEventCallee = null;
         this.gridWidth = 0;
         this.gridHeight = 0;
         this.chipCountX = 0;
@@ -4501,6 +4509,8 @@ class MapGridComponent extends lit__WEBPACK_IMPORTED_MODULE_0__.LitElement {
         this.cursorHidden = false;
         this.cursorX = 0;
         this.cursorY = 0;
+        this.cursorWidth = 1;
+        this.cursorHeight = 1;
     }
     get gridColor() {
         return this.gridImageGenerator.gridColor;
@@ -4528,13 +4538,36 @@ class MapGridComponent extends lit__WEBPACK_IMPORTED_MODULE_0__.LitElement {
         if (element)
             this.cursorPositionCalculator.setElement(element);
     }
+    mouseDown(e) {
+        const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY);
+        const cursor = this.convertFromCursorPositionToChipPosition(mouseCursorPosition.x, mouseCursorPosition.y);
+        this.mapMouseDownPosition = this.lastCursor = cursor;
+        this.isMouseDown = true;
+        this.mouseUpEventCallee = () => this.mouseUp();
+        document.addEventListener('mouseup', this.mouseUpEventCallee);
+    }
     mouseMove(e) {
         if (this.cursorHidden)
             return;
         const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY);
-        const cursor = (0,_piyoppi_pico2map_editor__WEBPACK_IMPORTED_MODULE_3__.convertFromCursorPositionToChipPosition)(mouseCursorPosition.x, mouseCursorPosition.y, this.gridWidth, this.gridHeight, this.chipCountX, this.chipCountY);
+        let cursor = this.convertFromCursorPositionToChipPosition(mouseCursorPosition.x, mouseCursorPosition.y);
+        if (this.isMouseDown) {
+            cursor = (0,_piyoppi_pico2map_editor__WEBPACK_IMPORTED_MODULE_3__.convertChipPositionDivisionByCursorSize)(cursor.x, cursor.y, this.mapMouseDownPosition.x, this.mapMouseDownPosition.y, this.cursorWidth, this.cursorHeight);
+        }
+        if (cursor.x === this.lastCursor.x && cursor.y === this.lastCursor.y)
+            return;
+        this.lastCursor = cursor;
         this.cursorX = cursor.x;
         this.cursorY = cursor.y;
+    }
+    mouseUp() {
+        this.isMouseDown = false;
+        if (this.mouseUpEventCallee)
+            document.removeEventListener('mouseup', this.mouseUpEventCallee);
+        this.mouseUpEventCallee = null;
+    }
+    convertFromCursorPositionToChipPosition(x, y) {
+        return (0,_piyoppi_pico2map_editor__WEBPACK_IMPORTED_MODULE_3__.convertFromCursorPositionToChipPosition)(x, y, this.gridWidth, this.gridHeight, this.chipCountX, this.chipCountY, this.cursorWidth, this.cursorHeight);
     }
     render() {
         this.gridImageGenerator.setGridSize(this.gridWidth, this.gridHeight);
@@ -4553,8 +4586,8 @@ class MapGridComponent extends lit__WEBPACK_IMPORTED_MODULE_0__.LitElement {
         }
 
         .cursor {
-          width: ${this.gridWidth}px;
-          height: ${this.gridHeight}px;
+          width: ${this.gridWidth * this.cursorWidth}px;
+          height: ${this.gridHeight * this.cursorHeight}px;
           left: ${this.cursorPosition.x}px;
           top: ${this.cursorPosition.y}px;
         }
@@ -4567,6 +4600,7 @@ class MapGridComponent extends lit__WEBPACK_IMPORTED_MODULE_0__.LitElement {
       <div id="boundary">
         <div
           class="grid-image grid"
+          @mousedown="${(e) => this.mouseDown(e)}"
           @mousemove="${(e) => this.mouseMove(e)}"
         ></div>
         ${!this.cursorHidden ? lit__WEBPACK_IMPORTED_MODULE_0__.html `<div class="cursor"></div>` : null}
@@ -4619,6 +4653,12 @@ __decorate([
 __decorate([
     (0,lit_decorators_js__WEBPACK_IMPORTED_MODULE_1__.property)({ type: Number })
 ], MapGridComponent.prototype, "cursorY", void 0);
+__decorate([
+    (0,lit_decorators_js__WEBPACK_IMPORTED_MODULE_1__.property)({ type: Number })
+], MapGridComponent.prototype, "cursorWidth", void 0);
+__decorate([
+    (0,lit_decorators_js__WEBPACK_IMPORTED_MODULE_1__.property)({ type: Number })
+], MapGridComponent.prototype, "cursorHeight", void 0);
 __decorate([
     (0,lit_decorators_js__WEBPACK_IMPORTED_MODULE_1__.property)({ type: String })
 ], MapGridComponent.prototype, "gridColor", null);
@@ -5953,17 +5993,26 @@ class ColiderRenderer {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "convertFromCursorPositionToChipPosition": () => (/* binding */ convertFromCursorPositionToChipPosition)
+/* harmony export */   "convertFromCursorPositionToChipPosition": () => (/* binding */ convertFromCursorPositionToChipPosition),
+/* harmony export */   "convertChipPositionDivisionByCursorSize": () => (/* binding */ convertChipPositionDivisionByCursorSize)
 /* harmony export */ });
 /**
  * @license
  * Copyright 2021 piyoppi
  * SPDX-License-Identifier: MIT
  */
-function convertFromCursorPositionToChipPosition(x, y, chipWidth, chipHeight, chipCountX, chipCountY) {
+function convertFromCursorPositionToChipPosition(x, y, chipWidth, chipHeight, chipCountX, chipCountY, cursorWidth = 1, cursorHeight = 1) {
+    const offsetX = (Math.floor(cursorWidth / 2) * chipWidth) / 2;
+    const offsetY = (Math.floor(cursorHeight / 2) * chipHeight) / 2;
     return {
-        x: Math.max(0, Math.min(Math.floor(x / chipWidth), chipCountX - 1)),
-        y: Math.max(0, Math.min(Math.floor(y / chipHeight), chipCountY - 1))
+        x: Math.max(0, Math.min(Math.floor((x - offsetX) / chipWidth), chipCountX - cursorWidth)),
+        y: Math.max(0, Math.min(Math.floor((y - offsetY) / chipHeight), chipCountY - cursorHeight))
+    };
+}
+function convertChipPositionDivisionByCursorSize(x, y, baseX, baseY, cursorWidth, cursorHeight) {
+    return {
+        x: Math.floor((x - baseX) / cursorWidth) * cursorWidth + baseX,
+        y: Math.floor((y - baseY) / cursorHeight) * cursorHeight + baseY,
     };
 }
 
@@ -6113,12 +6162,14 @@ class MapCanvas {
         this._brush = new _Brushes_Pen__WEBPACK_IMPORTED_MODULE_1__.Pen();
         this._arrangement = new _Brushes_Arrangements_DefaultArrangement__WEBPACK_IMPORTED_MODULE_5__.DefaultArrangement();
         this._lastMapChipPosition = { x: -1, y: -1 };
+        this._mapMouseDownPosition = { x: -1, y: -1 };
         this._canvasContexts = [];
         this.secondaryCanvas = null;
         this._project = null;
         this._renderer = null;
         this._selectedAutoTile = null;
         this._selectedMapChipFragments = [];
+        this._selectedMapChipFragmentBoundarySize = { width: 0, height: 0 };
         this._activeLayerIndex = 0;
         this._mapChipPickerEnabled = true;
         this._mapChipPicker = null;
@@ -6159,6 +6210,9 @@ class MapCanvas {
     }
     get isPickFromActiveLayer() {
         return this._isPickFromActiveLayer;
+    }
+    get selectedMapChipFragmentBoundarySize() {
+        return this._selectedMapChipFragmentBoundarySize;
     }
     set isPickFromActiveLayer(value) {
         this._isPickFromActiveLayer = value;
@@ -6221,6 +6275,9 @@ class MapCanvas {
     }
     setMapChipFragments(value) {
         this._selectedMapChipFragments = value;
+        const boundary = value
+            .reduce((acc, val) => ({ x1: Math.min(acc.x1, val.x), y1: Math.min(acc.y1, val.y), x2: Math.max(acc.x2, val.x), y2: Math.max(acc.y2, val.y) }), { x1: value[0].x, y1: value[0].y, x2: value[0].x, y2: value[0].y });
+        this._selectedMapChipFragmentBoundarySize = { width: boundary.x2 - boundary.x1 + 1, height: boundary.y2 - boundary.y1 + 1 };
     }
     setPickedCallback(callbackFn) {
         this._pickedCallback = callbackFn;
@@ -6292,11 +6349,12 @@ class MapCanvas {
             this._arrangement.setAutoTiles(this.project.tiledMap.autoTiles);
         }
         this._brush.mouseDown(chipPosition.x, chipPosition.y);
-        this._lastMapChipPosition = chipPosition;
+        this._mapMouseDownPosition = this._lastMapChipPosition = chipPosition;
         this._paint(chipPosition);
     }
     mouseMove(x, y) {
-        const chipPosition = this.convertFromCursorPositionToChipPosition(x, y);
+        const cursorPosition = this.convertFromCursorPositionToChipPosition(x, y);
+        const chipPosition = (0,_CursorPositionConverter__WEBPACK_IMPORTED_MODULE_7__.convertChipPositionDivisionByCursorSize)(cursorPosition.x, cursorPosition.y, this._mapMouseDownPosition.x, this._mapMouseDownPosition.y, this._selectedMapChipFragmentBoundarySize.width, this._selectedMapChipFragmentBoundarySize.height);
         if (!this._isMouseDown)
             return chipPosition;
         if (chipPosition.x === this._lastMapChipPosition.x && chipPosition.y === this._lastMapChipPosition.y)
@@ -6316,7 +6374,7 @@ class MapCanvas {
         });
         this.clearSecondaryCanvas();
         this._brush.cleanUp();
-        this._lastMapChipPosition = { x: -1, y: -1 };
+        this._mapMouseDownPosition = this._lastMapChipPosition = { x: -1, y: -1 };
     }
     putChip(mapChip, chipX, chipY) {
         this.project.tiledMap.put(mapChip, chipX, chipY, this._activeLayerIndex);
@@ -6337,7 +6395,7 @@ class MapCanvas {
         this._secondaryCanvasCtx.clearRect(0, 0, this.secondaryCanvas.width, this.secondaryCanvas.height);
     }
     convertFromCursorPositionToChipPosition(x, y) {
-        return (0,_CursorPositionConverter__WEBPACK_IMPORTED_MODULE_7__.convertFromCursorPositionToChipPosition)(x, y, this.project.tiledMap.chipWidth, this.project.tiledMap.chipHeight, this.project.tiledMap.chipCountX, this.project.tiledMap.chipCountY);
+        return (0,_CursorPositionConverter__WEBPACK_IMPORTED_MODULE_7__.convertFromCursorPositionToChipPosition)(x, y, this.project.tiledMap.chipWidth, this.project.tiledMap.chipHeight, this.project.tiledMap.chipCountX, this.project.tiledMap.chipCountY, this._selectedMapChipFragmentBoundarySize.width, this._selectedMapChipFragmentBoundarySize.height);
     }
     pick(x, y) {
         var _a, _b;
@@ -6627,7 +6685,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "ColiderCanvas": () => (/* reexport safe */ _ColiderCanvas__WEBPACK_IMPORTED_MODULE_4__.ColiderCanvas),
 /* harmony export */   "AutoTileSelector": () => (/* reexport safe */ _AutoTileSelector__WEBPACK_IMPORTED_MODULE_5__.AutoTileSelector),
 /* harmony export */   "MapChipSelector": () => (/* reexport safe */ _MapChipSelector__WEBPACK_IMPORTED_MODULE_6__.MapChipSelector),
-/* harmony export */   "convertFromCursorPositionToChipPosition": () => (/* reexport safe */ _CursorPositionConverter__WEBPACK_IMPORTED_MODULE_7__.convertFromCursorPositionToChipPosition)
+/* harmony export */   "convertFromCursorPositionToChipPosition": () => (/* reexport safe */ _CursorPositionConverter__WEBPACK_IMPORTED_MODULE_7__.convertFromCursorPositionToChipPosition),
+/* harmony export */   "convertChipPositionDivisionByCursorSize": () => (/* reexport safe */ _CursorPositionConverter__WEBPACK_IMPORTED_MODULE_7__.convertChipPositionDivisionByCursorSize)
 /* harmony export */ });
 /* harmony import */ var _GridImageGenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./GridImageGenerator */ "../map-editor/dist/GridImageGenerator.js");
 /* harmony import */ var _CallbackItem__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CallbackItem */ "../map-editor/dist/CallbackItem.js");
