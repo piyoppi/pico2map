@@ -1,15 +1,15 @@
 {
   "name": "@piyoppi/pico2map-samples",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "",
   "main": "src/main.js",
   "directories": {
     "example": "examples"
   },
   "dependencies": {
-    "@piyoppi/pico2map-ui-components": "0.2.0",
-    "@piyoppi/pico2map-tiled": "0.2.0",
-    "@piyoppi/pico2map-tiled-colision-detector": "0.2.0"
+    "@piyoppi/pico2map-ui-components": "0.2.1",
+    "@piyoppi/pico2map-tiled": "0.2.1",
+    "@piyoppi/pico2map-tiled-colision-detector": "0.2.1"
   },
   "devDependencies": {
     "typescript": "^4.1.3",
