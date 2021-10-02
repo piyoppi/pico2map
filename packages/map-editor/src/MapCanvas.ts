@@ -157,6 +157,7 @@ export class MapCanvas implements EditorCanvas {
 
   setAutoTile(value: AutoTile) {
     this._selectedAutoTile = value
+    this._selectedMapChipFragmentBoundarySize = {width: 1, height: 1}
   }
 
   setMapChipFragments(value: Array<MapChipFragment>) {
