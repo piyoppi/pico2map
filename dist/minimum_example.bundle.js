@@ -6272,6 +6272,7 @@ class MapCanvas {
     }
     setAutoTile(value) {
         this._selectedAutoTile = value;
+        this._selectedMapChipFragmentBoundarySize = { width: 1, height: 1 };
     }
     setMapChipFragments(value) {
         this._selectedMapChipFragments = value;
