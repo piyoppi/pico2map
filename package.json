@@ -1,6 +1,6 @@
 {
   "name": "pico2map",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "2D Tiled map editor for RPG / Action game",
   "workspaces": [
     "packages/*"
