@@ -282,12 +282,12 @@ export class MapCanvas implements EditorCanvas {
     return chipPosition
   }
 
-  mouseUp(x: number, y: number) {
+  mouseUp() {
     if (!this._isMouseDown) return
 
     this._isMouseDown = false
 
-    const chipPosition = this.convertFromCursorPositionToChipPosition(x, y)
+    const chipPosition = this._lastMapChipPosition;
 
     this._brush.mouseUp(chipPosition.x, chipPosition.y).forEach(paint => {
       const chip = paint.item
