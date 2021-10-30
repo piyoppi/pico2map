@@ -4,6 +4,7 @@
     <title>Simple Map Editor</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="index.css">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
   </head>
 
   <body>
@@ -28,47 +29,41 @@
         </div>
       </div>
       <div class="map-editor-boundary">
-        <div class="map-editor">
-          <map-canvas-component
-            id="mapCanvas"
-            inactiveLayerOpacity="0.3"
-            gridColor="#ccc"
-            hiddenColider
-          ></map-canvas-component>
-          <colider-marker-component
-            id="coliderCanvas"
-            gridColor="#ccc"
-            coliderType="1"
-            subColiderType="0"
-          ></colider-marker-component>
-        </div>
-        <div class="chip-selector">
-          <div class="map-chips">
-            <map-chip-selector-component
-              id="mapChipSelector"
-              chipId="1"
-              gridColor="#555"
-              ></map-chip-selector-component>
+        <div class="map-editor-container">
+          <div class="map-editor">
+            <map-canvas-component
+              id="mapCanvas"
+              inactiveLayerOpacity="0.3"
+              gridColor="#ccc"
+              hiddenColider
+            ></map-canvas-component>
+            <colider-marker-component
+              id="coliderCanvas"
+              gridColor="#ccc"
+              coliderType="1"
+              subColiderType="0"
+            ></colider-marker-component>
           </div>
-          <div class="map-chips">
-            <auto-tile-selector-component
-              id="autoTileSelector"
-              width="256"
-              gridColor="#555"
-              ></auto-tile-selector-component>
+          <div class="chip-selector">
+            <div class="map-chips">
+              <map-chip-selector-component
+                id="mapChipSelector"
+                chipId="1"
+                gridColor="#555"
+                ></map-chip-selector-component>
+            </div>
+            <div class="map-chips map-chips--autotile">
+              <auto-tile-selector-component
+                id="autoTileSelector"
+                width="256"
+                gridColor="#555"
+                ></auto-tile-selector-component>
+            </div>
           </div>
         </div>
       </div>
     </article>
 
     <script src="../dist/simple_map_editor.bundle.js"></script>
-
-    <footer>
-      <p>garakuta-toolbox</p>
-      <p>Author: piyoppi</p>
-      <a href="https://garakuta-toolbox.com">HP</a>
-      <a href="https://github.com/piyoppi">GitHub(@piyoppi)</a>
-      <a href="https://twitter.com/piyorinpa">Twitter(@piyorinpa)</a>
-    </footer>
   </body>
 </html>
