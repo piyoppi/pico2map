@@ -10,8 +10,8 @@
   "devDependencies": {
     "typescript": "4.3.4",
     "@types/jest": "26.0.24",
-    "jest": "26.6.3",
-    "ts-jest": "26.5.6",
+    "jest": "27.3.1",
+    "ts-jest": "27.0.7",
     "ts-loader": "8.3.0",
     "@babel/preset-env": "7.15.0",
     "@piyoppi/pico2map-tiled": "0.3.0",
