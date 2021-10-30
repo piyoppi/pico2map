@@ -26,6 +26,8 @@ export class MapCanvasComponent extends LitElement {
 
   private _documentMouseMoveEventCallee: ((e: MouseEvent) => void) | null = null
   private _documentMouseUpEventCallee: ((e: MouseEvent) => void) | null = null
+  private _documentTouchMoveEventCallee: ((e: TouchEvent) => void) | null = null
+  private _documentTouchEndEventCallee: ((e: TouchEvent) => void) | null = null
 
   constructor() {
     super()
@@ -320,11 +322,6 @@ export class MapCanvasComponent extends LitElement {
     this.setupMapCanvas()
   }
 
-  mouseMove(e: MouseEvent) {
-    const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY)
-    this._mapCanvas.mouseMove(mouseCursorPosition.x, mouseCursorPosition.y)
-  }
-
   mouseDown(e: MouseEvent) {
     const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY)
     this._mapCanvas.mouseDown(mouseCursorPosition.x, mouseCursorPosition.y, e.button === 2)
@@ -336,15 +333,55 @@ export class MapCanvasComponent extends LitElement {
     document.addEventListener('mouseup', this._documentMouseUpEventCallee)
   }
 
-  mouseUp(e: MouseEvent) {
+  mouseMove(e: MouseEvent) {
     const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY)
-    this._mapCanvas.mouseUp(mouseCursorPosition.x, mouseCursorPosition.y)
+    this._mapCanvas.mouseMove(mouseCursorPosition.x, mouseCursorPosition.y)
+  }
+
+  mouseUp(e: MouseEvent) {
+    this._mapCanvas.mouseUp()
 
     if (this._documentMouseMoveEventCallee) document.removeEventListener('mousemove', this._documentMouseMoveEventCallee)
     if (this._documentMouseUpEventCallee) document.removeEventListener('mouseup', this._documentMouseUpEventCallee)
 
     this._documentMouseMoveEventCallee = null
     this._documentMouseUpEventCallee = null
+  }
+
+  touchStart(e: TouchEvent) {
+    if (e.touches.length > 1) {
+      this._mapCanvas.reset()
+      this._touchReset()
+      return
+    }
+
+    const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.touches[0].clientX, e.touches[0].clientY)
+    this._mapCanvas.mouseDown(mouseCursorPosition.x, mouseCursorPosition.y, false)
+
+    this._documentTouchMoveEventCallee = e => this.touchMove(e)
+    this._documentTouchEndEventCallee = e => this.touchEnd(e)
+
+    document.addEventListener('touchmove', this._documentTouchMoveEventCallee)
+    document.addEventListener('touchend', this._documentTouchEndEventCallee)
+  }
+
+  touchMove(e: TouchEvent) {
+    const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.touches[0].clientX, e.touches[0].clientY)
+    this._mapCanvas.mouseMove(mouseCursorPosition.x, mouseCursorPosition.y)
+  }
+
+  touchEnd(e: TouchEvent) {
+    this._mapCanvas.mouseUp()
+
+    this._touchReset()
+  }
+
+  private _touchReset() {
+    if (this._documentTouchMoveEventCallee) document.removeEventListener('touchmove', this._documentTouchMoveEventCallee)
+    if (this._documentTouchEndEventCallee) document.removeEventListener('touchend', this._documentTouchEndEventCallee)
+
+    this._documentTouchMoveEventCallee = null
+    this._documentTouchEndEventCallee = null
   }
 
   render() {
@@ -358,7 +395,7 @@ export class MapCanvasComponent extends LitElement {
 
       <div id="boundary"
         @mousedown="${(e: MouseEvent) => this.mouseDown(e)}"
-        @mousemove="${(e: MouseEvent) => !this._mapCanvas.isMouseDown ? this.mouseMove(e) : null}"
+        @touchstart="${(e: TouchEvent) => this.touchStart(e)}"
         @contextmenu="${(e: MouseEvent) => this.preventDefaultContextMenu && e.preventDefault()}"
       >
         <div id="canvases"></div>
