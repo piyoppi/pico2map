@@ -349,6 +349,12 @@ export class MapCanvasComponent extends LitElement {
   }
 
   touchStart(e: TouchEvent) {
+    if (e.touches.length > 1) {
+      this._mapCanvas.reset()
+      this._touchReset()
+      return
+    }
+
     const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.touches[0].clientX, e.touches[0].clientY)
     this._mapCanvas.mouseDown(mouseCursorPosition.x, mouseCursorPosition.y, false)
 
@@ -367,6 +373,10 @@ export class MapCanvasComponent extends LitElement {
   touchEnd(e: TouchEvent) {
     this._mapCanvas.mouseUp()
 
+    this._touchReset()
+  }
+
+  private _touchReset() {
     if (this._documentTouchMoveEventCallee) document.removeEventListener('touchmove', this._documentTouchMoveEventCallee)
     if (this._documentTouchEndEventCallee) document.removeEventListener('touchend', this._documentTouchEndEventCallee)
 

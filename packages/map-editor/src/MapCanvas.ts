@@ -285,14 +285,20 @@ export class MapCanvas implements EditorCanvas {
   mouseUp() {
     if (!this._isMouseDown) return
 
-    this._isMouseDown = false
-
     const chipPosition = this._lastMapChipPosition;
 
     this._brush.mouseUp(chipPosition.x, chipPosition.y).forEach(paint => {
       const chip = paint.item
       this.putChip(chip, paint.x, paint.y)
     })
+
+    this.reset()
+  }
+
+  reset() {
+    if (!this._isMouseDown) return
+
+    this._isMouseDown = false
 
     this.clearSecondaryCanvas()
     this._brush.cleanUp()
