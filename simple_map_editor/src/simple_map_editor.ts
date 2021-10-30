@@ -68,6 +68,8 @@ async function initialize() {
   // Serialize a tiled-map data and set to the localStorage
   saveButton.onclick = () => localStorage.setItem('mapData', JSON.stringify(tiledMap.toObject()))
 
+  mapCanvas.addEventListener('touchmove', e => { if (e.touches.length < 2) e.preventDefault() })
+
   // Set a pen
   rectangleRadioButton.addEventListener('change', () => {
     mapCanvas.setAttribute('brush', 'RectangleBrush')

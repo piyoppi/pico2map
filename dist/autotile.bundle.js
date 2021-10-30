@@ -3796,6 +3796,8 @@ class MapCanvasComponent extends lit__WEBPACK_IMPORTED_MODULE_0__.LitElement {
         this._selectedMapChipFragmentBoundarySize = { width: 1, height: 1 };
         this._documentMouseMoveEventCallee = null;
         this._documentMouseUpEventCallee = null;
+        this._documentTouchMoveEventCallee = null;
+        this._documentTouchEndEventCallee = null;
         this.gridCursorHidden = false;
         this.preventDefaultContextMenu = true;
         this.gridColor = '#000';
@@ -4038,10 +4040,6 @@ class MapCanvasComponent extends lit__WEBPACK_IMPORTED_MODULE_0__.LitElement {
         this._canvasesOuterElement = (_c = this.shadowRoot) === null || _c === void 0 ? void 0 : _c.getElementById('canvases');
         this.setupMapCanvas();
     }
-    mouseMove(e) {
-        const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY);
-        this._mapCanvas.mouseMove(mouseCursorPosition.x, mouseCursorPosition.y);
-    }
     mouseDown(e) {
         const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY);
         this._mapCanvas.mouseDown(mouseCursorPosition.x, mouseCursorPosition.y, e.button === 2);
@@ -4050,15 +4048,47 @@ class MapCanvasComponent extends lit__WEBPACK_IMPORTED_MODULE_0__.LitElement {
         document.addEventListener('mousemove', this._documentMouseMoveEventCallee);
         document.addEventListener('mouseup', this._documentMouseUpEventCallee);
     }
-    mouseUp(e) {
+    mouseMove(e) {
         const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY);
-        this._mapCanvas.mouseUp(mouseCursorPosition.x, mouseCursorPosition.y);
+        this._mapCanvas.mouseMove(mouseCursorPosition.x, mouseCursorPosition.y);
+    }
+    mouseUp(e) {
+        this._mapCanvas.mouseUp();
         if (this._documentMouseMoveEventCallee)
             document.removeEventListener('mousemove', this._documentMouseMoveEventCallee);
         if (this._documentMouseUpEventCallee)
             document.removeEventListener('mouseup', this._documentMouseUpEventCallee);
         this._documentMouseMoveEventCallee = null;
         this._documentMouseUpEventCallee = null;
+    }
+    touchStart(e) {
+        if (e.touches.length > 1) {
+            this._mapCanvas.reset();
+            this._touchReset();
+            return;
+        }
+        const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.touches[0].clientX, e.touches[0].clientY);
+        this._mapCanvas.mouseDown(mouseCursorPosition.x, mouseCursorPosition.y, false);
+        this._documentTouchMoveEventCallee = e => this.touchMove(e);
+        this._documentTouchEndEventCallee = e => this.touchEnd(e);
+        document.addEventListener('touchmove', this._documentTouchMoveEventCallee);
+        document.addEventListener('touchend', this._documentTouchEndEventCallee);
+    }
+    touchMove(e) {
+        const mouseCursorPosition = this.cursorPositionCalculator.getMouseCursorPosition(e.touches[0].clientX, e.touches[0].clientY);
+        this._mapCanvas.mouseMove(mouseCursorPosition.x, mouseCursorPosition.y);
+    }
+    touchEnd(e) {
+        this._mapCanvas.mouseUp();
+        this._touchReset();
+    }
+    _touchReset() {
+        if (this._documentTouchMoveEventCallee)
+            document.removeEventListener('touchmove', this._documentTouchMoveEventCallee);
+        if (this._documentTouchEndEventCallee)
+            document.removeEventListener('touchend', this._documentTouchEndEventCallee);
+        this._documentTouchMoveEventCallee = null;
+        this._documentTouchEndEventCallee = null;
     }
     render() {
         return lit__WEBPACK_IMPORTED_MODULE_0__.html `
@@ -4071,7 +4101,7 @@ class MapCanvasComponent extends lit__WEBPACK_IMPORTED_MODULE_0__.LitElement {
 
       <div id="boundary"
         @mousedown="${(e) => this.mouseDown(e)}"
-        @mousemove="${(e) => !this._mapCanvas.isMouseDown ? this.mouseMove(e) : null}"
+        @touchstart="${(e) => this.touchStart(e)}"
         @contextmenu="${(e) => this.preventDefaultContextMenu && e.preventDefault()}"
       >
         <div id="canvases"></div>
@@ -6364,15 +6394,20 @@ class MapCanvas {
         this._lastMapChipPosition = chipPosition;
         return chipPosition;
     }
-    mouseUp(x, y) {
+    mouseUp() {
         if (!this._isMouseDown)
             return;
-        this._isMouseDown = false;
-        const chipPosition = this.convertFromCursorPositionToChipPosition(x, y);
+        const chipPosition = this._lastMapChipPosition;
         this._brush.mouseUp(chipPosition.x, chipPosition.y).forEach(paint => {
             const chip = paint.item;
             this.putChip(chip, paint.x, paint.y);
         });
+        this.reset();
+    }
+    reset() {
+        if (!this._isMouseDown)
+            return;
+        this._isMouseDown = false;
         this.clearSecondaryCanvas();
         this._brush.cleanUp();
         this._mapMouseDownPosition = this._lastMapChipPosition = { x: -1, y: -1 };
