@@ -186,16 +186,21 @@ export class ColiderCanvas implements EditorCanvas {
     return chipPosition
   }
 
-  mouseUp(x: number, y: number) {
-    this._isMouseDown = false
-
-    const chipPosition = this.convertFromCursorPositionToChipPosition(x, y)
+  mouseUp() {
+    const chipPosition = this.convertFromCursorPositionToChipPosition(this._lastMapChipPosition.x, this._lastMapChipPosition.y)
 
     this._brush.mouseUp(chipPosition.x, chipPosition.y).forEach(paint => {
       const chip = paint.item
       this.putChip(chip, paint.x, paint.y)
     })
 
+    this.reset()
+  }
+
+  reset() {
+    if (!this._isMouseDown) return
+
+    this._isMouseDown = false
     this.clearSecondaryCanvas()
     this._brush.cleanUp()
     this._lastMapChipPosition = {x: -1, y: -1}

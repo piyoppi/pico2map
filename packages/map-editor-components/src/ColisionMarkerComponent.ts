@@ -21,6 +21,8 @@ export class ColiderMarkerComponent extends LitElement {
 
   private _documentMouseMoveEventCallee: ((e: MouseEvent) => void) | null = null
   private _documentMouseUpEventCallee: ((e: MouseEvent) => void) | null = null
+  private _documentTouchMoveEventCallee: ((e: TouchEvent) => void) | null = null
+  private _documentTouchEndEventCallee: ((e: TouchEvent) => void) | null = null
 
   constructor() {
     super()
@@ -156,13 +158,6 @@ export class ColiderMarkerComponent extends LitElement {
     }
   }
 
-  mouseMove(e: MouseEvent) {
-    const mouseCursorPosition = this._cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY)
-    const cursor = this._coliderCanvas.mouseMove(mouseCursorPosition.x, mouseCursorPosition.y)
-    this.cursorChipX = cursor.x
-    this.cursorChipY = cursor.y
-  }
-
   mouseDown(e: MouseEvent) {
     const mouseCursorPosition = this._cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY)
     this._coliderCanvas.mouseDown(mouseCursorPosition.x, mouseCursorPosition.y, e.button === 2)
@@ -174,15 +169,58 @@ export class ColiderMarkerComponent extends LitElement {
     document.addEventListener('mouseup', this._documentMouseUpEventCallee)
   }
 
+  mouseMove(e: MouseEvent) {
+    const mouseCursorPosition = this._cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY)
+    const cursor = this._coliderCanvas.mouseMove(mouseCursorPosition.x, mouseCursorPosition.y)
+    this.cursorChipX = cursor.x
+    this.cursorChipY = cursor.y
+  }
+
   mouseUp(e: MouseEvent) {
     const mouseCursorPosition = this._cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY)
-    this._coliderCanvas.mouseUp(mouseCursorPosition.x, mouseCursorPosition.y)
+    this._coliderCanvas.mouseUp()
 
     if (this._documentMouseMoveEventCallee) document.removeEventListener('mousemove', this._documentMouseMoveEventCallee)
     if (this._documentMouseUpEventCallee) document.removeEventListener('mouseup', this._documentMouseUpEventCallee)
 
     this._documentMouseMoveEventCallee = null
     this._documentMouseUpEventCallee = null
+  }
+
+  touchStart(e: TouchEvent) {
+    if (e.touches.length > 1) {
+      this._coliderCanvas.reset()
+      this._touchReset()
+      return
+    }
+
+    const mouseCursorPosition = this._cursorPositionCalculator.getMouseCursorPosition(e.touches[0].clientX, e.touches[0].clientY)
+    this._coliderCanvas.mouseDown(mouseCursorPosition.x, mouseCursorPosition.y)
+
+    this._documentTouchMoveEventCallee = e => this.touchMove(e)
+    this._documentTouchEndEventCallee = e => this.touchEnd(e)
+
+    document.addEventListener('touchmove', this._documentTouchMoveEventCallee)
+    document.addEventListener('touchend', this._documentTouchEndEventCallee)
+  }
+
+  touchMove(e: TouchEvent) {
+    const mouseCursorPosition = this._cursorPositionCalculator.getMouseCursorPosition(e.touches[0].clientX, e.touches[0].clientY)
+    this._coliderCanvas.mouseMove(mouseCursorPosition.x, mouseCursorPosition.y)
+  }
+
+  touchEnd(e: TouchEvent) {
+    this._coliderCanvas.mouseUp()
+
+    this._touchReset()
+  }
+
+  private _touchReset() {
+    if (this._documentTouchMoveEventCallee) document.removeEventListener('touchmove', this._documentTouchMoveEventCallee)
+    if (this._documentTouchEndEventCallee) document.removeEventListener('touchend', this._documentTouchEndEventCallee)
+
+    this._documentTouchMoveEventCallee = null
+    this._documentTouchEndEventCallee = null
   }
 
   render() {
@@ -228,7 +266,7 @@ export class ColiderMarkerComponent extends LitElement {
         <div
           class="grid-image grid"
           @mousedown="${(e: MouseEvent) => this.mouseDown(e)}"
-          @mousemove="${(e: MouseEvent) => !this._coliderCanvas.isMouseDown ? this.mouseMove(e) : null}"
+          @touchstart="${(e: TouchEvent) => this.touchStart(e)}"
           @contextmenu="${(e: MouseEvent) => this.preventDefaultContextMenu && e.preventDefault()}"
         ></div>
         <div class="cursor"></div>
