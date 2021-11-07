@@ -352,6 +352,8 @@ class ColiderMarkerComponent extends lit__WEBPACK_IMPORTED_MODULE_0__.LitElement
         this._secondaryCanvasElement = null;
         this._documentMouseMoveEventCallee = null;
         this._documentMouseUpEventCallee = null;
+        this._documentTouchMoveEventCallee = null;
+        this._documentTouchEndEventCallee = null;
         this.cursorChipX = 0;
         this.cursorChipY = 0;
         this.preventDefaultContextMenu = true;
@@ -457,12 +459,6 @@ class ColiderMarkerComponent extends lit__WEBPACK_IMPORTED_MODULE_0__.LitElement
             this._coliderCanvas.setCanvas(this._coliderCanvasElement, this._secondaryCanvasElement);
         }
     }
-    mouseMove(e) {
-        const mouseCursorPosition = this._cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY);
-        const cursor = this._coliderCanvas.mouseMove(mouseCursorPosition.x, mouseCursorPosition.y);
-        this.cursorChipX = cursor.x;
-        this.cursorChipY = cursor.y;
-    }
     mouseDown(e) {
         const mouseCursorPosition = this._cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY);
         this._coliderCanvas.mouseDown(mouseCursorPosition.x, mouseCursorPosition.y, e.button === 2);
@@ -471,15 +467,50 @@ class ColiderMarkerComponent extends lit__WEBPACK_IMPORTED_MODULE_0__.LitElement
         document.addEventListener('mousemove', this._documentMouseMoveEventCallee);
         document.addEventListener('mouseup', this._documentMouseUpEventCallee);
     }
+    mouseMove(e) {
+        const mouseCursorPosition = this._cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY);
+        const cursor = this._coliderCanvas.mouseMove(mouseCursorPosition.x, mouseCursorPosition.y);
+        this.cursorChipX = cursor.x;
+        this.cursorChipY = cursor.y;
+    }
     mouseUp(e) {
         const mouseCursorPosition = this._cursorPositionCalculator.getMouseCursorPosition(e.pageX, e.pageY);
-        this._coliderCanvas.mouseUp(mouseCursorPosition.x, mouseCursorPosition.y);
+        this._coliderCanvas.mouseUp();
         if (this._documentMouseMoveEventCallee)
             document.removeEventListener('mousemove', this._documentMouseMoveEventCallee);
         if (this._documentMouseUpEventCallee)
             document.removeEventListener('mouseup', this._documentMouseUpEventCallee);
         this._documentMouseMoveEventCallee = null;
         this._documentMouseUpEventCallee = null;
+    }
+    touchStart(e) {
+        if (e.touches.length > 1) {
+            this._coliderCanvas.reset();
+            this._touchReset();
+            return;
+        }
+        const mouseCursorPosition = this._cursorPositionCalculator.getMouseCursorPosition(e.touches[0].clientX, e.touches[0].clientY);
+        this._coliderCanvas.mouseDown(mouseCursorPosition.x, mouseCursorPosition.y);
+        this._documentTouchMoveEventCallee = e => this.touchMove(e);
+        this._documentTouchEndEventCallee = e => this.touchEnd(e);
+        document.addEventListener('touchmove', this._documentTouchMoveEventCallee);
+        document.addEventListener('touchend', this._documentTouchEndEventCallee);
+    }
+    touchMove(e) {
+        const mouseCursorPosition = this._cursorPositionCalculator.getMouseCursorPosition(e.touches[0].clientX, e.touches[0].clientY);
+        this._coliderCanvas.mouseMove(mouseCursorPosition.x, mouseCursorPosition.y);
+    }
+    touchEnd(e) {
+        this._coliderCanvas.mouseUp();
+        this._touchReset();
+    }
+    _touchReset() {
+        if (this._documentTouchMoveEventCallee)
+            document.removeEventListener('touchmove', this._documentTouchMoveEventCallee);
+        if (this._documentTouchEndEventCallee)
+            document.removeEventListener('touchend', this._documentTouchEndEventCallee);
+        this._documentTouchMoveEventCallee = null;
+        this._documentTouchEndEventCallee = null;
     }
     render() {
         this._gridImageGenerator.setGridSize(this.gridWidth, this.gridHeight);
@@ -523,7 +554,7 @@ class ColiderMarkerComponent extends lit__WEBPACK_IMPORTED_MODULE_0__.LitElement
         <div
           class="grid-image grid"
           @mousedown="${(e) => this.mouseDown(e)}"
-          @mousemove="${(e) => !this._coliderCanvas.isMouseDown ? this.mouseMove(e) : null}"
+          @touchstart="${(e) => this.touchStart(e)}"
           @contextmenu="${(e) => this.preventDefaultContextMenu && e.preventDefault()}"
         ></div>
         <div class="cursor"></div>
@@ -2849,13 +2880,18 @@ class ColiderCanvas {
         this._lastMapChipPosition = chipPosition;
         return chipPosition;
     }
-    mouseUp(x, y) {
-        this._isMouseDown = false;
-        const chipPosition = this.convertFromCursorPositionToChipPosition(x, y);
+    mouseUp() {
+        const chipPosition = this.convertFromCursorPositionToChipPosition(this._lastMapChipPosition.x, this._lastMapChipPosition.y);
         this._brush.mouseUp(chipPosition.x, chipPosition.y).forEach(paint => {
             const chip = paint.item;
             this.putChip(chip, paint.x, paint.y);
         });
+        this.reset();
+    }
+    reset() {
+        if (!this._isMouseDown)
+            return;
+        this._isMouseDown = false;
         this.clearSecondaryCanvas();
         this._brush.cleanUp();
         this._lastMapChipPosition = { x: -1, y: -1 };
@@ -8010,6 +8046,8 @@ async function initialize() {
     // Serialize a tiled-map data and set to the localStorage
     saveButton.onclick = () => localStorage.setItem('mapData', JSON.stringify(tiledMap.toObject()));
     mapCanvas.addEventListener('touchmove', e => { if (e.touches.length < 2)
+        e.preventDefault(); });
+    coliderCanvas.addEventListener('touchmove', e => { if (e.touches.length < 2)
         e.preventDefault(); });
     // Set a pen
     rectangleRadioButton.addEventListener('change', () => {
