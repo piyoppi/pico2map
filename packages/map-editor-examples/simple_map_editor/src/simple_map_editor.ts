@@ -69,6 +69,7 @@ async function initialize() {
   saveButton.onclick = () => localStorage.setItem('mapData', JSON.stringify(tiledMap.toObject()))
 
   mapCanvas.addEventListener('touchmove', e => { if (e.touches.length < 2) e.preventDefault() })
+  coliderCanvas.addEventListener('touchmove', e => { if (e.touches.length < 2) e.preventDefault() })
 
   // Set a pen
   rectangleRadioButton.addEventListener('change', () => {
