@@ -1,6 +1,6 @@
 {
   "name": "@piyoppi/pico2map-editor",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "",
   "main": "dist/main.js",
   "repository": {
@@ -14,8 +14,8 @@
     "ts-jest": "27.0.7",
     "ts-loader": "9.2.6",
     "@babel/preset-env": "7.16.0",
-    "@piyoppi/pico2map-tiled": "0.4.0",
-    "@piyoppi/pico2map-tiled-colision-detector": "0.4.0"
+    "@piyoppi/pico2map-tiled": "0.4.1",
+    "@piyoppi/pico2map-tiled-colision-detector": "0.4.1"
   },
   "scripts": {
     "test": "jest",
