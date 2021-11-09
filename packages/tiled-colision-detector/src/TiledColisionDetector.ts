@@ -6,6 +6,8 @@
 
 export interface TiledColisionDetectable {
   getFromChipPosition: (x: number, y: number) => ColiderTypes
+  readonly width: number
+  readonly height: number
 }
 
 export interface ColidedObject {
@@ -32,12 +34,16 @@ export type PositionDiff = {
 type Position = {x: number, y: number}
 
 export class TiledColisionDetector {
+  private coliderMapAreaWidth = 0
+  private coliderMapAreaHeight = 0
+
   constructor(
     private _data: TiledColisionDetectable,
     private _chipWidth: number,
     private _chipHeight: number
   ) {
-    
+    this.coliderMapAreaWidth = this._data.width * this._chipWidth
+    this.coliderMapAreaHeight = this._data.height * this._chipHeight
   }
 
   detect(item: ColidedObject) {
@@ -56,7 +62,7 @@ export class TiledColisionDetector {
     }
 
     for( let y = chipPositionOfItem.y1; y <= chipPositionOfItem.y2; y++ ) {
-      for( let x = chipPositionOfItem .x1; x <= chipPositionOfItem.x2; x++ ) {
+      for( let x = chipPositionOfItem.x1; x <= chipPositionOfItem.x2; x++ ) {
         if (this._data.getFromChipPosition(x, y) !== 0) {
           colidedTilePositions.push({x, y})
         }
@@ -131,6 +137,18 @@ export class TiledColisionDetector {
         clonedItem.x += overlapped.dx
       } else {
         clonedItem.y += overlapped.dy
+      }
+
+      if (clonedItem.x < 0) {
+        clonedItem.x = 0
+      } else if (clonedItem.x + clonedItem.width > this.coliderMapAreaWidth) {
+        clonedItem.x = this.coliderMapAreaWidth - clonedItem.width
+      }
+
+      if (clonedItem.y < 0) {
+        clonedItem.y = 0
+      } else if (clonedItem.y + clonedItem.height > this.coliderMapAreaHeight) {
+        clonedItem.y = this.coliderMapAreaHeight - clonedItem.height
       }
     }
 
