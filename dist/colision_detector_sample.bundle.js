@@ -3727,6 +3727,10 @@ class TiledColisionDetector {
         this._data = _data;
         this._chipWidth = _chipWidth;
         this._chipHeight = _chipHeight;
+        this.coliderMapAreaWidth = 0;
+        this.coliderMapAreaHeight = 0;
+        this.coliderMapAreaWidth = this._data.width * this._chipWidth;
+        this.coliderMapAreaHeight = this._data.height * this._chipHeight;
     }
     detect(item) {
         const colidedTilePositions = [];
@@ -3809,6 +3813,18 @@ class TiledColisionDetector {
             }
             else {
                 clonedItem.y += overlapped.dy;
+            }
+            if (clonedItem.x < 0) {
+                clonedItem.x = 0;
+            }
+            else if (clonedItem.x + clonedItem.width > this.coliderMapAreaWidth) {
+                clonedItem.x = this.coliderMapAreaWidth - clonedItem.width;
+            }
+            if (clonedItem.y < 0) {
+                clonedItem.y = 0;
+            }
+            else if (clonedItem.y + clonedItem.height > this.coliderMapAreaHeight) {
+                clonedItem.y = this.coliderMapAreaHeight - clonedItem.height;
             }
         }
         return { dx: clonedItem.x - item.x, dy: clonedItem.y - item.y };
