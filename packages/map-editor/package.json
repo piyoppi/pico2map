@@ -13,7 +13,7 @@
     "jest": "27.4.5",
     "ts-jest": "27.1.2",
     "ts-loader": "9.2.6",
-    "@babel/preset-env": "7.16.5",
+    "@babel/preset-env": "7.16.7",
     "@piyoppi/pico2map-tiled": "0.4.2",
     "@piyoppi/pico2map-tiled-colision-detector": "0.4.2"
   },
