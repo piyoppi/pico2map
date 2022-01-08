@@ -10,7 +10,7 @@
   "devDependencies": {
     "typescript": "4.5.4",
     "@types/jest": "27.4.0",
-    "jest": "27.4.5",
+    "jest": "27.4.7",
     "ts-jest": "27.1.2",
     "ts-loader": "9.2.6"
   },
