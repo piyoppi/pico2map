@@ -16,7 +16,7 @@
     "jest": "27.4.7",
     "ts-jest": "27.1.2",
     "ts-loader": "9.2.6",
-    "@babel/preset-env": "7.16.7",
+    "@babel/preset-env": "7.16.8",
     "canvas": "2.8.0",
     "@piyoppi/pico2map-tiled": "0.4.2",
     "@piyoppi/pico2map-editor": "0.4.2",
