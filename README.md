@@ -5,7 +5,7 @@
 Map editor for game development that runs in a browser.
 This repository contains the 2D tiled-map library and editor.
 
-example: https://garakuta-toolbox.com/pico2map/simple_map_editor/
+example: https://piyoppi.github.io/pico2map/simple_map_editor/
 
 This library is still under development and will be upgraded frequently.
 

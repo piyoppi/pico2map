@@ -6,7 +6,7 @@ The simple map editor consists of some components.
 - `<map-chip-selector-component>` : Select a MapChip from an image
 - `<auto-tile-selector-component>` : Select a AutoTile from a project
 
-[The sample is here](https://garakuta-toolbox.com/pico2map/simple_map_editor)
+[The sample is here](https://piyoppi.github.io/pico2map/simple_map_editor)
 
 ```html
 <div class="tools">
