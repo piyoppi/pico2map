@@ -60,22 +60,22 @@ jobs:
          node-version: '15'
          registry-url: https://npm.pkg.github.com/
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: built-tiled-colision-detector
           path: ./packages/tiled-colision-detector/dist/
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: built-tiled-map
           path: ./packages/tiled-map/dist/
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: built-map-editor
           path: ./packages/map-editor/dist/
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: built-ui-components
           path: ./packages/map-editor-components/dist/
