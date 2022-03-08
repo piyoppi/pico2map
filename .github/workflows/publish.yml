@@ -29,22 +29,22 @@ jobs:
         run: npm run build
         working-directory: ./packages/map-editor-components
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: built-tiled-colision-detector
           path: ./packages/tiled-colision-detector/dist/
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: built-tiled-map
           path: ./packages/tiled-map/dist/
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: built-map-editor
           path: ./packages/map-editor/dist/
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: built-ui-components
           path: ./packages/map-editor-components/dist/
