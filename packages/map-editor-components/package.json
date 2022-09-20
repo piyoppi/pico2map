@@ -17,7 +17,7 @@
     "ts-jest": "27.1.5",
     "ts-loader": "9.3.1",
     "@babel/preset-env": "7.18.10",
-    "canvas": "2.9.3",
+    "canvas": "2.10.1",
     "@piyoppi/pico2map-tiled": "0.4.2",
     "@piyoppi/pico2map-editor": "0.4.2",
     "@piyoppi/pico2map-tiled-colision-detector": "0.4.2"
