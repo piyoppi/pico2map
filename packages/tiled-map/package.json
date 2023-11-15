@@ -12,7 +12,7 @@
     "@types/jest": "27.5.2",
     "jest": "27.5.1",
     "ts-jest": "27.1.5",
-    "ts-loader": "9.4.2"
+    "ts-loader": "9.5.1"
   },
   "dependencies": {
     "@piyoppi/pico2map-tiled-colision-detector": "0.4.2"
